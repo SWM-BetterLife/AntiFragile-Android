@@ -1,0 +1,53 @@
+name: Create GitHub Issue from JIRA
+
+on:
+  # 'feature/*' 브랜치가 생성될 때마다 트리거
+  create:
+    branches:
+      - 'feature/*'
+
+jobs:
+  create-issue:
+    runs-on: ubuntu-latest
+    steps:
+      # 레포지토리를 체크아웃
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # JSON 파싱을 위해 jq를 설치
+      - name: Set up jq for JSON parsing
+        run: sudo apt-get install -y jq
+
+      # GitHub 이슈를 생성하는 단계
+      - name: Create GitHub Issue
+        env:
+          # GitHub Personal Access Token
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          # JIRA 기본 URL
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          # JIRA 사용자 이메일
+          JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
+          # JIRA API 토큰
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+        run: |
+          # 브랜치 이름에서 JIRA 이슈 키를 추출
+          BRANCH_NAME=$(echo ${{ github.ref_name }} | sed 's/.*\///')
+          JIRA_ISSUE_KEY=$(echo $BRANCH_NAME | grep -o '[A-Z]\+-[0-9]\+')
+
+          # JIRA API를 사용하여 이슈 정보를 가져옴
+          JIRA_ISSUE=$(curl -s -u $JIRA_USER_EMAIL:$JIRA_API_TOKEN \
+            -X GET \
+            -H "Content-Type: application/json" \
+            "$JIRA_BASE_URL/rest/api/2/issue/$JIRA_ISSUE_KEY")
+          
+          # JIRA 이슈의 제목을 추출
+          ISSUE_TITLE=$(echo $JIRA_ISSUE | jq -r '.fields.summary')
+          # JIRA 이슈의 내용을 추출
+          ISSUE_BODY=$(echo $JIRA_ISSUE | jq -r '.fields.description')
+
+          # GitHub API를 사용하여 새로운 이슈를 생성
+          curl -X POST \
+            -H "Authorization: token $PERSONAL_ACCESS_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${{ github.repository }}/issues \
+            -d "{\"title\": \"$ISSUE_TITLE\", \"body\": \"$ISSUE_BODY\"}"
