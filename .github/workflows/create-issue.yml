@@ -1,10 +1,12 @@
 name: Create GitHub Issue from JIRA
 
 on:
-  # 'feature/*' 브랜치가 생성될 때마다 트리거
+  # 'feature/*', 'hotfix/*', 'refactor/*' 브랜치가 생성될 때마다 트리거
   create:
     branches:
       - 'feature/*'
+      - 'hotfix/*'
+      - 'refactor/*'
 
 jobs:
   create-issue:
@@ -33,6 +35,12 @@ jobs:
           # 브랜치 이름에서 JIRA 이슈 키를 추출
           BRANCH_NAME=$(echo ${{ github.ref_name }} | sed 's/.*\///')
           JIRA_ISSUE_KEY=$(echo $BRANCH_NAME | grep -o '[A-Z]\+-[0-9]\+')
+          
+          # JIRA 이슈 키 추출 실패 시 에러 메시지 출력
+          if [ -z "$JIRA_ISSUE_KEY" ]; then
+            echo "No JIRA issue key found in branch name $BRANCH_NAME"
+            exit 1
+          fi
 
           # JIRA API를 사용하여 이슈 정보를 가져옴
           JIRA_ISSUE=$(curl -s -u $JIRA_USER_EMAIL:$JIRA_API_TOKEN \
@@ -44,10 +52,19 @@ jobs:
           ISSUE_TITLE=$(echo $JIRA_ISSUE | jq -r '.fields.summary')
           # JIRA 이슈의 내용을 추출
           ISSUE_BODY=$(echo $JIRA_ISSUE | jq -r '.fields.description')
+          
+          # JIRA 이슈 제목 또는 내용이 비어있는 경우 에러 메시지 출력
+          if [ -z "$ISSUE_TITLE" ] || [ -z "$ISSUE_BODY" ]; then
+            echo "Failed to retrieve JIRA issue details."
+            exit 1
+          fi
+          
+          GITHUB_ISSUE_DATA=$(jq -n --arg title "$ISSUE_TITLE" --arg body "$ISSUE_BODY" '{title: $title, body: $body}')
+
 
           # GitHub API를 사용하여 새로운 이슈를 생성
           curl -X POST \
             -H "Authorization: token $PERSONAL_ACCESS_TOKEN" \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/${{ github.repository }}/issues \
-            -d "{\"title\": \"$ISSUE_TITLE\", \"body\": \"$ISSUE_BODY\"}"
+            -d "$GITHUB_ISSUE_DATA"
