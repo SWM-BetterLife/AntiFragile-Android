@@ -14,7 +14,7 @@
         android:theme="@style/Theme.Antifragile"
         tools:targetApi="31">
         <activity
-            android:name=".SplashActivity"
+            android:name=".presentation.ui.SplashActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
