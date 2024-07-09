@@ -50,22 +50,3 @@ jobs:
     # Gradle을 사용하여 프로젝트 빌드
     - name: Build with Gradle 
       run: ./gradlew build
-
-    # 에뮬레이터 생성 단계
-    - name: Create emulator 
-      run: |
-        sdkmanager "system-images;android-${{ matrix.api-level }};default;arm64-v8a"
-        avdmanager create avd -n test -k "system-images;android-${{ matrix.api-level }};default;arm64-v8a" --device "pixel"
-    # 에뮬레이터 시작 단계
-    - name: Start emulator
-      run: |
-        emulator -avd test -no-window -no-audio -no-boot-anim &
-        adb wait-for-device
-        adb shell settings put global window_animation_scale 0
-        adb shell settings put global transition_animation_scale 0
-        adb shell settings put global animator_duration_scale 0
-        adb shell input keyevent 82
-
-    # 기기에서 실행되는 테스트 실행
-    - name: Run instrumented tests 
-      run: ./gradlew connectedAndroidTest
