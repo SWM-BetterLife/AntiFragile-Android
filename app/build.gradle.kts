@@ -9,6 +9,11 @@ android {
     namespace = "com.betterlife.antifragile"
     compileSdk = 34
 
+    buildFeatures {
+        dataBinding = true
+        buildConfig = true
+    }
+
     defaultConfig {
         applicationId = "com.betterlife.antifragile"
         minSdk = 24
