@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/nav_calendar"
-        android:title="감정 일기" />
+        android:title="@string/bottom_nav_calendar"
+        app:showAsAction="ifRoom|withText" />
 
     <item
         android:id="@+id/nav_emotion"
-        android:title="나의 감정" />
+        android:title="@string/bottom_nav_emotion"
+        app:showAsAction="ifRoom|withText" />
 
     <item
         android:id="@+id/nav_content"
-        android:title="나의 콘텐츠" />
+        android:title="@string/bottom_nav_content"
+        app:showAsAction="ifRoom|withText" />
 
     <item
         android:id="@+id/nav_my_page"
-        android:title="마이페이지" />
+        android:title="@string/bottom_nav_my_page"
+        app:showAsAction="ifRoom|withText" />
 
 </menu>
