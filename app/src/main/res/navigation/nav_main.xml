@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_main"
+    app:startDestination="@id/nav_calendar">
+
+    <fragment
+        android:id="@+id/nav_calendar"
+        android:name="com.betterlife.antifragile.presentation.ui.calendar.CalendarFragment"
+        android:label="Calendar"
+        tools:layout="@layout/fragment_calendar"/>
+
+    <fragment
+        android:id="@+id/nav_emotion"
+        android:name="com.betterlife.antifragile.presentation.ui.emotion.EmotionFragment"
+        android:label="Emotion"
+        tools:layout="@layout/fragment_emotion"/>
+
+    <fragment
+        android:id="@+id/nav_content"
+        android:name="com.betterlife.antifragile.presentation.ui.content.ContentFragment"
+        android:label="Content"
+        tools:layout="@layout/fragment_content"/>
+
+    <fragment
+        android:id="@+id/nav_my_page"
+        android:name="com.betterlife.antifragile.presentation.ui.mypage.MyPageFragment"
+        android:label="MyPage"
+        tools:layout="@layout/fragment_my_page"/>
+
+</navigation>
