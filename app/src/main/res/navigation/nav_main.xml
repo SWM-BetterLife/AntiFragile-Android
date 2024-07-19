@@ -7,9 +7,19 @@
 
     <fragment
         android:id="@+id/nav_calendar"
-        android:name="com.betterlife.antifragile.presentation.ui.calendar.CalendarFragment"
+        android:name="com.betterlife.antifragile.presentation.ui.calendar.DiaryCalendarFragment"
         android:label="Calendar"
-        tools:layout="@layout/fragment_calendar"/>
+        tools:layout="@layout/fragment_diary_calendar">
+        <action
+            android:id="@+id/action_nav_calendar_to_nav_diary_create"
+            app:destination="@id/nav_diary_create" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_diary_create"
+        android:name="com.betterlife.antifragile.presentation.ui.diary.DiarySelectEmoticonFragment"
+        android:label="DiaryCreate"
+        tools:layout="@layout/fragment_diary_select_emoticon"/>
 
     <fragment
         android:id="@+id/nav_emotion"
