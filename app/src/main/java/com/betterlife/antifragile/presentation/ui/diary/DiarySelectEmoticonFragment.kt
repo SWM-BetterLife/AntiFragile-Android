@@ -23,7 +23,9 @@ class DiarySelectEmoticonFragment : BaseFragment<FragmentDiarySelectEmoticonBind
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwibWVtYmVySWQiOiI2NjkwZGQ4YTEzZjk1ZTUxZGI4MGYwNDkiLCJsb2dpblR5cGUiOiJLQUtBTyIsImF1dGhvcml0aWVzIjoiUk9MRV9VU0VSIiwiZXhwIjoxNzIxNTg4OTU2fQ.yz3MI9zoyN8hjN-HFTWU-5UeIHmPcdfyvmrALLoslIi56rKX0bC7kOp6Fu3lhwzPw7eMbAPG3EVRItO0OX-lFQ"
+        // text용 token
+        // TODO: token을 SharedPreferences 또는 안전한 저장소에 저장하여 사용(로그인할 때 처리)
+        val token = ""
         val diaryAnalysisApiService = RetrofitInterface.createDiaryAnalysisApiService(token)
         val repository = DiaryAnalysisRepository(diaryAnalysisApiService)
         val factory = DiarySelectEmoticonViewModelFactory(repository)
