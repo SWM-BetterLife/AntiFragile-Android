@@ -4,11 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.betterlife.antifragile.data.repository.DiaryAnalysisRepository
 
-class DiarySelectEmoticonViewModelFactory(private val repository: DiaryAnalysisRepository) : ViewModelProvider.Factory {
+class DiaryAnalysisViewModelFactory(private val repository: DiaryAnalysisRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(DiarySelectEmoticonVIewModel::class.java)) {
+        if (modelClass.isAssignableFrom(DiaryAnalysisViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return DiarySelectEmoticonVIewModel(repository) as T
+            return DiaryAnalysisViewModel(repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
