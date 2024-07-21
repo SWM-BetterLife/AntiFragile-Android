@@ -3,22 +3,35 @@ package com.betterlife.antifragile.data.local
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.betterlife.antifragile.data.model.diary.DiaryEntry
-import java.time.LocalDate
+import com.betterlife.antifragile.data.model.diary.QuestionDiary
+import com.betterlife.antifragile.data.model.diary.TextDiary
 
 @Dao
 interface DiaryDao {
     @Insert
-    suspend fun insert(diaryEntry: DiaryEntry)
+    fun insertTextDiary(textDiary: TextDiary): Long
 
-    // TODO: 수정 관련 메서드 추가 해서 하기
+    @Insert
+    fun insertQuestionDiary(questionDiary: QuestionDiary): Long
 
-    @Query("SELECT * FROM diary_entries WHERE id = :id")
-    suspend fun getDiaryById(id: String): DiaryEntry?
+    @Query("UPDATE text_diary SET emotionIconUrl = :url WHERE id = :id")
+    fun updateTextDiaryEmotionIcon(id: Int, url: String): Int
 
-    @Query("SELECT * FROM diary_entries WHERE date = :date")
-    suspend fun getDiaryByDate(date: LocalDate): DiaryEntry?
+    @Query("UPDATE question_diary SET emotionIconUrl = :url WHERE id = :id")
+    fun updateQuestionDiaryEmotionIcon(id: Int, url: String): Int
 
-    @Query("SELECT * FROM diary_entries WHERE date BETWEEN :startDate AND :endDate")
-    suspend fun getDiariesByMonth(startDate: LocalDate, endDate: LocalDate): List<DiaryEntry>
+    @Query("SELECT id, date, emotionIconUrl FROM text_diary WHERE date LIKE :month || '%' UNION ALL SELECT id, date, emotionIconUrl FROM question_diary WHERE date LIKE :month || '%' ORDER BY date")
+    fun getMonthlyDiaries(month: String): List<DiarySummary>
+
+    @Query("SELECT * FROM text_diary WHERE id = :id")
+    fun getTextDiaryById(id: Int): TextDiary
+
+    @Query("SELECT * FROM question_diary WHERE id = :id")
+    fun getQuestionDiaryById(id: Int): QuestionDiary
 }
+
+data class DiarySummary(
+    val id: Int,
+    val date: String,
+    val emotionIconUrl: String
+)
