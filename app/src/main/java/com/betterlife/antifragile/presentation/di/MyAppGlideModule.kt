@@ -1,4 +1,4 @@
-package com.betterlife.antifragile.app.di
+package com.betterlife.antifragile.presentation.di
 
 import android.content.Context
 import com.bumptech.glide.GlideBuilder
