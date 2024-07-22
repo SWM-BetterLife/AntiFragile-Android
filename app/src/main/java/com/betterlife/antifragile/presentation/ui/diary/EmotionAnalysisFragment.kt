@@ -80,8 +80,7 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(R.l
         ).get(DiaryViewModel::class.java)
 
         // TODO: 로그인 구현 후, preference나 다른 방법으로 token을 받아와야 함
-        val token =
-            "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwibWVtYmVySWQiOiI2NjkwZGQ4YTEzZjk1ZTUxZGI4MGYwNDkiLCJsb2dpblR5cGUiOiJLQUtBTyIsImF1dGhvcml0aWVzIjoiUk9MRV9VU0VSIiwiZXhwIjoxNzIxNzU5ODA4fQ.QJDdt1EiU0qybA2K8Qd-pH6CCa2wjLFu9QKI_gNT4ooGCRwCuh4-CdTwVLDBAIxyZjEZvKTLL061d38gB4yquQ"
+        val token = "Bearer token"
         val diaryAnalysisApiService = RetrofitInterface.createDiaryAnalysisApiService(token)
         val repository = DiaryAnalysisRepository(diaryAnalysisApiService)
         val factory = DiaryAnalysisViewModelFactory(repository)
