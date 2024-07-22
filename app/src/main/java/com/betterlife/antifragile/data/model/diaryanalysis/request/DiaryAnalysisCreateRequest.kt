@@ -9,3 +9,8 @@ data class DiaryAnalysisCreateRequest(
     val diaryDate: String,
     val emoticon: Emoticon
 )
+
+data class Emoticon(
+    val emoticonThemeId: String,
+    val emotion: String
+)

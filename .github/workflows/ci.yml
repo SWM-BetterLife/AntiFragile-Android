@@ -14,10 +14,10 @@ jobs:
     # 최소 및 최대 API 레벨 설정
     strategy:
       matrix:
-        api-level: [24, 34]
+        api-level: [26, 34]
         target: [google_apis]
         include:
-          - api-level: 24
+          - api-level: 26
             target: google_apis
           - api-level: 34
             target: google_apis
