@@ -3,8 +3,9 @@ package com.betterlife.antifragile.presentation.ui.diary
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asFlow
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.config.RetrofitInterface
@@ -19,6 +20,7 @@ import com.betterlife.antifragile.presentation.ui.diary.viewmodel.DiaryAnalysisV
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.DiaryAnalysisViewModelFactory
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.DiaryViewModel
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.DiaryViewModelFactory
+import kotlinx.coroutines.launch
 
 class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(R.layout.fragment_emotion_analysis){
 
@@ -68,6 +70,7 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(R.l
         val factory = DiaryAnalysisViewModelFactory(repository)
         diaryAnalysisViewModel =
             ViewModelProvider(this, factory).get(DiaryAnalysisViewModel::class.java)
+
     }
 
     // 로컬 db에 저장된 텍스트 일기 조회
@@ -82,27 +85,31 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(R.l
 
     // 서버 감정 분석 저장 response status 설정
     private fun setStatusDiaryAnalysisSave() {
-        diaryAnalysisViewModel.saveDiaryStatus.observe(viewLifecycleOwner, Observer { response ->
-            when (response.status) {
-                Status.SUCCESS -> {
-                    showCustomToast("일기 분석 저장 성공")
-                }
-                Status.FAIL -> {
-                    if (response.errorMessage == "이미 해당 날짜에 사용자의 일기 분석이 존재합니다") {
-                        showCustomToast("${response.errorMessage}")
-                    } else {
-                        // 추가적인 예외처리에 따라 다른 메시지를 보여줄 수 있음
+        lifecycleScope.launch {
+            diaryAnalysisViewModel.saveDiaryStatus.asFlow().collect { response ->
+                when (response.status) {
+                    Status.SUCCESS -> {
+                        showCustomToast("일기 분석 저장 성공")
+                    }
+
+                    Status.FAIL -> {
+                        if (response.errorMessage == "이미 해당 날짜에 사용자의 일기 분석이 존재합니다") {
+                            showCustomToast("${response.errorMessage}")
+                        } else {
+                            showCustomToast("일기 분석 저장 실패")
+                        }
+                    }
+
+                    Status.ERROR -> {
                         showCustomToast("일기 분석 저장 실패")
                     }
-                }
-                Status.ERROR -> {
-                    showCustomToast("일기 분석 저장 실패")
-                }
-                else -> {
-                    // do nothing
+
+                    else -> {
+                        Log.d("EmotionAnalysisFragment", "Unknown status: ${response.status}")
+                    }
                 }
             }
-        })
+        }
     }
 
     // 테스트 request 생성 함수

@@ -80,5 +80,5 @@ dependencies {
     implementation("androidx.room:room-ktx:$room_version")
 
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
-
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
 }
