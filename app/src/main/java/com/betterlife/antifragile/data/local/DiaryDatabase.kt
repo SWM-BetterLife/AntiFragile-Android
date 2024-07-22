@@ -22,4 +22,5 @@ abstract class DiaryDatabase : RoomDatabase() {
         private fun buildDatabase(context: Context) =
             Room.databaseBuilder(context, DiaryDatabase::class.java, "diary-database")
                 .build()
-    }}
+    }
+}

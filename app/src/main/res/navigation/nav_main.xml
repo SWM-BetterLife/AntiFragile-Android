@@ -37,6 +37,9 @@
             android:name="diaryId"
             app:argType="integer"
             android:defaultValue="0" />
+        <argument
+            android:name="diaryType"
+            app:argType="string" />
     </fragment>
 
     <fragment
@@ -48,6 +51,9 @@
             android:name="diaryId"
             app:argType="integer"
             android:defaultValue="0" />
+        <argument
+            android:name="diaryType"
+            app:argType="string" />
     </fragment>
 
     <fragment

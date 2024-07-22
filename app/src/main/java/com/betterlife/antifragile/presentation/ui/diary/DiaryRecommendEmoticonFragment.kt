@@ -1,6 +1,7 @@
 package com.betterlife.antifragile.presentation.ui.diary
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.betterlife.antifragile.R
@@ -17,6 +18,8 @@ class DiaryRecommendEmoticonFragment : BaseFragment<FragmentDiaryRecommendEmotic
         super.onViewCreated(view, savedInstanceState)
 
         val diaryId = getDiaryIdFromArguments()
+        val diaryType = getDiaryTypeFromArguments()
+
         setupViewModels()
 
 
@@ -28,11 +31,22 @@ class DiaryRecommendEmoticonFragment : BaseFragment<FragmentDiaryRecommendEmotic
         binding.btnSave.setOnClickListener {
             // 로컬 디비 감정티콘 업데이터
             val newEmotionIconUrl = "http://example.com/new_emotion.png"
-            diaryViewModel.updateTextDiaryEmotionIcon(diaryId, newEmotionIconUrl)
+            if (diaryType == "TEXT") {
+                diaryViewModel.updateTextDiaryEmotionIcon(diaryId, newEmotionIconUrl)
+            } else if (diaryType == "QUESTION") {
+                diaryViewModel.updateQuestionDiaryEmotionIcon(diaryId, newEmotionIconUrl)
+            } else {
+                // TODO: 에러 처리
+                Log.d("DiaryRecommendEmoticonFragment", "Unknown diary type: $diaryType")
+            }
         }
     }
 
-    private fun getDiaryIdFromArguments() = EmotionAnalysisFragmentArgs.fromBundle(requireArguments()).diaryId
+    private fun getDiaryIdFromArguments() = EmotionAnalysisFragmentArgs
+        .fromBundle(requireArguments()).diaryId
+
+    private fun getDiaryTypeFromArguments() = EmotionAnalysisFragmentArgs
+        .fromBundle(requireArguments()).diaryType
 
     private fun setupViewModels() {
         diaryViewModel = ViewModelProvider(

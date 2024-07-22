@@ -32,6 +32,7 @@ class TextDiaryCreateFragment : BaseFragment<FragmentTextDiaryCreateBinding>(R.l
             diaryViewModel.insertTextDiary(textDiary).observe(viewLifecycleOwner) { diaryId ->
                 val action =
                     TextDiaryCreateFragmentDirections.actionNavTextDiaryCreateToNavEmotionAnalysis(
+                        "TEXT",
                         diaryId.toInt()
                     )
                 findNavController().navigate(action)

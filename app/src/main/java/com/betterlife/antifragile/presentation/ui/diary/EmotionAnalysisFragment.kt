@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.config.RetrofitInterface
 import com.betterlife.antifragile.data.model.base.Status
+import com.betterlife.antifragile.data.model.diary.QuestionDiary
 import com.betterlife.antifragile.data.model.diary.TextDiary
 import com.betterlife.antifragile.data.model.diaryanalysis.request.DiaryAnalysisCreateRequest
 import com.betterlife.antifragile.data.model.diaryanalysis.request.Emoticon
@@ -27,34 +28,50 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(R.l
     private lateinit var diaryViewModel: DiaryViewModel
     private lateinit var diaryAnalysisViewModel: DiaryAnalysisViewModel
     private var textDiary: TextDiary? = null
+    private var questionDiary: QuestionDiary? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 전달 받은 diaryId 받기
         val diaryId = getDiaryIdFromArguments()
+        val diaryType = getDiaryTypeFromArguments()
 
         setupViewModels()
 
-        // 로컬 db에 저장된 텍스트 일기 조회
-        getTextDiary(diaryId)
+        // 로컬 DB에 저장된 텍스트 일기 또는 질문 일기 조회
+        if (diaryType == "TEXT") {
+            getTextDiary(diaryId)
+        } else if (diaryType == "QUESTION") {
+            getQuestionDiary(diaryId)
+        } else {
+            // TODO: 에러 처리
+            Log.d("EmotionAnalysisFragment", "Unknown diary type: $diaryType")
+        }
 
         // TODO: on-device LLM 으로 감정 분석 실시
 
+        // 서버에 감정 분석 저장 response status 설정
         setStatusDiaryAnalysisSave()
 
         binding.btnSave.setOnClickListener {
             // TODO: 이 request는 on-device LLM의 결과로 생성되어야 함
             val request = createDiaryAnalysisRequest()
+
+            // 서버에 감정 분석 저장
             diaryAnalysisViewModel.saveDiaryAnalysis(request)
 
             // 값 전달 및 Fragment 전환
-            val action = EmotionAnalysisFragmentDirections.acitonNavEmotionAnalysisToNavEmoticonRecommend(diaryId.toInt())
+            val action = EmotionAnalysisFragmentDirections
+                .acitonNavEmotionAnalysisToNavEmoticonRecommend(diaryType, diaryId)
             findNavController().navigate(action)
         }
     }
 
-    private fun getDiaryIdFromArguments() = EmotionAnalysisFragmentArgs.fromBundle(requireArguments()).diaryId
+    private fun getDiaryIdFromArguments() = EmotionAnalysisFragmentArgs
+        .fromBundle(requireArguments()).diaryId
+
+    private fun getDiaryTypeFromArguments() = EmotionAnalysisFragmentArgs
+        .fromBundle(requireArguments()).diaryType
 
     private fun setupViewModels() {
         diaryViewModel = ViewModelProvider(
@@ -79,6 +96,15 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(R.l
             retrievedDiary?.let {
                 textDiary = it
                 Log.d("EmotionAnalysisFragment", "Retrieved Diary: $textDiary")
+            }
+        }
+    }
+
+    private fun getQuestionDiary(diaryId: Int) {
+        diaryViewModel.getQuestionDiaryById(diaryId).observe(viewLifecycleOwner) { retrievedDiary ->
+            retrievedDiary?.let {
+                questionDiary = it
+                Log.d("EmotionAnalysisFragment", "Retrieved QuestionDiary: $questionDiary")
             }
         }
     }
