@@ -1,7 +1,6 @@
 package com.betterlife.antifragile.presentation.ui.calendar
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
