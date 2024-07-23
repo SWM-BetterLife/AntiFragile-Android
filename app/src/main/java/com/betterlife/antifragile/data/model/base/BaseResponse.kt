@@ -7,5 +7,5 @@ data class BaseResponse<T> (
 )
 
 enum class Status {
-    SUCCESS, FAIL, ERROR
+    SUCCESS, FAIL, ERROR, INIT
 }
