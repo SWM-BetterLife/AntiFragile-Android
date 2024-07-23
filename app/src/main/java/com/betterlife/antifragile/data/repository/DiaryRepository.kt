@@ -1,7 +1,7 @@
 package com.betterlife.antifragile.data.repository
 
 import com.betterlife.antifragile.data.local.DiaryDao
-import com.betterlife.antifragile.data.local.DiarySummary
+import com.betterlife.antifragile.data.model.diary.DiarySummary
 import com.betterlife.antifragile.data.model.diary.QuestionDiary
 import com.betterlife.antifragile.data.model.diary.TextDiary
 
@@ -24,10 +24,6 @@ class DiaryRepository(private val diaryDao: DiaryDao) {
         url: String
     ) = diaryDao.updateQuestionDiaryEmotionIcon(id, url)
 
-    fun getMonthlyDiaries(
-        month: String
-    ): List<DiarySummary> = diaryDao.getMonthlyDiaries(month)
-
     fun getTextDiaryById(
         id: Int)
     : TextDiary = diaryDao.getTextDiaryById(id)
@@ -35,4 +31,8 @@ class DiaryRepository(private val diaryDao: DiaryDao) {
     fun getQuestionDiaryById(
         id: Int
     ): QuestionDiary = diaryDao.getQuestionDiaryById(id)
+
+    fun getMonthlyDiaries(month: String): List<DiarySummary> {
+        return diaryDao.getMonthlyDiaries(month)
+    }
 }

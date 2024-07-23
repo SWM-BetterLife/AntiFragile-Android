@@ -3,6 +3,7 @@ package com.betterlife.antifragile.data.local
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import com.betterlife.antifragile.data.model.diary.DiarySummary
 import com.betterlife.antifragile.data.model.diary.QuestionDiary
 import com.betterlife.antifragile.data.model.diary.TextDiary
 
@@ -29,9 +30,3 @@ interface DiaryDao {
     @Query("SELECT * FROM question_diary WHERE id = :id")
     fun getQuestionDiaryById(id: Int): QuestionDiary
 }
-
-data class DiarySummary(
-    val id: Int,
-    val date: String,
-    val emotionIconUrl: String
-)

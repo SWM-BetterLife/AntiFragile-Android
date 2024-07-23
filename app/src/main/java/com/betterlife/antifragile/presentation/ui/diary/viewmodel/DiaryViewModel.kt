@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.betterlife.antifragile.data.local.DiaryDatabase
-import com.betterlife.antifragile.data.local.DiarySummary
+import com.betterlife.antifragile.data.model.diary.DiarySummary
 import com.betterlife.antifragile.data.model.diary.QuestionDiary
 import com.betterlife.antifragile.data.model.diary.TextDiary
 import com.betterlife.antifragile.data.repository.DiaryRepository
