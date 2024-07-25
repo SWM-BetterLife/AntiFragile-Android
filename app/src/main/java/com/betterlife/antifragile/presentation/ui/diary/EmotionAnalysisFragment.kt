@@ -58,7 +58,7 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(R.l
                     return@getQuestionDiary
                 }
                 val diaryAnalysisData = DiaryAnalysisData(
-                    emotions = listOf(questionDiary?.emotions ?: ""),
+                    emotions = questionDiary?.emotions ?: arrayListOf(),
                     event = questionDiary?.event ?: "",
                     thought = questionDiary?.thought ?: "",
                     action = questionDiary?.action ?: "",

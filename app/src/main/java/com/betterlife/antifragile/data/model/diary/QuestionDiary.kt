@@ -9,8 +9,7 @@ data class QuestionDiary(
 
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    // TODO: List로 바꾸기
-    val emotions: String,
+    val emotions: List<String>,
     val event: String,
     val thought: String,
     val action: String,

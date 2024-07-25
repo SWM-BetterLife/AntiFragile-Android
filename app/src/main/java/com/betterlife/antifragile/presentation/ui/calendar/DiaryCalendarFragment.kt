@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.config.RetrofitInterface
 import com.betterlife.antifragile.data.local.DiaryDatabase
-import com.betterlife.antifragile.data.remote.DiaryAnalysisApiService
 import com.betterlife.antifragile.data.repository.CalendarRepository
 import com.betterlife.antifragile.data.repository.DiaryAnalysisRepository
 import com.betterlife.antifragile.data.repository.DiaryRepository
