@@ -32,6 +32,8 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(R.layou
         setupListeners()
         loadCurrentMonth()
 
+        // TODO: 날짜 클릭 시 해당 일기 상세 화면으로 이동하는 로직 구현
+
         binding.btnNext.setOnClickListener {
             findNavController().navigate(R.id.action_nav_calendar_to_nav_diary_create)
         }

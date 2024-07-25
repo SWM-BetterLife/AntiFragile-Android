@@ -15,9 +15,12 @@ interface DiaryDao {
     @Insert
     fun insertQuestionDiary(questionDiary: QuestionDiary): Long
 
-    @Query("SELECT id, date FROM text_diary WHERE date LIKE :month " +
-            "|| '%' UNION ALL SELECT id, date FROM question_diary WHERE date LIKE :month " +
-            "|| '%' ORDER BY date")
+    @Query("""
+        SELECT id, date, 'TEXT' AS diaryType FROM text_diary WHERE date LIKE :month || '%'
+        UNION ALL
+        SELECT id, date, 'QUESTION' AS diaryType FROM question_diary WHERE date LIKE :month || '%'
+        ORDER BY date
+    """)
     fun getMonthlyDiaries(month: String): List<DiarySummary>
 
     @Query("SELECT * FROM text_diary WHERE id = :id")
