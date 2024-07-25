@@ -5,12 +5,14 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "question_diary")
 data class QuestionDiary(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val answer1: String,
-    val answer2: String,
-    val answer3: String,
-    val answer4: String,
-    val answer5: String,
+
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    // TODO: List로 바꾸기
+    val emotions: String,
+    val event: String,
+    val thought: String,
+    val action: String,
+    val comment: String,
     val date: String,
-    val emotionIconUrl: String?
 )

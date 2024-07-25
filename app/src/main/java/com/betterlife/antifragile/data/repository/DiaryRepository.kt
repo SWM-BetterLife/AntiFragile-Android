@@ -14,16 +14,6 @@ class DiaryRepository(private val diaryDao: DiaryDao) {
         questionDiary: QuestionDiary
     ): Long = diaryDao.insertQuestionDiary(questionDiary)
 
-    fun updateTextDiaryEmotionIcon(
-        id: Int,
-        url: String
-    ) = diaryDao.updateTextDiaryEmotionIcon(id, url)
-
-    fun updateQuestionDiaryEmotionIcon(
-        id: Int,
-        url: String
-    ) = diaryDao.updateQuestionDiaryEmotionIcon(id, url)
-
     fun getTextDiaryById(
         id: Int)
     : TextDiary = diaryDao.getTextDiaryById(id)
@@ -32,7 +22,7 @@ class DiaryRepository(private val diaryDao: DiaryDao) {
         id: Int
     ): QuestionDiary = diaryDao.getQuestionDiaryById(id)
 
-    fun getMonthlyDiaries(month: String): List<DiarySummary> {
-        return diaryDao.getMonthlyDiaries(month)
-    }
+    fun getMonthlyDiaries(
+        month: String
+    ): List<DiarySummary> = diaryDao.getMonthlyDiaries(month)
 }

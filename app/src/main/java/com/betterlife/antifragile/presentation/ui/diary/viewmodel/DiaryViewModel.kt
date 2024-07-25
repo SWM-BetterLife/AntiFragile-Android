@@ -46,18 +46,6 @@ class DiaryViewModel(application: Application) : AndroidViewModel(application) {
         emit(diaryId)
     }
 
-    fun updateTextDiaryEmotionIcon(id: Int, url: String) = viewModelScope.launch {
-        withContext(Dispatchers.IO) {
-            repository.updateTextDiaryEmotionIcon(id, url)
-        }
-    }
-
-    fun updateQuestionDiaryEmotionIcon(id: Int, url: String) = viewModelScope.launch {
-        withContext(Dispatchers.IO) {
-            repository.updateQuestionDiaryEmotionIcon(id, url)
-        }
-    }
-
     fun getTextDiaryById(id: Int): LiveData<TextDiary> = liveData {
         val diary = withContext(Dispatchers.IO) {
             repository.getTextDiaryById(id)

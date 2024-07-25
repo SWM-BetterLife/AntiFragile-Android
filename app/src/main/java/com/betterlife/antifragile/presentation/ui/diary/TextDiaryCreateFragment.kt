@@ -24,8 +24,7 @@ class TextDiaryCreateFragment : BaseFragment<FragmentTextDiaryCreateBinding>(R.l
             // TODO: 사용자가 입력한 값으로 대체
             val textDiary = TextDiary(
                 content = "임시 내용",
-                date = "2024-07-21",
-                emotionIconUrl = null
+                date = "2024-07-23",
             )
 
             // 텍스트 일기 삽입 및 ID 반환

@@ -15,13 +15,9 @@ interface DiaryDao {
     @Insert
     fun insertQuestionDiary(questionDiary: QuestionDiary): Long
 
-    @Query("UPDATE text_diary SET emotionIconUrl = :url WHERE id = :id")
-    fun updateTextDiaryEmotionIcon(id: Int, url: String): Int
-
-    @Query("UPDATE question_diary SET emotionIconUrl = :url WHERE id = :id")
-    fun updateQuestionDiaryEmotionIcon(id: Int, url: String): Int
-
-    @Query("SELECT id, date, emotionIconUrl FROM text_diary WHERE date LIKE :month || '%' UNION ALL SELECT id, date, emotionIconUrl FROM question_diary WHERE date LIKE :month || '%' ORDER BY date")
+    @Query("SELECT id, date FROM text_diary WHERE date LIKE :month " +
+            "|| '%' UNION ALL SELECT id, date FROM question_diary WHERE date LIKE :month " +
+            "|| '%' ORDER BY date")
     fun getMonthlyDiaries(month: String): List<DiarySummary>
 
     @Query("SELECT * FROM text_diary WHERE id = :id")
