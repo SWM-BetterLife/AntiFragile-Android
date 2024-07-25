@@ -40,11 +40,14 @@ class DiaryCalendarAdapter(private val onDateClick: (CalendarDateModel) -> Unit)
             binding.tvDay.text = day
             binding.root.alpha = if (calendarDateModel.isCurrentMonth) 1f else 0.3f
 
-            // 감정 아이콘 표시
             if (calendarDateModel.isCurrentMonth) {
-                Glide.with(binding.root.context)
-                    .load(calendarDateModel.emotionIconUrl ?: R.drawable.emoticon_blank)
-                    .into(binding.ivEmoticon)
+                if (calendarDateModel.emoticonUrl == null) {
+                    binding.ivEmoticon.setImageResource(R.drawable.emoticon_blank)
+                } else {
+                    Glide.with(binding.root.context)
+                        .load(calendarDateModel.emoticonUrl)
+                        .into(binding.ivEmoticon)
+                }
                 binding.ivEmoticon.visibility = View.VISIBLE
             } else {
                 binding.ivEmoticon.visibility = View.GONE

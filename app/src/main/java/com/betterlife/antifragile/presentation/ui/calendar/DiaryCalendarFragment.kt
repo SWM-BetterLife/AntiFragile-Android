@@ -6,8 +6,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.betterlife.antifragile.R
+import com.betterlife.antifragile.config.RetrofitInterface
 import com.betterlife.antifragile.data.local.DiaryDatabase
+import com.betterlife.antifragile.data.remote.DiaryAnalysisApiService
 import com.betterlife.antifragile.data.repository.CalendarRepository
+import com.betterlife.antifragile.data.repository.DiaryAnalysisRepository
 import com.betterlife.antifragile.data.repository.DiaryRepository
 import com.betterlife.antifragile.databinding.FragmentDiaryCalendarBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
@@ -37,7 +40,13 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(R.layou
     private fun setupViewModel() {
         val diaryDao = DiaryDatabase.getDatabase(requireContext()).diaryDao()
         val diaryRepository = DiaryRepository(diaryDao)
-        val calendarRepository = CalendarRepository(diaryRepository)
+
+        // TODO: 로그인 구현 후, preference나 다른 방법으로 token을 받아와야 함
+        val token = "Bearer token"
+        val diaryAnalysisApiService = RetrofitInterface.createDiaryAnalysisApiService(token)
+        val diaryAnalysisRepository = DiaryAnalysisRepository(diaryAnalysisApiService)
+
+        val calendarRepository = CalendarRepository(diaryRepository, diaryAnalysisRepository)
         val factory = DiaryCalendarViewModelFactory(calendarRepository, diaryRepository)
         diaryCalendarViewModel = ViewModelProvider(this, factory)[DiaryCalendarViewModel::class.java]
     }
