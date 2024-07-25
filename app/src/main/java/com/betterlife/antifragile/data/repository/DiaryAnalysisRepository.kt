@@ -12,4 +12,6 @@ class DiaryAnalysisRepository(private val diaryAnalysisApiService: DiaryAnalysis
     suspend fun saveDiaryAnalysis(request: DiaryAnalysisCreateRequest): BaseResponse<Any?> {
         return diaryAnalysisApiService.saveDiaryAnalysis(request)
     }
+
+    // TODO: 월별 감정티콘 조회 API 호출
 }

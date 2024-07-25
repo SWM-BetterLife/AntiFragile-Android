@@ -1,11 +1,15 @@
 package com.betterlife.antifragile.data.repository
 
+import android.annotation.SuppressLint
 import com.betterlife.antifragile.data.model.calendar.CalendarDateModel
 import com.betterlife.antifragile.data.model.diary.DiarySummary
+import com.betterlife.antifragile.data.model.diaryanalysis.response.DiaryEmoticon
 import java.util.Calendar
 
-class CalendarRepository(private val diaryRepository: DiaryRepository) {
-    suspend fun getCalendarDates(year: Int, month: Int): List<CalendarDateModel> {
+class CalendarRepository(private val diaryRepository: DiaryRepository,
+                         private val diaryAnalysisRepository: DiaryAnalysisRepository) {
+
+    fun getCalendarDates(year: Int, month: Int): List<CalendarDateModel> {
         val calendar = Calendar.getInstance()
         calendar.set(year, month - 1, 1)
 
@@ -34,22 +38,34 @@ class CalendarRepository(private val diaryRepository: DiaryRepository) {
 
         // 해당 월의 일기 데이터 가져오기
         val diaries = getMonthlyDiaries(year, month)
+        val emoticons = getMonthlyEmoticons(year, month)
 
         // 일기 데이터와 날짜 데이터 매칭
         return dates.map { date ->
             val diary = diaries.find { it.date == date.date }
+            val emoticon = emoticons.find { it.date == date.date }
             date.copy(
-                emotionIconUrl = diary?.emotionIconUrl,
-                diaryId = diary?.id  // 일기 ID 추가
+                emoticonUrl = emoticon?.emoticonUrl,
+                diaryId = diary?.id
             )
         }
     }
 
-    suspend fun getMonthlyDiaries(year: Int, month: Int): List<DiarySummary> {
+    @SuppressLint("DefaultLocale")
+    fun getMonthlyDiaries(year: Int, month: Int): List<DiarySummary> {
         val monthString = String.format("%04d-%02d", year, month)
         return diaryRepository.getMonthlyDiaries(monthString)
     }
 
+    @SuppressLint("DefaultLocale")
+    fun getMonthlyEmoticons(year: Int, month: Int): List<DiaryEmoticon> {
+        val monthString = String.format("%04d-%02d", year, month)
+        // TODO: 월별 이모티콘 조회 api로 데이터 가져오기
+        // return diaryAnalysisApiService.getMonthlyEmoticons(year, month)
+        return arrayListOf() // 임시로 빈 리스트 반환
+    }
+
+    @SuppressLint("DefaultLocale")
     private fun formatDate(calendar: Calendar): String {
         return String.format(
             "%04d-%02d-%02d",
