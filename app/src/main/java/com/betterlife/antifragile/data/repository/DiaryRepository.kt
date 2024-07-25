@@ -6,13 +6,28 @@ import com.betterlife.antifragile.data.model.diary.QuestionDiary
 import com.betterlife.antifragile.data.model.diary.TextDiary
 
 class DiaryRepository(private val diaryDao: DiaryDao) {
-    fun insertTextDiary(
-        textDiary: TextDiary
-    ): Long = diaryDao.insertTextDiary(textDiary)
 
-    fun insertQuestionDiary(
-        questionDiary: QuestionDiary
-    ): Long = diaryDao.insertQuestionDiary(questionDiary)
+    fun insertTextDiary(textDiary: TextDiary): Long {
+        val textDiaryCount = diaryDao.countTextDiariesByDate(textDiary.date)
+        val questionDiaryCount = diaryDao.countQuestionDiariesByDate(textDiary.date)
+
+        return if (textDiaryCount == 0 && questionDiaryCount == 0) {
+            diaryDao.insertTextDiary(textDiary)
+        } else {
+            -1
+        }
+    }
+
+    fun insertQuestionDiary(questionDiary: QuestionDiary): Long {
+        val textDiaryCount = diaryDao.countTextDiariesByDate(questionDiary.date)
+        val questionDiaryCount = diaryDao.countQuestionDiariesByDate(questionDiary.date)
+
+        return if (textDiaryCount == 0 && questionDiaryCount == 0) {
+            diaryDao.insertQuestionDiary(questionDiary)
+        } else {
+            -1
+        }
+    }
 
     fun getTextDiaryById(
         id: Int)

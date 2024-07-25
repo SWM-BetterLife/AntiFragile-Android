@@ -1,9 +1,10 @@
 package com.betterlife.antifragile.data.model.diary
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "question_diary")
+@Entity(tableName = "question_diary", indices = [Index(value = ["date"], unique = true)])
 data class QuestionDiary(
 
     @PrimaryKey(autoGenerate = true)
