@@ -18,8 +18,8 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setGoogleButtonText(binding.googleLoginButton, "Google 로그인")
-        binding.googleLoginButton.setOnClickListener { startGoogleLogin() }
+        setGoogleButtonText(binding.btnGoogleLogin, "Google 로그인")
+        binding.btnGoogleLogin.setOnClickListener { startGoogleLogin() }
     }
 
     private fun setGoogleButtonText(loginButton: SignInButton, buttonText: String) {
