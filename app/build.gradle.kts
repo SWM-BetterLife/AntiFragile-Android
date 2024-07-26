@@ -82,4 +82,6 @@ dependencies {
 
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
+
+    implementation ("com.google.android.gms:play-services-auth:20.2.0")
 }
