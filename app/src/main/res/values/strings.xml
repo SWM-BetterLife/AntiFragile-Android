@@ -4,4 +4,10 @@
     <string name="bottom_nav_emotion">내 감정</string>
     <string name="bottom_nav_content">내 콘텐츠</string>
     <string name="bottom_nav_my_page">마이페이지</string>
+    <string name="antirfagile_logo">antirfagile 로고</string>
+    <string name="naver_login">Naver 로그인</string>
+    <string name="kakao_login">Kakao 로그인</string>
+    <string name="google_login">Google 로그인</string>
+    <string name="app_description">맞춤형 멘탈 케어 서비스</string>
+
 </resources>

@@ -3,19 +3,33 @@ package com.betterlife.antifragile.presentation.ui.login
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.widget.Button
+import android.view.Gravity
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.betterlife.antifragile.R
+import com.betterlife.antifragile.databinding.ActivityLoginBinding
+import com.google.android.gms.common.SignInButton
 
 class LoginActivity : AppCompatActivity() {
-    private lateinit var googleLoginButton: Button
+    private lateinit var binding: ActivityLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
 
-        googleLoginButton = findViewById(R.id.googleLoginButton)
-        googleLoginButton.setOnClickListener { startGoogleLogin() }
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        setGoogleButtonText(binding.googleLoginButton, "Google 로그인")
+        binding.googleLoginButton.setOnClickListener { startGoogleLogin() }
+    }
+
+    private fun setGoogleButtonText(loginButton: SignInButton, buttonText: String) {
+        for (i in 0 until loginButton.childCount) {
+            (loginButton.getChildAt(i) as? TextView)?.apply {
+                text = buttonText
+                gravity = Gravity.CENTER
+                return
+            }
+        }
     }
 
     private fun startGoogleLogin() {
@@ -23,4 +37,5 @@ class LoginActivity : AppCompatActivity() {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         startActivity(intent)
     }
+
 }
