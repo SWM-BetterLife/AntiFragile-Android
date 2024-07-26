@@ -2,6 +2,7 @@ package com.betterlife.antifragile.data.repository
 
 import com.betterlife.antifragile.data.model.base.BaseResponse
 import com.betterlife.antifragile.data.model.diaryanalysis.request.DiaryAnalysisCreateRequest
+import com.betterlife.antifragile.data.model.diaryanalysis.response.DiaryAnalysisEmoticonsResponse
 import com.betterlife.antifragile.data.remote.DiaryAnalysisApiService
 
 /*
@@ -13,5 +14,7 @@ class DiaryAnalysisRepository(private val diaryAnalysisApiService: DiaryAnalysis
         return diaryAnalysisApiService.saveDiaryAnalysis(request)
     }
 
-    // TODO: 월별 감정티콘 조회 API 호출
+    suspend fun getMonthlyEmoticons(yearMonth: String): BaseResponse<DiaryAnalysisEmoticonsResponse> {
+        return diaryAnalysisApiService.getMonthlyEmoticons(yearMonth)
+    }
 }

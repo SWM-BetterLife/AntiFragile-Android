@@ -1,10 +1,10 @@
 package com.betterlife.antifragile.data.model.diaryanalysis.response
 
 data class DiaryAnalysisEmoticonsResponse(
-    val diaries: List<DiaryEmoticon>
+    val emoticons: List<DiaryEmoticon>
 )
 
 data class DiaryEmoticon(
-    val emoticonUrl: String,
-    val date: String
+    val imgUrl: String,
+    val diaryDate: String
 )
