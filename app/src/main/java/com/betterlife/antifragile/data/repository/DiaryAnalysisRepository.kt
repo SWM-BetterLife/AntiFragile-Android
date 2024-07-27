@@ -2,7 +2,6 @@ package com.betterlife.antifragile.data.repository
 
 import com.betterlife.antifragile.data.model.base.BaseResponse
 import com.betterlife.antifragile.data.model.diaryanalysis.request.DiaryAnalysisCreateRequest
-import com.betterlife.antifragile.data.model.diaryanalysis.response.DiaryAnalysisEmoticonsResponse
 import com.betterlife.antifragile.data.remote.DiaryAnalysisApiService
 
 /*
@@ -12,9 +11,5 @@ class DiaryAnalysisRepository(private val diaryAnalysisApiService: DiaryAnalysis
 
     suspend fun saveDiaryAnalysis(request: DiaryAnalysisCreateRequest): BaseResponse<Any?> {
         return diaryAnalysisApiService.saveDiaryAnalysis(request)
-    }
-
-    suspend fun getMonthlyEmoticons(yearMonth: String): BaseResponse<DiaryAnalysisEmoticonsResponse> {
-        return diaryAnalysisApiService.getMonthlyEmoticons(yearMonth)
     }
 }

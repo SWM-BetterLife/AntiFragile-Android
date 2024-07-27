@@ -1,68 +1,89 @@
 package com.betterlife.antifragile.data.repository
 
 import android.annotation.SuppressLint
+import com.betterlife.antifragile.data.local.DiaryDao
+import com.betterlife.antifragile.data.model.base.BaseResponse
+import com.betterlife.antifragile.data.model.base.Status
 import com.betterlife.antifragile.data.model.calendar.CalendarDateModel
 import com.betterlife.antifragile.data.model.diary.DiarySummary
-import com.betterlife.antifragile.data.model.diaryanalysis.response.DiaryEmoticon
+import com.betterlife.antifragile.data.model.diaryanalysis.response.DiaryAnalysisEmoticonsResponse
+import com.betterlife.antifragile.data.remote.DiaryAnalysisApiService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.Calendar
 
-class CalendarRepository(private val diaryRepository: DiaryRepository,
-                         private val diaryAnalysisRepository: DiaryAnalysisRepository) {
+class CalendarRepository(
+    private val diaryDao: DiaryDao,
+    private val diaryAnalysisApiService: DiaryAnalysisApiService
+) {
 
-    fun getCalendarDates(year: Int, month: Int): List<CalendarDateModel> {
-        val calendar = Calendar.getInstance()
-        calendar.set(year, month - 1, 1)
 
-        val dates = mutableListOf<CalendarDateModel>()
-        val daysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-        val firstDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1
+    suspend fun getCalendarDates(year: Int, month: Int): BaseResponse<List<CalendarDateModel>> = withContext(Dispatchers.IO) {
+        return@withContext try {
+            val calendar = Calendar.getInstance()
+            calendar.set(year, month - 1, 1)
 
-        // 이전 달의 날짜 추가
-        for (i in 0 until firstDayOfWeek) {
-            calendar.add(Calendar.DAY_OF_MONTH, -1)
-            dates.add(0, CalendarDateModel(formatDate(calendar), false))
-        }
+            val dates = mutableListOf<CalendarDateModel>()
+            val daysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+            val firstDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1
 
-        // 현재 달의 날짜 추가
-        calendar.set(year, month - 1, 1)
-        for (i in 1..daysInMonth) {
-            dates.add(CalendarDateModel(formatDate(calendar), true))
-            calendar.add(Calendar.DAY_OF_MONTH, 1)
-        }
+            for (i in 0 until firstDayOfWeek) {
+                calendar.add(Calendar.DAY_OF_MONTH, -1)
+                dates.add(0, CalendarDateModel(formatDate(calendar), false))
+            }
 
-        // 다음 달의 날짜 추가
-        while (dates.size < 42) {
-            dates.add(CalendarDateModel(formatDate(calendar), false))
-            calendar.add(Calendar.DAY_OF_MONTH, 1)
-        }
+            calendar.set(year, month - 1, 1)
+            for (i in 1..daysInMonth) {
+                dates.add(CalendarDateModel(formatDate(calendar), true))
+                calendar.add(Calendar.DAY_OF_MONTH, 1)
+            }
 
-        // 해당 월의 일기 데이터 가져오기
-        val diaries = getMonthlyDiaries(year, month)
-        val emoticons = getMonthlyEmoticons(year, month)
+            while (dates.size < 42) {
+                dates.add(CalendarDateModel(formatDate(calendar), false))
+                calendar.add(Calendar.DAY_OF_MONTH, 1)
+            }
 
-        // 일기 데이터와 날짜 데이터 매칭
-        return dates.map { date ->
-            val diary = diaries.find { it.date == date.date }
-            val emoticon = emoticons.find { it.date == date.date }
-            date.copy(
-                emoticonUrl = emoticon?.emoticonUrl,
-                diaryId = diary?.id
-            )
+            val diaries = getMonthlyDiaries(year, month)
+            val emoticonsResponse = getMonthlyEmoticons(year, month)
+
+            val emoticons = if (emoticonsResponse.status == Status.SUCCESS) {
+                emoticonsResponse.data?.emoticons ?: emptyList()
+            } else {
+                emptyList()
+            }
+
+            val calendarDates = dates.map { date ->
+                val diary = diaries.find { it.date == date.date }
+                val emoticon = emoticons.find { it.diaryDate == date.date }
+                date.copy(
+                    emoticonUrl = emoticon?.imgUrl,
+                    diaryId = diary?.id
+                )
+            }
+
+            if (emoticonsResponse.status == Status.FAIL) {
+                BaseResponse(Status.FAIL, emoticonsResponse.errorMessage, calendarDates)
+            } else {
+                BaseResponse(Status.SUCCESS, null, calendarDates)
+            }        } catch (e: Exception) {
+            BaseResponse(Status.ERROR, e.message, null)
         }
     }
 
     @SuppressLint("DefaultLocale")
     fun getMonthlyDiaries(year: Int, month: Int): List<DiarySummary> {
         val monthString = String.format("%04d-%02d", year, month)
-        return diaryRepository.getMonthlyDiaries(monthString)
+        return diaryDao.getMonthlyDiaries(monthString)
     }
 
     @SuppressLint("DefaultLocale")
-    fun getMonthlyEmoticons(year: Int, month: Int): List<DiaryEmoticon> {
+    private suspend fun getMonthlyEmoticons(year: Int, month: Int): BaseResponse<DiaryAnalysisEmoticonsResponse> {
         val monthString = String.format("%04d-%02d", year, month)
-        // TODO: 월별 이모티콘 조회 api로 데이터 가져오기
-        // return diaryAnalysisApiService.getMonthlyEmoticons(year, month)
-        return arrayListOf() // 임시로 빈 리스트 반환
+        return try {
+            diaryAnalysisApiService.getMonthlyEmoticons(monthString)
+        } catch (e: Exception) {
+            BaseResponse(Status.ERROR, e.message, null)
+        }
     }
 
     @SuppressLint("DefaultLocale")

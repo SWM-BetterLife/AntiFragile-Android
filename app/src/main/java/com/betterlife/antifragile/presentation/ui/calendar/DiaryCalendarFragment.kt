@@ -1,6 +1,7 @@
 package com.betterlife.antifragile.presentation.ui.calendar
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -8,16 +9,18 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.config.RetrofitInterface
 import com.betterlife.antifragile.data.local.DiaryDatabase
+import com.betterlife.antifragile.data.model.base.Status
 import com.betterlife.antifragile.data.repository.CalendarRepository
-import com.betterlife.antifragile.data.repository.DiaryAnalysisRepository
-import com.betterlife.antifragile.data.repository.DiaryRepository
 import com.betterlife.antifragile.databinding.FragmentDiaryCalendarBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.calendar.viewmodel.DiaryCalendarViewModel
 import com.betterlife.antifragile.presentation.ui.calendar.viewmodel.DiaryCalendarViewModelFactory
+import com.betterlife.antifragile.presentation.util.Constants
 import java.util.Calendar
 
-class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(R.layout.fragment_diary_calendar) {
+class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
+    R.layout.fragment_diary_calendar
+) {
 
     private lateinit var diaryCalendarViewModel: DiaryCalendarViewModel
     private lateinit var diaryCalendarAdapter: DiaryCalendarAdapter
@@ -40,15 +43,13 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(R.layou
 
     private fun setupViewModel() {
         val diaryDao = DiaryDatabase.getDatabase(requireContext()).diaryDao()
-        val diaryRepository = DiaryRepository(diaryDao)
 
         // TODO: 로그인 구현 후, preference나 다른 방법으로 token을 받아와야 함
-        val token = "Bearer token"
+        val token = Constants.TOKEN
         val diaryAnalysisApiService = RetrofitInterface.createDiaryAnalysisApiService(token)
-        val diaryAnalysisRepository = DiaryAnalysisRepository(diaryAnalysisApiService)
 
-        val calendarRepository = CalendarRepository(diaryRepository, diaryAnalysisRepository)
-        val factory = DiaryCalendarViewModelFactory(calendarRepository, diaryRepository)
+        val calendarRepository = CalendarRepository(diaryDao, diaryAnalysisApiService)
+        val factory = DiaryCalendarViewModelFactory(calendarRepository)
         diaryCalendarViewModel = ViewModelProvider(this, factory)[DiaryCalendarViewModel::class.java]
     }
 
@@ -72,6 +73,8 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(R.layou
         diaryCalendarViewModel.currentYearMonth.observe(viewLifecycleOwner) { (year, month) ->
             binding.tvMonthYear.text = String.format("%d.%d", year, month)
         }
+
+
     }
 
     private fun setupListeners() {
@@ -81,6 +84,33 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(R.layou
 
         binding.btnNextMonth.setOnClickListener {
             diaryCalendarViewModel.moveToNextMonth()
+        }
+
+        diaryCalendarViewModel.apiStatus.observe(viewLifecycleOwner) { status ->
+            when (status) {
+                Status.LOADING -> {
+                    showLoading(requireContext())
+                }
+                Status.SUCCESS -> {
+                    dismissLoading()
+                }
+                Status.FAIL -> {
+                    dismissLoading()
+                    diaryCalendarViewModel.
+                    errorMessage.value?.let { message ->
+                        showCustomToast(message)
+                    }
+                }
+                Status.ERROR -> {
+                    dismissLoading()
+                    diaryCalendarViewModel.errorMessage.value?.let { message ->
+                        showCustomToast(message)
+                    }
+                }
+                else -> {
+                    Log.d("EmotionAnalysisFragment", "Unknown status: ${status}")
+                }
+            }
         }
     }
 

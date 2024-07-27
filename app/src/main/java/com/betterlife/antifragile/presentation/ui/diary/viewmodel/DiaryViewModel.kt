@@ -3,16 +3,12 @@ package com.betterlife.antifragile.presentation.ui.diary.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
-import androidx.lifecycle.viewModelScope
 import com.betterlife.antifragile.data.local.DiaryDatabase
-import com.betterlife.antifragile.data.model.diary.DiarySummary
 import com.betterlife.antifragile.data.model.diary.QuestionDiary
 import com.betterlife.antifragile.data.model.diary.TextDiary
 import com.betterlife.antifragile.data.repository.DiaryRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class DiaryViewModel(application: Application) : AndroidViewModel(application) {
@@ -20,16 +16,6 @@ class DiaryViewModel(application: Application) : AndroidViewModel(application) {
     init {
         val diaryDao = DiaryDatabase.getDatabase(application).diaryDao()
         repository = DiaryRepository(diaryDao)
-    }
-
-    private val _monthlyDiaries = MutableLiveData<List<DiarySummary>>()
-    val monthlyDiaries: LiveData<List<DiarySummary>> = _monthlyDiaries
-
-    fun loadMonthlyDiaries(month: String) = viewModelScope.launch {
-        val diaries = withContext(Dispatchers.IO) {
-            repository.getMonthlyDiaries(month)
-        }
-        _monthlyDiaries.value = diaries
     }
 
     fun insertTextDiary(textDiary: TextDiary): LiveData<Long> = liveData {

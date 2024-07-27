@@ -1,13 +1,12 @@
 package com.betterlife.antifragile.data.repository
 
 import com.betterlife.antifragile.data.local.DiaryDao
-import com.betterlife.antifragile.data.model.diary.DiarySummary
 import com.betterlife.antifragile.data.model.diary.QuestionDiary
 import com.betterlife.antifragile.data.model.diary.TextDiary
 
 class DiaryRepository(private val diaryDao: DiaryDao) {
 
-    fun insertTextDiary(textDiary: TextDiary): Long {
+    suspend fun insertTextDiary(textDiary: TextDiary): Long {
         val textDiaryCount = diaryDao.countTextDiariesByDate(textDiary.date)
         val questionDiaryCount = diaryDao.countQuestionDiariesByDate(textDiary.date)
 
@@ -18,7 +17,7 @@ class DiaryRepository(private val diaryDao: DiaryDao) {
         }
     }
 
-    fun insertQuestionDiary(questionDiary: QuestionDiary): Long {
+    suspend fun insertQuestionDiary(questionDiary: QuestionDiary): Long {
         val textDiaryCount = diaryDao.countTextDiariesByDate(questionDiary.date)
         val questionDiaryCount = diaryDao.countQuestionDiariesByDate(questionDiary.date)
 
@@ -36,8 +35,4 @@ class DiaryRepository(private val diaryDao: DiaryDao) {
     fun getQuestionDiaryById(
         id: Int
     ): QuestionDiary = diaryDao.getQuestionDiaryById(id)
-
-    fun getMonthlyDiaries(
-        month: String
-    ): List<DiarySummary> = diaryDao.getMonthlyDiaries(month)
 }

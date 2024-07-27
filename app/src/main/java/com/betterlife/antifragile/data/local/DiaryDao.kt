@@ -12,10 +12,10 @@ import com.betterlife.antifragile.data.model.diary.TextDiary
 interface DiaryDao {
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    fun insertTextDiary(textDiary: TextDiary): Long
+    suspend fun insertTextDiary(textDiary: TextDiary): Long
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    fun insertQuestionDiary(questionDiary: QuestionDiary): Long
+    suspend fun insertQuestionDiary(questionDiary: QuestionDiary): Long
 
     @Query("""
         SELECT id, date, 'TEXT' AS diaryType FROM text_diary WHERE date LIKE :month || '%'

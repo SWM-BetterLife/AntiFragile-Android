@@ -8,7 +8,7 @@ import androidx.room.TypeConverters
 import com.betterlife.antifragile.data.model.diary.QuestionDiary
 import com.betterlife.antifragile.data.model.diary.TextDiary
 
-@Database(entities = [TextDiary::class, QuestionDiary::class], version = 1)
+@Database(entities = [TextDiary::class, QuestionDiary::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class DiaryDatabase : RoomDatabase() {
     abstract fun diaryDao(): DiaryDao

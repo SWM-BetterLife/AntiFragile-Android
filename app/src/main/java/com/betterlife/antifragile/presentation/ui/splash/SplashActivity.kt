@@ -6,7 +6,6 @@ import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import com.betterlife.antifragile.R
-import com.betterlife.antifragile.presentation.ui.login.LoginActivity
 import com.betterlife.antifragile.presentation.ui.main.MainActivity
 
 class SplashActivity : AppCompatActivity() {
