@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.config.RetrofitInterface
 import com.betterlife.antifragile.data.model.base.Status
+import com.betterlife.antifragile.data.model.common.Emotion
 import com.betterlife.antifragile.data.model.diary.llm.DiaryAnalysisData
 import com.betterlife.antifragile.data.model.diaryanalysis.request.DiaryAnalysisCreateRequest
 import com.betterlife.antifragile.data.model.diaryanalysis.request.Emoticon
@@ -17,6 +18,7 @@ import com.betterlife.antifragile.databinding.FragmentDiaryRecommendEmoticonBind
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.DiaryAnalysisViewModel
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.DiaryAnalysisViewModelFactory
+import com.betterlife.antifragile.presentation.util.Constants
 import kotlinx.coroutines.launch
 
 class DiaryRecommendEmoticonFragment : BaseFragment<FragmentDiaryRecommendEmoticonBinding>(R.layout.fragment_diary_recommend_emoticon) {
@@ -43,7 +45,7 @@ class DiaryRecommendEmoticonFragment : BaseFragment<FragmentDiaryRecommendEmotic
             // TODO: 선택한 감정티콘으로 변경
             val emoticon = Emoticon(
                 emoticonThemeId = "감정티콘 테마 id",
-                emotion = "감정"
+                emotion = Emotion.JOY.name
             )
             val request = createDiaryAnalysisRequest(diaryAnalysisData, emoticon)
             // 서버에 감정 분석 저장
@@ -56,7 +58,7 @@ class DiaryRecommendEmoticonFragment : BaseFragment<FragmentDiaryRecommendEmotic
 
     private fun setupViewModels() {
         // TODO: 로그인 구현 후, preference나 다른 방법으로 token을 받아와야 함
-        val token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwibWVtYmVySWQiOiI2NjkwZGQ4YTEzZjk1ZTUxZGI4MGYwNDkiLCJsb2dpblR5cGUiOiJLQUtBTyIsImF1dGhvcml0aWVzIjoiUk9MRV9VU0VSIiwiZXhwIjoxNzIyMDUxMDg1fQ.FKYyHSFfLmQD4BnRNuYF1tcth5zwVS18hxwgH3QA4GfGSfP5uf0lLrJb5PKRYLU5txzxxlVvgqNxmAGYW2LlNw"
+        val token = Constants.TOKEN
         val diaryAnalysisApiService = RetrofitInterface.createDiaryAnalysisApiService(token)
         val repository = DiaryAnalysisRepository(diaryAnalysisApiService)
         val factory = DiaryAnalysisViewModelFactory(repository)
@@ -104,7 +106,6 @@ class DiaryRecommendEmoticonFragment : BaseFragment<FragmentDiaryRecommendEmotic
             thought = diaryAnalysisData.thought,
             action = diaryAnalysisData.action,
             comment = diaryAnalysisData.comment,
-            diaryDate = diaryAnalysisData.diaryDate,
             emoticon = emoticon
         )
     }
