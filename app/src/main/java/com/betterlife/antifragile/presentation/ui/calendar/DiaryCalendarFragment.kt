@@ -66,15 +66,35 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
     }
 
     private fun setupObservers() {
-        diaryCalendarViewModel.calendarDates.observe(viewLifecycleOwner) { dates ->
-            diaryCalendarAdapter.setDates(dates)
+        diaryCalendarViewModel.calendarResponse.observe(viewLifecycleOwner) { response ->
+            when (response.status) {
+                Status.LOADING -> {
+                    showLoading(requireContext())
+                }
+
+                Status.SUCCESS -> {
+                    dismissLoading()
+                    response.data?.let { dates ->
+                        diaryCalendarAdapter.setDates(dates)
+                    }
+                }
+
+                Status.FAIL, Status.ERROR -> {
+                    dismissLoading()
+                    response.data?.let { dates ->
+                        diaryCalendarAdapter.setDates(dates)
+                    }
+                    showCustomToast(response.errorMessage ?: "An error occurred")
+                }
+
+                else -> {
+                    Log.d("DiaryCalendarFragment", "Unknown status: ${response.status}")
+                }
+            }
+            diaryCalendarViewModel.currentYearMonth.observe(viewLifecycleOwner) { (year, month) ->
+                binding.tvMonthYear.text = String.format("%d.%d", year, month)
+            }
         }
-
-        diaryCalendarViewModel.currentYearMonth.observe(viewLifecycleOwner) { (year, month) ->
-            binding.tvMonthYear.text = String.format("%d.%d", year, month)
-        }
-
-
     }
 
     private fun setupListeners() {
@@ -84,33 +104,6 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
 
         binding.btnNextMonth.setOnClickListener {
             diaryCalendarViewModel.moveToNextMonth()
-        }
-
-        diaryCalendarViewModel.apiStatus.observe(viewLifecycleOwner) { status ->
-            when (status) {
-                Status.LOADING -> {
-                    showLoading(requireContext())
-                }
-                Status.SUCCESS -> {
-                    dismissLoading()
-                }
-                Status.FAIL -> {
-                    dismissLoading()
-                    diaryCalendarViewModel.
-                    errorMessage.value?.let { message ->
-                        showCustomToast(message)
-                    }
-                }
-                Status.ERROR -> {
-                    dismissLoading()
-                    diaryCalendarViewModel.errorMessage.value?.let { message ->
-                        showCustomToast(message)
-                    }
-                }
-                else -> {
-                    Log.d("EmotionAnalysisFragment", "Unknown status: ${status}")
-                }
-            }
         }
     }
 

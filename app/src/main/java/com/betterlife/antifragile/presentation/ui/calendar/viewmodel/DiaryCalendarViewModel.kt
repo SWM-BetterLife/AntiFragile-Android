@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.betterlife.antifragile.data.model.base.BaseResponse
 import com.betterlife.antifragile.data.model.base.Status
 import com.betterlife.antifragile.data.model.calendar.CalendarDateModel
 import com.betterlife.antifragile.data.repository.CalendarRepository
@@ -13,44 +14,21 @@ class DiaryCalendarViewModel(
     private val calendarRepository: CalendarRepository,
 ) : ViewModel() {
 
-    private val _calendarDates = MutableLiveData<List<CalendarDateModel>>()
-    val calendarDates: LiveData<List<CalendarDateModel>> = _calendarDates
+    private val _calendarResponse = MutableLiveData<BaseResponse<List<CalendarDateModel>>>()
+    val calendarResponse: LiveData<BaseResponse<List<CalendarDateModel>>> = _calendarResponse
 
     private val _currentYearMonth = MutableLiveData<Pair<Int, Int>>()
     val currentYearMonth: LiveData<Pair<Int, Int>> = _currentYearMonth
 
-    private val _apiStatus = MutableLiveData<Status>()
-    val apiStatus: LiveData<Status> = _apiStatus
-
-    private val _errorMessage = MutableLiveData<String?>()
-    val errorMessage: LiveData<String?> = _errorMessage
-
     fun loadCalendarDates(year: Int, month: Int) {
         viewModelScope.launch {
-            _apiStatus.value = Status.LOADING
+            _calendarResponse.value = BaseResponse(Status.LOADING, null, null)
             val response = calendarRepository.getCalendarDates(year, month)
-            when (response.status) {
-                Status.SUCCESS -> {
-                    _calendarDates.value = response.data
-                    _currentYearMonth.value = Pair(year, month)
-                    _apiStatus.value = Status.SUCCESS
-                    _errorMessage.value = null
-                }
-                Status.FAIL -> {
-                    _calendarDates.value = response.data ?: emptyList()  // 빈 리스트 처리
-                    _currentYearMonth.value = Pair(year, month)
-                    _apiStatus.value = Status.FAIL
-                    _errorMessage.value = response.errorMessage
-                }
-                Status.ERROR -> {
-                    _apiStatus.value = Status.ERROR
-                    _errorMessage.value = response.errorMessage
-                }
-                else -> {}
-            }
+            _calendarResponse.postValue(response)
+            _calendarResponse.value = response
+            _currentYearMonth.value = Pair(year, month)
         }
     }
-
 
     fun moveToNextMonth() {
         _currentYearMonth.value?.let { (year, month) ->
@@ -69,6 +47,6 @@ class DiaryCalendarViewModel(
     }
 
     fun getDiaryIdForDate(date: String): Int? {
-        return _calendarDates.value?.find { it.date == date }?.diaryId
+        return _calendarResponse.value?.data?.find { it.date == date }?.diaryId
     }
 }

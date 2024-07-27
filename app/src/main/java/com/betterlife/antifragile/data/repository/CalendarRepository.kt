@@ -18,7 +18,9 @@ class CalendarRepository(
 ) {
 
 
-    suspend fun getCalendarDates(year: Int, month: Int): BaseResponse<List<CalendarDateModel>> = withContext(Dispatchers.IO) {
+    suspend fun getCalendarDates(
+        year: Int, month: Int
+    ): BaseResponse<List<CalendarDateModel>> = withContext(Dispatchers.IO) {
         return@withContext try {
             val calendar = Calendar.getInstance()
             calendar.set(year, month - 1, 1)
@@ -63,9 +65,12 @@ class CalendarRepository(
 
             if (emoticonsResponse.status == Status.FAIL) {
                 BaseResponse(Status.FAIL, emoticonsResponse.errorMessage, calendarDates)
+            } else if (emoticonsResponse.status == Status.ERROR) {
+                BaseResponse(Status.ERROR, emoticonsResponse.errorMessage, calendarDates)
             } else {
                 BaseResponse(Status.SUCCESS, null, calendarDates)
-            }        } catch (e: Exception) {
+            }
+        } catch (e: Exception) {
             BaseResponse(Status.ERROR, e.message, null)
         }
     }
