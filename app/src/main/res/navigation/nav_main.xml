@@ -48,12 +48,8 @@
         android:label="EmotionRecommend"
         tools:layout="@layout/fragment_diary_recommend_emoticon">
         <argument
-            android:name="diaryId"
-            app:argType="integer"
-            android:defaultValue="0" />
-        <argument
-            android:name="diaryType"
-            app:argType="string" />
+            android:name="diaryAnalysisData"
+            app:argType="com.betterlife.antifragile.data.model.diary.llm.DiaryAnalysisData" />
     </fragment>
 
     <fragment

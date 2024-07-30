@@ -6,7 +6,6 @@ data class DiaryAnalysisCreateRequest(
     val thought: String,
     val action: String,
     val comment: String,
-    val diaryDate: String,
     val emoticon: Emoticon
 )
 

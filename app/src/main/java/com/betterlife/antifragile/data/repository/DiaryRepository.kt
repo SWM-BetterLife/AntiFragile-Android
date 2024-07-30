@@ -1,32 +1,32 @@
 package com.betterlife.antifragile.data.repository
 
 import com.betterlife.antifragile.data.local.DiaryDao
-import com.betterlife.antifragile.data.local.DiarySummary
 import com.betterlife.antifragile.data.model.diary.QuestionDiary
 import com.betterlife.antifragile.data.model.diary.TextDiary
 
 class DiaryRepository(private val diaryDao: DiaryDao) {
-    fun insertTextDiary(
-        textDiary: TextDiary
-    ): Long = diaryDao.insertTextDiary(textDiary)
 
-    fun insertQuestionDiary(
-        questionDiary: QuestionDiary
-    ): Long = diaryDao.insertQuestionDiary(questionDiary)
+    suspend fun insertTextDiary(textDiary: TextDiary): Long {
+        val textDiaryCount = diaryDao.countTextDiariesByDate(textDiary.date)
+        val questionDiaryCount = diaryDao.countQuestionDiariesByDate(textDiary.date)
 
-    fun updateTextDiaryEmotionIcon(
-        id: Int,
-        url: String
-    ) = diaryDao.updateTextDiaryEmotionIcon(id, url)
+        return if (textDiaryCount == 0 && questionDiaryCount == 0) {
+            diaryDao.insertTextDiary(textDiary)
+        } else {
+            -1
+        }
+    }
 
-    fun updateQuestionDiaryEmotionIcon(
-        id: Int,
-        url: String
-    ) = diaryDao.updateQuestionDiaryEmotionIcon(id, url)
+    suspend fun insertQuestionDiary(questionDiary: QuestionDiary): Long {
+        val textDiaryCount = diaryDao.countTextDiariesByDate(questionDiary.date)
+        val questionDiaryCount = diaryDao.countQuestionDiariesByDate(questionDiary.date)
 
-    fun getMonthlyDiaries(
-        month: String
-    ): List<DiarySummary> = diaryDao.getMonthlyDiaries(month)
+        return if (textDiaryCount == 0 && questionDiaryCount == 0) {
+            diaryDao.insertQuestionDiary(questionDiary)
+        } else {
+            -1
+        }
+    }
 
     fun getTextDiaryById(
         id: Int)
