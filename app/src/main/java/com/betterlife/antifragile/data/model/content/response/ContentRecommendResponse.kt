@@ -1,12 +1,7 @@
 package com.betterlife.antifragile.data.model.content.response
 
-data class ContentResponse(
-    val status: String,
-    val errorMessage: String?,
-    val data: ContentData
-)
 
-data class ContentData(
+data class ContentRecommendResponse(
     val contents: List<Content>
 )
 

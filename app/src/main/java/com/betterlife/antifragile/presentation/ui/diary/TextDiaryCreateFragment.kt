@@ -24,18 +24,22 @@ class TextDiaryCreateFragment : BaseFragment<FragmentTextDiaryCreateBinding>(R.l
             // TODO: 사용자가 입력한 값으로 대체
             val textDiary = TextDiary(
                 content = "임시 내용",
-                date = "2024-07-21",
-                emotionIconUrl = null
+                date = "2024-07-23",
             )
 
             // 텍스트 일기 삽입 및 ID 반환
             diaryViewModel.insertTextDiary(textDiary).observe(viewLifecycleOwner) { diaryId ->
-                val action =
-                    TextDiaryCreateFragmentDirections.actionNavTextDiaryCreateToNavEmotionAnalysis(
-                        "TEXT",
-                        diaryId.toInt()
-                    )
-                findNavController().navigate(action)
+                if (diaryId != -1L) {
+                    val action =
+                        TextDiaryCreateFragmentDirections.actionNavTextDiaryCreateToNavEmotionAnalysis(
+                            "TEXT",
+                            diaryId.toInt()
+                        )
+                    findNavController().navigate(action)
+                } else {
+                    // 예외 처리: 동일한 날짜의 일기가 이미 존재함을 사용자에게 알림
+                    showCustomToast("해당 날짜에 이미 일기가 존재합니다.")
+                }
             }
         }
     }

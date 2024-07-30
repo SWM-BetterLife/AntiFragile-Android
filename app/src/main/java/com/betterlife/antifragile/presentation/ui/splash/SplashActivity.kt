@@ -18,6 +18,7 @@ class SplashActivity : AppCompatActivity() {
 
             // TODO: 로그인 상태 여부에 따라 login 화면 또는 main 화면으로 이동
             val intent = Intent(this, MainActivity::class.java)
+//            val intent = Intent(this, LoginActivity::class.java)
 
             startActivity(intent)
             finish()
