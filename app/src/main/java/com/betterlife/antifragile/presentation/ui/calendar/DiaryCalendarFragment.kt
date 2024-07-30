@@ -84,7 +84,7 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
                     response.data?.let { dates ->
                         diaryCalendarAdapter.setDates(dates)
                     }
-                    showCustomToast(response.errorMessage ?: "An error occurred")
+                    showCustomToast(response.errorMessage ?: "일기 데이터 로딩에 실패했습니다.")
                 }
 
                 else -> {

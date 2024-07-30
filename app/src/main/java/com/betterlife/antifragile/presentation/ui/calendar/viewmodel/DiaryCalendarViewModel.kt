@@ -9,6 +9,7 @@ import com.betterlife.antifragile.data.model.base.Status
 import com.betterlife.antifragile.data.model.calendar.CalendarDateModel
 import com.betterlife.antifragile.data.repository.CalendarRepository
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 class DiaryCalendarViewModel(
     private val calendarRepository: CalendarRepository,
@@ -19,6 +20,11 @@ class DiaryCalendarViewModel(
 
     private val _currentYearMonth = MutableLiveData<Pair<Int, Int>>()
     val currentYearMonth: LiveData<Pair<Int, Int>> = _currentYearMonth
+
+    init {
+        _calendarResponse.value = BaseResponse(Status.INIT, null, null)
+        _currentYearMonth.value = Pair(LocalDate.now().year, LocalDate.now().monthValue)
+    }
 
     fun loadCalendarDates(year: Int, month: Int) {
         viewModelScope.launch {

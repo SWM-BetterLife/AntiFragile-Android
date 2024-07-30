@@ -8,6 +8,7 @@ import com.betterlife.antifragile.data.model.calendar.CalendarDateModel
 import com.betterlife.antifragile.data.model.diary.DiarySummary
 import com.betterlife.antifragile.data.model.diaryanalysis.response.DiaryAnalysisEmoticonsResponse
 import com.betterlife.antifragile.data.remote.DiaryAnalysisApiService
+import com.betterlife.antifragile.presentation.util.ApiErrorUtil.parseErrorResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.Calendar
@@ -85,7 +86,14 @@ class CalendarRepository(
     private suspend fun getMonthlyEmoticons(year: Int, month: Int): BaseResponse<DiaryAnalysisEmoticonsResponse> {
         val monthString = String.format("%04d-%02d", year, month)
         return try {
-            diaryAnalysisApiService.getMonthlyEmoticons(monthString)
+            val response = diaryAnalysisApiService.getMonthlyEmoticons(monthString)
+            if (response.isSuccessful) {
+                response.body() ?: BaseResponse(Status.ERROR, "Unknown error", null)
+            } else {
+                val errorResponse = response.errorBody()?.string()
+                val baseResponse = parseErrorResponse(errorResponse)
+                BaseResponse(baseResponse.status, baseResponse.errorMessage, null)
+            }
         } catch (e: Exception) {
             BaseResponse(Status.ERROR, e.message, null)
         }
