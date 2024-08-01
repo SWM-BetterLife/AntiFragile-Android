@@ -10,7 +10,4 @@
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#999999</color>
     <color name="light_gray">#FAFAFA</color>
-
-    <color name="bottom_nav_item_selected">#000000</color>
-    <color name="bottom_nav_item_unselected">#808080</color>
 </resources>

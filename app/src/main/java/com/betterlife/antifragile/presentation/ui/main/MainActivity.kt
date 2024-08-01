@@ -18,6 +18,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         val navController = navHostFragment.navController
 
         binding.bottomNavigation.setupWithNavController(navController)
+        binding.bottomNavigation.itemIconTintList = null
     }
 
     override fun getLayoutResourceId() = R.layout.activity_main
