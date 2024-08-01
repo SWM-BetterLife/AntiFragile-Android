@@ -16,7 +16,10 @@ import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.calendar.viewmodel.DiaryCalendarViewModel
 import com.betterlife.antifragile.presentation.ui.calendar.viewmodel.DiaryCalendarViewModelFactory
 import com.betterlife.antifragile.presentation.util.Constants
+import com.betterlife.antifragile.presentation.util.CustomToolbar
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 
 class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
     R.layout.fragment_diary_calendar
@@ -37,7 +40,20 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
         // TODO: 날짜 클릭 시 해당 일기 상세 화면으로 이동하는 로직 구현
 
         binding.btnNext.setOnClickListener {
-            findNavController().navigate(R.id.action_nav_calendar_to_nav_diary_create)
+            val todayDate = getCurrentDate()
+            val action = DiaryCalendarFragmentDirections.actionNavCalendarToNavDiaryCreate(todayDate)
+            findNavController().navigate(action)
+        }
+    }
+
+    override fun configureToolbar(toolbar: CustomToolbar) {
+        toolbar.apply {
+            reset()
+            setMainTitle("일기")
+            showNotificationButton(true) {
+                // TODO:  알림 버튼 클릭 처리
+                showCustomToast("알림 버튼 클릭")
+            }
         }
     }
 
@@ -110,5 +126,11 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
     private fun loadCurrentMonth() {
         val calendar = Calendar.getInstance()
         diaryCalendarViewModel.loadCalendarDates(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1)
+    }
+
+    private fun getCurrentDate(): String {
+        val calendar = Calendar.getInstance()
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        return dateFormat.format(calendar.time)
     }
 }

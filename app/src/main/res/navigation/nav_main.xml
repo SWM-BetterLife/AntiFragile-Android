@@ -23,6 +23,9 @@
         <action
             android:id="@+id/action_nav_text_diary_create_to_nav_emotion_analysis"
             app:destination="@id/nav_emotion_analysis"/>
+        <argument
+            android:name="diaryDate"
+            app:argType="string" />
     </fragment>
 
     <fragment

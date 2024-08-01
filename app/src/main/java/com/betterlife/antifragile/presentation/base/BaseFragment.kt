@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 
 abstract class BaseFragment<B : ViewDataBinding>(
     @LayoutRes private val layoutRes: Int
-) : Fragment() {
+) : Fragment(), ToolbarConfigurable {
     private var _binding: B? = null
     protected val binding get() = _binding!!
 
@@ -36,6 +36,11 @@ abstract class BaseFragment<B : ViewDataBinding>(
         _binding = DataBindingUtil.inflate(inflater, layoutRes, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as? BaseActivity<*>)?.toolbar?.let { configureToolbar(it) }
     }
 
     // STARTED 상태에서 코루틴을 반복 실행하는 확장 함수
