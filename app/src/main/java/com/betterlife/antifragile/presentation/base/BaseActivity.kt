@@ -10,7 +10,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.betterlife.antifragile.R
 import com.betterlife.antifragile.presentation.customview.LoadingDialog
+import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -18,6 +20,7 @@ import kotlinx.coroutines.launch
 abstract class BaseActivity<B : ViewDataBinding>(private val inflate: (LayoutInflater) -> B) :
     AppCompatActivity() {
     protected lateinit var binding: B
+    lateinit var toolbar: CustomToolbar
     private lateinit var loadingDialog: LoadingDialog
     private var loadingState = false
 
@@ -27,6 +30,9 @@ abstract class BaseActivity<B : ViewDataBinding>(private val inflate: (LayoutInf
         binding = inflate(layoutInflater)
         binding.lifecycleOwner = this
         setContentView(binding.root)
+
+        toolbar = findViewById(R.id.lo_toolbar)
+        setupToolbar()
     }
 
     // STARTED 상태에서 코루틴을 반복 실행하는 확장 함수
@@ -72,6 +78,9 @@ abstract class BaseActivity<B : ViewDataBinding>(private val inflate: (LayoutInf
             show()
         }
     }
+
+    abstract fun getLayoutResourceId(): Int
+    abstract fun setupToolbar()
 
     override fun onDestroy() {
         super.onDestroy()
