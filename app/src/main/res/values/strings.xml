@@ -4,6 +4,7 @@
     <string name="bottom_nav_emotion">내 감정</string>
     <string name="bottom_nav_content">내 콘텐츠</string>
     <string name="bottom_nav_my_page">마이페이지</string>
+    <string name="add_diary">일기 추가</string>
     <string name="antirfagile_logo">antirfagile 로고</string>
     <string name="naver_login">Naver 로그인</string>
     <string name="kakao_login">Kakao 로그인</string>

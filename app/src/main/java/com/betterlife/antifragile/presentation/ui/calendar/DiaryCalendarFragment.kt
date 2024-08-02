@@ -41,7 +41,7 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
 
         binding.btnNext.setOnClickListener {
             val todayDate = getCurrentDate()
-            val action = DiaryCalendarFragmentDirections.actionNavCalendarToNavDiaryCreate(todayDate)
+            val action = DiaryCalendarFragmentDirections.actionNavCalendarToNavDiaryTypeSelect(todayDate)
             findNavController().navigate(action)
         }
     }

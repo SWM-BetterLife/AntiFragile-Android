@@ -11,6 +11,10 @@
         android:id="@+id/nav_emotion"
         android:title="@string/bottom_nav_emotion"
         android:icon="@drawable/nav_emotion_selector" />
+    <item
+        android:id="@+id/nav_placeholder"
+        android:title=""
+        android:enabled="false"/>
 
     <item
         android:id="@+id/nav_content"
