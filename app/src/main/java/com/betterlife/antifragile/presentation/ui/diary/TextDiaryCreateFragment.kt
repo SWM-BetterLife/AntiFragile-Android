@@ -1,6 +1,8 @@
 package com.betterlife.antifragile.presentation.ui.diary
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -37,12 +39,17 @@ class TextDiaryCreateFragment : BaseFragment<FragmentTextDiaryCreateBinding>(
             // 텍스트 일기 삽입 및 ID 반환
             diaryViewModel.insertTextDiary(textDiary).observe(viewLifecycleOwner) { diaryId ->
                 if (diaryId != -1L) {
-                    val action =
-                        TextDiaryCreateFragmentDirections.actionNavTextDiaryCreateToNavEmotionAnalysis(
-                            "TEXT",
-                            diaryId.toInt()
-                        )
-                    findNavController().navigate(action)
+
+                    binding.tvGetPoint.visibility = View.VISIBLE
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        val action =
+                            TextDiaryCreateFragmentDirections.actionNavTextDiaryCreateToNavEmotionAnalysis(
+                                "TEXT",
+                                diaryId.toInt()
+                            )
+                        findNavController().navigate(action)
+                    }, 1000) // 2000 milliseconds = 2 seconds
+
                 } else {
                     showCustomToast("해당 날짜에 이미 일기가 존재합니다.")
                 }
