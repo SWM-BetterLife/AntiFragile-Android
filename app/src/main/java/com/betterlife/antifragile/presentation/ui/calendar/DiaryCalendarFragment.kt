@@ -70,20 +70,27 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
     private fun setupRecyclerView() {
         diaryCalendarAdapter = DiaryCalendarAdapter { dateModel ->
             diaryCalendarViewModel.setSelectedDate(dateModel.date)
-            if (dateModel.diaryId == null) {
+            if (dateModel.diaryId == null && dateModel.date == getCurrentDate()) {
                 findNavController().navigate(
                     DiaryCalendarFragmentDirections.actionNavCalendarToNavDiaryTypeSelect(dateModel.date)
                 )
             } else {
                 when (dateModel.diaryType) {
                     DiaryType.TEXT -> {
-                        // TODO: 텍스트 일기 상세 화면으로 이동
+                        val action = DiaryCalendarFragmentDirections.actionNavCalendarToNavTextDiaryDetail(
+                            dateModel.date,
+                            dateModel.diaryId!!
+                        )
+                        findNavController().navigate(action)
                     }
                     DiaryType.QUESTION -> {
-                        // TODO: 질문 일기 상세 화면으로 이동
+                        val action = DiaryCalendarFragmentDirections.actionNavCalendarToNavQuestionDiaryDetail(
+                            dateModel.date,
+                            dateModel.diaryId!!
+                        )
                     }
                     else -> {
-                        showCustomToast("지원하지 않는 일기 유형입니다.")
+                        // 일기 미작성인 경우
                     }
                 }
             }

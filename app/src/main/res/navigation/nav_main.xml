@@ -16,6 +16,38 @@
         <action
             android:id="@+id/action_nav_calendar_to_nav_recommend_content"
             app:destination="@id/nav_recommend_content"/>
+        <action
+            android:id="@+id/action_nav_calendar_to_nav_text_diary_detail"
+            app:destination="@id/nav_text_diary_detail"/>
+        <action
+            android:id="@+id/action_nav_calendar_to_nav_question_diary_detail"
+            app:destination="@id/nav_question_diary_detail"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_text_diary_detail"
+        android:name="com.betterlife.antifragile.presentation.ui.diary.TextDiaryDetailFragment"
+        android:label="TextDiaryDetail">
+        <argument
+            android:name="diaryId"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="diaryDate"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_question_diary_detail"
+        android:name="com.betterlife.antifragile.presentation.ui.diary.QuestionDiaryDetailFragment"
+        android:label="QuestionDiaryDetail">
+        <argument
+            android:name="diaryId"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="diaryDate"
+            app:argType="string" />
     </fragment>
 
     <fragment

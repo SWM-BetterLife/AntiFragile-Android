@@ -13,7 +13,9 @@ import com.betterlife.antifragile.presentation.ui.diary.viewmodel.DiaryViewModel
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.DateUtil
 
-class TextDiaryCreateFragment : BaseFragment<FragmentTextDiaryCreateBinding>(R.layout.fragment_text_diary_create) {
+class TextDiaryCreateFragment : BaseFragment<FragmentTextDiaryCreateBinding>(
+    R.layout.fragment_text_diary_create
+) {
 
     private lateinit var diaryViewModel: DiaryViewModel
     private var diaryDate: String? = null
