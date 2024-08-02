@@ -59,6 +59,7 @@ class CalendarRepository(
                 val diary = diaries.find { it.date == date.date }
                 val emoticon = emoticons.find { it.diaryDate == date.date }
                 date.copy(
+                    diaryType = diary?.diaryType,
                     emoticonUrl = emoticon?.imgUrl,
                     diaryId = diary?.id
                 )
