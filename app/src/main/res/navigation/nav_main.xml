@@ -46,7 +46,7 @@
         android:label="EmotionAnalysis"
         tools:layout="@layout/fragment_emotion_analysis">
         <action
-            android:id="@+id/aciton_nav_emotion_analysis_to_nav_emoticon_recommend"
+            android:id="@+id/action_nav_emotion_analysis_to_nav_emoticon_recommend"
             app:destination="@id/nav_emoticon_recommend"/>
         <argument
             android:name="diaryId"

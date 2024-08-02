@@ -16,6 +16,12 @@ import java.util.Locale
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
 
     lateinit var navController: NavController
+    private val initialFragmentIds = mapOf(
+        R.id.nav_calendar to R.id.nav_calendar,
+        R.id.nav_emotion to R.id.nav_emotion,
+        R.id.nav_content to R.id.nav_content,
+        R.id.nav_my_page to R.id.nav_my_page
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +48,15 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
         binding.bottomNavigation.setupWithNavController(navController)
         binding.bottomNavigation.itemIconTintList = null
+
+        binding.bottomNavigation.setOnItemSelectedListener { item ->
+            val initialFragmentId = initialFragmentIds[item.itemId]
+            initialFragmentId?.let {
+                navController.popBackStack(it, false)
+                navController.navigate(it)
+                true
+            } ?: false
+        }
     }
 
     private fun isEmotionDiaryWrittenToday(): Boolean {
@@ -53,11 +68,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         binding.btnAddDiary.setOnClickListener {
             val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
             if (isEmotionDiaryWrittenToday()) {
-                val action = NavMainDirections.actionToNavEmotion()
-                navController.navigate(action)
+                binding.bottomNavigation.selectedItemId = R.id.nav_emotion
             } else {
                 val action = NavMainDirections.actionToNavDiaryTypeSelect(today)
+                binding.bottomNavigation.selectedItemId = R.id.nav_calendar
                 navController.navigate(action)
-            }        }
+            }
+        }
     }
 }

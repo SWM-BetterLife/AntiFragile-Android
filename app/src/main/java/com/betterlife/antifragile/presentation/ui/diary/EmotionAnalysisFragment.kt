@@ -124,9 +124,8 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(R.l
 
     private fun setupSaveButton(diaryAnalysisData: DiaryAnalysisData) {
         binding.btnSave.setOnClickListener {
-            // 값 전달 및 Fragment 전환
             val action = EmotionAnalysisFragmentDirections
-                .acitonNavEmotionAnalysisToNavEmoticonRecommend(diaryAnalysisData)
+                .actionNavEmotionAnalysisToNavEmoticonRecommend(diaryAnalysisData)
             findNavController().navigate(action)
         }
     }
