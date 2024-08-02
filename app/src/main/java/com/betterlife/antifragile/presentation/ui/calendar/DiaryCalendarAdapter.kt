@@ -13,10 +13,17 @@ import com.bumptech.glide.Glide
 class DiaryCalendarAdapter(private val onDateClick: (CalendarDateModel) -> Unit) :
     RecyclerView.Adapter<DiaryCalendarAdapter.CalendarViewHolder>() {
     private var dates: List<CalendarDateModel> = emptyList()
+    private var selectedDate: String? = null
 
     @SuppressLint("NotifyDataSetChanged")
     fun setDates(newDates: List<CalendarDateModel>) {
         dates = newDates
+        notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun setSelectedDate(date: String) {
+        selectedDate = date
         notifyDataSetChanged()
     }
 
@@ -26,19 +33,26 @@ class DiaryCalendarAdapter(private val onDateClick: (CalendarDateModel) -> Unit)
     }
 
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
-        holder.bind(dates[position])
+        holder.bind(dates[position], dates[position].date == selectedDate)
     }
 
     override fun getItemCount() = dates.size
 
-    class CalendarViewHolder(
+    inner class CalendarViewHolder(
         private val binding: CalendarDayItemBinding,
         private val onDateClick: (CalendarDateModel) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(calendarDateModel: CalendarDateModel) {
+        @SuppressLint("NotifyDataSetChanged")
+        fun bind(calendarDateModel: CalendarDateModel, isSelected: Boolean) {
             val day = calendarDateModel.date.split("-").last().toInt().toString()
             binding.tvDay.text = day
             binding.root.alpha = if (calendarDateModel.isCurrentMonth) 1f else 0.3f
+
+            if (isSelected) {
+                binding.tvDay.setTextColor(binding.root.context.getColor(R.color.main_color))
+            } else {
+                binding.tvDay.setTextColor(binding.root.context.getColor(R.color.black))
+            }
 
             if (calendarDateModel.isCurrentMonth) {
                 if (calendarDateModel.emoticonUrl == null) {
@@ -53,8 +67,11 @@ class DiaryCalendarAdapter(private val onDateClick: (CalendarDateModel) -> Unit)
                 binding.ivEmoticon.visibility = View.GONE
             }
 
-            // 날짜 클릭 리스너 설정
-            binding.root.setOnClickListener { onDateClick(calendarDateModel) }
+            binding.root.setOnClickListener {
+                selectedDate = calendarDateModel.date
+                notifyDataSetChanged()
+                onDateClick(calendarDateModel)
+            }
         }
     }
 }

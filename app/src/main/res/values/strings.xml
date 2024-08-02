@@ -18,4 +18,7 @@
     <string name="saturday">토</string>
     <string name="sunday">일</string>
     <string name="modify"><u>수정</u></string>
+    <string name="not_written_diary">오늘 일기를 아직 안썼어요!</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

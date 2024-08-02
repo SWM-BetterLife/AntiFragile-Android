@@ -41,9 +41,12 @@ class CustomToolbar @JvmOverloads constructor(
         binding.btnNotification.setOnClickListener(listener)
     }
 
-    fun showEditButton(show: Boolean, listener: OnClickListener? = null) {
-        binding.btnEdit.visibility = if (show) View.VISIBLE else View.GONE
-        binding.btnEdit.setOnClickListener(listener)
+    fun showEditButton(text: String, listener: OnClickListener? = null) {
+        binding.btnEdit.apply {
+            visibility = View.VISIBLE
+            setText(text)
+            setOnClickListener(listener)
+        }
     }
 
     fun reset() {
