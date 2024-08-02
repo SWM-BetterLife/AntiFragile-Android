@@ -82,6 +82,7 @@ dependencies {
     implementation("androidx.room:room-ktx:$roomVersion")
 
     // Coroutine
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
     // lifecycle
@@ -90,4 +91,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
 
     implementation ("com.google.android.gms:play-services-auth:20.2.0")
+
+    // llm-mediapipe
+    implementation("com.google.mediapipe:tasks-genai:0.10.14")
+
 }

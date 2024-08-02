@@ -13,10 +13,13 @@ import com.betterlife.antifragile.databinding.FragmentEmotionAnalysisBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.DiaryViewModel
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.DiaryViewModelFactory
+import com.betterlife.antifragile.presentation.ui.diary.viewmodel.LLMViewModel
+import com.betterlife.antifragile.presentation.ui.diary.viewmodel.LLMViewModelFactory
 
 class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(R.layout.fragment_emotion_analysis){
 
     private lateinit var diaryViewModel: DiaryViewModel
+    private lateinit var llmViewModel: LLMViewModel
     private var textDiary: TextDiary? = null
     private var questionDiary: QuestionDiary? = null
 
@@ -48,6 +51,7 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(R.l
                 val diaryAnalysisData = createDiaryAnalysisData(textDiary?.date ?: "")
 
                 setupSaveButton(diaryAnalysisData)
+
             }
         } else if (diaryType == "QUESTION"){
             getQuestionDiary(diaryId) { retrievedQuestionDiary ->
@@ -84,10 +88,12 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(R.l
 
     private fun setupViewModels() {
         diaryViewModel = ViewModelProvider(
-            this,
-            DiaryViewModelFactory(requireActivity().application)
+            this, DiaryViewModelFactory(requireActivity().application)
         ).get(DiaryViewModel::class.java)
 
+        llmViewModel = ViewModelProvider(
+            this, LLMViewModelFactory(requireActivity().application)
+        ).get(LLMViewModel::class.java) //todo: App 처음 로딩 시, llmTask Instance 생성하는 로직으로 변경
     }
 
     // 로컬 db에 저장된 텍스트 일기 조회
@@ -106,6 +112,15 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(R.l
     }
 
     private fun createDiaryAnalysisData(date: String): DiaryAnalysisData {
+        val prompt = "\"Today was a really busy day. In the morning, I had to rush to prepare for my classes, and I felt so frazzled. During the lectures, it was really hard for me to stay focused on the professor's lessons. During lunchtime, I was able to take a quick break and have a meal with my friends, but in the afternoon, I had to dive back into working on my assignments. I was so tired, but I felt proud of myself for diligently completing the assignments.\n" +
+                "\n" +
+                "When I came home and was able to rest, my mood improved. The various emotions I experienced throughout the day were complex, but ultimately, a sense of accomplishment and satisfaction were the most prominent feelings. I hope tomorrow I can have a more leisurely routine. I'm happy to be growing day by day through my university life.\"\n" +
+                "\n" +
+                "The content above is my diary entry for today. Summarize the content above."
+        Log.i("createDiaryAnalysisData", date)
+
+        llmViewModel.getResponseFromLLMInference(prompt)
+
         return DiaryAnalysisData(
             emotions = listOf("wwwww", "감정2"),
             event = "사건",
