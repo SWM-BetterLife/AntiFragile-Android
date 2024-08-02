@@ -2,7 +2,6 @@ package com.betterlife.antifragile.presentation.ui.main
 
 import android.os.Bundle
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.betterlife.antifragile.NavMainDirections
@@ -25,7 +24,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        toolbar = findViewById(R.id.lo_toolbar)
         setupBottomNavigation()
         setupAddDiaryButton()
     }
