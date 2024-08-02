@@ -29,9 +29,8 @@ class TextDiaryCreateFragment : BaseFragment<FragmentTextDiaryCreateBinding>(
         setupViewModels()
 
         binding.btnSave.setOnClickListener {
-            // TODO: 사용자가 입력한 값으로 대체
             val textDiary = TextDiary(
-                content = "임시 내용",
+                content = binding.etDiaryContent.text.toString(),
                 date = diaryDate!!
             )
 
@@ -45,7 +44,6 @@ class TextDiaryCreateFragment : BaseFragment<FragmentTextDiaryCreateBinding>(
                         )
                     findNavController().navigate(action)
                 } else {
-                    // 예외 처리: 동일한 날짜의 일기가 이미 존재함을 사용자에게 알림
                     showCustomToast("해당 날짜에 이미 일기가 존재합니다.")
                 }
             }
