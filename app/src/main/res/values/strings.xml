@@ -25,4 +25,5 @@
     <string name="text_diary_tip_title">일기에 다음 내용을 작성하면 좋아요!</string>
     <string name="text_diary_point">감정 일기를 작성하면 3포인트를 획득합니다!</string>
     <string name="get_point_message">일기를 작성해서 3포인트를 받았어요!</string>
+    <string name="recommend_emotion">일기에 어울리는\n감정티콘을 골라봤어요!</string>
 </resources>

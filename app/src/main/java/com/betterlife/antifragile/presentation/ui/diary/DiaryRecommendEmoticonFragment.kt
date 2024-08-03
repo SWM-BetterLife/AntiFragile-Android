@@ -5,6 +5,8 @@ import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.config.RetrofitInterface
 import com.betterlife.antifragile.data.model.base.Status
@@ -20,11 +22,15 @@ import com.betterlife.antifragile.presentation.ui.diary.viewmodel.DiaryAnalysisV
 import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.DateUtil
+import kotlin.math.abs
 
 class DiaryRecommendEmoticonFragment : BaseFragment<FragmentDiaryRecommendEmoticonBinding>(R.layout.fragment_diary_recommend_emoticon) {
 
     private lateinit var diaryAnalysisViewModel: DiaryAnalysisViewModel
+    private lateinit var emotionIconAdapter: EmoticonAdapter
+    private lateinit var viewPager: ViewPager2
     private var diaryDate: String? = null
+    private var selectedPosition = 0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -33,6 +39,7 @@ class DiaryRecommendEmoticonFragment : BaseFragment<FragmentDiaryRecommendEmotic
         diaryDate = diaryAnalysisData.diaryDate
 
         setupViewModels()
+        setupViewPager()
 
         // TODO: 감정티콘 추천
 
@@ -63,6 +70,82 @@ class DiaryRecommendEmoticonFragment : BaseFragment<FragmentDiaryRecommendEmotic
                 findNavController().popBackStack()
             }
         }
+    }
+
+    private fun setupViewPager() {
+        val emotions = listOf(
+            R.drawable.emoticon_blank,
+            R.drawable.emoticon_smile,
+            R.drawable.ic_emotion_active,
+            R.drawable.ic_emotion_inactive
+        )
+
+        emotionIconAdapter = EmoticonAdapter(emotions) { position ->
+            selectedPosition = position
+            viewPager.setCurrentItem(position, true)
+            updateNavigationButtons()
+        }
+
+        viewPager = binding.vpSelectEmotion
+        viewPager.adapter = emotionIconAdapter
+
+        viewPager.apply {
+            offscreenPageLimit = 1
+            setPageTransformer { page, position ->
+                page.apply {
+                    val pageWidth = width
+                    val pageHeight = height
+                    val scaleFactor = when {
+                        position < -1 || position > 1 -> 0.7f
+                        position == 0f -> 1f
+                        else -> 0.7f + (1 - 0.7f) * (1 - abs(position))
+                    }
+
+                    scaleX = scaleFactor
+                    scaleY = scaleFactor
+
+                    val verticalMargin = pageHeight * (1 - scaleFactor) / 2
+                    val horizontalMargin = pageWidth * (1 - scaleFactor) / 2
+                    translationX = if (position < 0) {
+                        horizontalMargin - verticalMargin / 2
+                    } else {
+                        -horizontalMargin + verticalMargin / 2
+                    }
+                }
+            }
+
+            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    selectedPosition = position
+                    updateNavigationButtons()
+                }
+            })
+        }
+
+        (viewPager.getChildAt(0) as? RecyclerView)?.apply {
+            val padding = resources.getDimensionPixelOffset(R.dimen.viewpager_padding)
+            setPadding(padding, 0, padding, 0)
+            clipToPadding = false
+        }
+
+        updateNavigationButtons()
+
+        binding.btnLeft.setOnClickListener {
+            if (selectedPosition > 0) {
+                viewPager.setCurrentItem(selectedPosition - 1, true)
+            }
+        }
+
+        binding.btnRight.setOnClickListener {
+            if (selectedPosition < emotionIconAdapter.itemCount - 1) {
+                viewPager.setCurrentItem(selectedPosition + 1, true)
+            }
+        }
+    }
+
+    private fun updateNavigationButtons() {
+        binding.btnLeft.visibility = if (selectedPosition > 0) View.VISIBLE else View.INVISIBLE
+        binding.btnRight.visibility = if (selectedPosition < emotionIconAdapter.itemCount - 1) View.VISIBLE else View.INVISIBLE
     }
 
     private fun getDiaryAnalysisData() =
