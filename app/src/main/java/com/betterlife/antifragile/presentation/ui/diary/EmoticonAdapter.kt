@@ -28,7 +28,7 @@ class EmoticonAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EmoticonViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.emoticon_item, parent, false)
+            .inflate(R.layout.item_emoticon, parent, false)
         return EmoticonViewHolder(view)
     }
 

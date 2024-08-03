@@ -2,18 +2,21 @@ package com.betterlife.antifragile.data.repository
 
 import com.betterlife.antifragile.data.model.base.BaseResponse
 import com.betterlife.antifragile.data.model.base.Status
-import com.betterlife.antifragile.data.model.diaryanalysis.request.DiaryAnalysisCreateRequest
-import com.betterlife.antifragile.data.remote.DiaryAnalysisApiService
+import com.betterlife.antifragile.data.model.emoticontheme.response.EmoticonThemeEmoticonsResponse
+import com.betterlife.antifragile.data.remote.EmoticonThemeApiService
 import com.betterlife.antifragile.presentation.util.ApiErrorUtil.parseErrorResponse
 
 /*
- * 일기 분석 API 호출을 담당하는 리포지토리
+ * 감정티콘 테마 API 호출을 담당하는 리포지토리
  */
-class DiaryAnalysisRepository(private val diaryAnalysisApiService: DiaryAnalysisApiService) {
+class EmoticonThemeRepository(private val emoticonThemeApiService: EmoticonThemeApiService) {
 
-    suspend fun saveDiaryAnalysis(request: DiaryAnalysisCreateRequest): BaseResponse<Any?> {
+    suspend fun getEmoticonThemeEmoticons(
+        emoticonThemeId: String
+    ): BaseResponse<EmoticonThemeEmoticonsResponse> {
+
         return try {
-            val response = diaryAnalysisApiService.saveDiaryAnalysis(request)
+            val response = emoticonThemeApiService.getEmoticonThemeEmoticons(emoticonThemeId)
             if (response.isSuccessful) {
                 response.body() ?: BaseResponse(Status.ERROR, "Unknown error", null)
             } else {

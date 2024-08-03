@@ -24,7 +24,9 @@ import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.DateUtil
 import kotlin.math.abs
 
-class DiaryRecommendEmoticonFragment : BaseFragment<FragmentDiaryRecommendEmoticonBinding>(R.layout.fragment_diary_recommend_emoticon) {
+class DiaryRecommendEmoticonFragment : BaseFragment<FragmentDiaryRecommendEmoticonBinding>(
+    R.layout.fragment_diary_recommend_emoticon
+) {
 
     private lateinit var diaryAnalysisViewModel: DiaryAnalysisViewModel
     private lateinit var emotionIconAdapter: EmoticonAdapter
@@ -40,16 +42,14 @@ class DiaryRecommendEmoticonFragment : BaseFragment<FragmentDiaryRecommendEmotic
 
         setupViewModels()
         setupViewPager()
-
-        // TODO: 감정티콘 추천
-
-        // TODO: '직접 선택' 버튼 클릭 시, 감정티콘 변경 뷰로 이동
-
-
-        // 서버에 감정 분석 저장 response status 설정
         setStatusDiaryAnalysisSave()
 
-        // 감정티콘 선택 시
+        // TODO: diaryAnalysisData의 Emotions로 감정티콘 추천
+        val emoticon = Emotion.JOY
+
+        // TODO: 보유 중의 감정티콘 테마들의 특정 감정만 조회하는 api 연동
+
+        // '마음에 들어요' 선택 시
         binding.btnSave.setOnClickListener {
             // TODO: 선택한 감정티콘으로 변경
             val emoticon = Emoticon(
@@ -57,8 +57,18 @@ class DiaryRecommendEmoticonFragment : BaseFragment<FragmentDiaryRecommendEmotic
                 emotion = Emotion.JOY.name
             )
             val request = createDiaryAnalysisRequest(diaryAnalysisData, emoticon)
-            // 서버에 감정 분석 저장
             diaryAnalysisViewModel.saveDiaryAnalysis(request)
+        }
+
+        // '직접 고를게요' 선택 시
+        binding.btnChooseSelf.setOnClickListener {
+            val action =
+                DiaryRecommendEmoticonFragmentDirections.actionNavEmoticonRecommendToNavEmotionSelect(
+                    diaryAnalysisData.diaryDate,
+                    "66a8dce326d5e90dd4802923",
+                    Emotion.JOY
+                )
+            findNavController().navigate(action)
         }
     }
 

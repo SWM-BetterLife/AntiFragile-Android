@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.data.model.calendar.CalendarDateModel
-import com.betterlife.antifragile.databinding.CalendarDayItemBinding
+import com.betterlife.antifragile.databinding.ItemCalendarBinding
 import com.bumptech.glide.Glide
 
 class DiaryCalendarAdapter(private val onDateClick: (CalendarDateModel) -> Unit) :
@@ -28,7 +28,7 @@ class DiaryCalendarAdapter(private val onDateClick: (CalendarDateModel) -> Unit)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
-        val binding = CalendarDayItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemCalendarBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return CalendarViewHolder(binding, onDateClick)
     }
 
@@ -39,7 +39,7 @@ class DiaryCalendarAdapter(private val onDateClick: (CalendarDateModel) -> Unit)
     override fun getItemCount() = dates.size
 
     inner class CalendarViewHolder(
-        private val binding: CalendarDayItemBinding,
+        private val binding: ItemCalendarBinding,
         private val onDateClick: (CalendarDateModel) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("NotifyDataSetChanged")

@@ -107,9 +107,28 @@
         android:name="com.betterlife.antifragile.presentation.ui.diary.DiaryRecommendEmoticonFragment"
         android:label="EmotionRecommend"
         tools:layout="@layout/fragment_diary_recommend_emoticon">
+        <action
+            android:id="@+id/action_nav_emoticon_recommend_to_nav_emotion_select"
+            app:destination="@id/nav_emotion_select"/>
         <argument
             android:name="diaryAnalysisData"
             app:argType="com.betterlife.antifragile.data.model.diary.llm.DiaryAnalysisData" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_emotion_select"
+        android:name="com.betterlife.antifragile.presentation.ui.diary.EmotionSelectFragment"
+        android:label="EmotionSelect"
+        tools:layout="@layout/fragment_emotion_select">
+        <argument
+            android:name="diaryDate"
+            app:argType="string" />
+        <argument
+            android:name="emoticonThemeId"
+            app:argType="string" />
+        <argument
+            android:name="emotion"
+            app:argType="com.betterlife.antifragile.data.model.common.Emotion" />
     </fragment>
 
     <fragment
