@@ -20,7 +20,7 @@ import com.betterlife.antifragile.data.repository.EmoticonThemeRepository
 import com.betterlife.antifragile.databinding.FragmentRecommendEmoticonBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.diary.adapter.EmoticonByEmotionAdapter
-import com.betterlife.antifragile.presentation.ui.diary.viewmodel.RecommendEmoticonModelFactory
+import com.betterlife.antifragile.presentation.ui.diary.viewmodel.RecommendEmoticonViewModelFactory
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.RecommendEmoticonViewModel
 import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
@@ -76,7 +76,7 @@ class RecommendEmoticonFragment : BaseFragment<FragmentRecommendEmoticonBinding>
         val diaryAnalysisRepository = DiaryAnalysisRepository(diaryAnalysisApiService)
         val emoticonThemeApiService = RetrofitInterface.createEmoticonThemeApiService(token)
         val emoticonThemeRepository = EmoticonThemeRepository(emoticonThemeApiService)
-        val factory = RecommendEmoticonModelFactory(
+        val factory = RecommendEmoticonViewModelFactory(
             diaryAnalysisRepository, emoticonThemeRepository
         )
         recommendEmoticonViewModel =

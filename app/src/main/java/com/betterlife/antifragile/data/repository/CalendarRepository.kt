@@ -16,7 +16,7 @@ import java.util.Calendar
 class CalendarRepository(
     private val diaryDao: DiaryDao,
     private val diaryAnalysisApiService: DiaryAnalysisApiService
-) {
+) : BaseRepository() {
 
 
     suspend fun getCalendarDates(
@@ -84,19 +84,12 @@ class CalendarRepository(
     }
 
     @SuppressLint("DefaultLocale")
-    private suspend fun getMonthlyEmoticons(year: Int, month: Int): BaseResponse<DiaryAnalysisEmoticonsResponse> {
+    private suspend fun getMonthlyEmoticons(
+        year: Int, month: Int
+    ): BaseResponse<DiaryAnalysisEmoticonsResponse> {
         val monthString = String.format("%04d-%02d", year, month)
-        return try {
-            val response = diaryAnalysisApiService.getMonthlyEmoticons(monthString)
-            if (response.isSuccessful) {
-                response.body() ?: BaseResponse(Status.ERROR, "Unknown error", null)
-            } else {
-                val errorResponse = response.errorBody()?.string()
-                val baseResponse = parseErrorResponse(errorResponse)
-                BaseResponse(baseResponse.status, baseResponse.errorMessage, null)
-            }
-        } catch (e: Exception) {
-            BaseResponse(Status.ERROR, e.message, null)
+        return safeApiCall {
+            diaryAnalysisApiService.getMonthlyEmoticons(monthString)
         }
     }
 

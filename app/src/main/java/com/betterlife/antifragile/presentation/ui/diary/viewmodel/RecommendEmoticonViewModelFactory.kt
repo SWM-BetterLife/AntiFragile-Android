@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.betterlife.antifragile.data.repository.DiaryAnalysisRepository
 import com.betterlife.antifragile.data.repository.EmoticonThemeRepository
 
-class RecommendEmoticonModelFactory(
+class RecommendEmoticonViewModelFactory(
     private val diaryAnalysisRepository: DiaryAnalysisRepository,
     private val emoticonThemeRepository: EmoticonThemeRepository
 ) : ViewModelProvider.Factory {
