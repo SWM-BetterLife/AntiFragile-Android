@@ -1,4 +1,4 @@
-package com.betterlife.antifragile.presentation.ui.diary
+package com.betterlife.antifragile.presentation.ui.diary.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,13 +8,12 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.betterlife.antifragile.R
-import com.betterlife.antifragile.data.model.common.Emotion
-import com.betterlife.antifragile.data.model.emoticontheme.response.EmoticonThemeEmoticon
+import com.betterlife.antifragile.data.model.emoticontheme.EmotionSelectData
 import com.bumptech.glide.Glide
 
 class EmotionSelectAdapter(
-    private val emotions: List<EmoticonThemeEmoticon>,
-    private val onItemClick: (EmoticonThemeEmoticon) -> Unit,
+    private val emotions: List<EmotionSelectData>,
+    private val onItemClick: (EmotionSelectData) -> Unit,
     private val initialEmotion: String? = null
 ) : RecyclerView.Adapter<EmotionSelectAdapter.EmotionViewHolder>() {
 
@@ -49,8 +48,7 @@ class EmotionSelectAdapter(
         val emotion = emotions[position]
         Glide.with(holder.itemView.context).load(emotion.imgUrl).into(holder.emotionIcon)
 
-        val emotionEnum = Emotion.valueOf(emotion.emotion)
-        holder.emotionText.text = emotionEnum.toKorean
+        holder.emotionText.text = emotion.emotionEnum.toKorean
 
         holder.container.isSelected = (selectedPosition == position)
         if (selectedPosition == position) {

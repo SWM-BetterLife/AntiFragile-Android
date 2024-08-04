@@ -9,11 +9,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.config.RetrofitInterface
 import com.betterlife.antifragile.data.model.base.Status
-import com.betterlife.antifragile.data.model.common.Emotion
-import com.betterlife.antifragile.data.model.emoticontheme.response.EmoticonThemeEmoticon
+import com.betterlife.antifragile.data.model.emoticontheme.EmotionSelectData
 import com.betterlife.antifragile.data.repository.EmoticonThemeRepository
 import com.betterlife.antifragile.databinding.FragmentEmotionSelectBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
+import com.betterlife.antifragile.presentation.ui.diary.adapter.EmotionSelectAdapter
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.EmotionSelectViewModel
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.EmotionSelectViewModelFactory
 import com.betterlife.antifragile.presentation.util.Constants
@@ -27,12 +27,14 @@ class EmotionSelectFragment : BaseFragment<FragmentEmotionSelectBinding>(
     private lateinit var emotionSelectViewModel: EmotionSelectViewModel
     private lateinit var emotionSelectAdapter: EmotionSelectAdapter
     private var diaryDate: String? = null
-    private lateinit var selectedEmotion: EmoticonThemeEmoticon
+    private lateinit var selectedEmotion: EmotionSelectData
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        diaryDate = getDiaryDateFromArguments()
+        val diaryAnalysisData = getDiaryAnalysisData()
+        diaryDate = diaryAnalysisData.diaryDate
+
         val emoticonThemeId = getEmoticonThemeIdFromArguments()
         val initialEmotion = getEmotionFromArguments().name
 
@@ -41,7 +43,13 @@ class EmotionSelectFragment : BaseFragment<FragmentEmotionSelectBinding>(
         setupObservers(emoticonThemeId, initialEmotion)
 
         binding.btnSave.setOnClickListener {
-            // TODO: 감정 선택 완료 버튼 클릭 처리
+            val action = EmotionSelectFragmentDirections
+                .actionNavEmotionSelectToNavEmoticonRecommend(
+                    diaryAnalysisData,
+                    selectedEmotion.emotionEnum
+                )
+            Log.d("EmotionSelectFragment", "Selected emotion: $selectedEmotion")
+            findNavController().navigate(action)
         }
     }
 
@@ -76,8 +84,8 @@ class EmotionSelectFragment : BaseFragment<FragmentEmotionSelectBinding>(
                 Status.SUCCESS -> {
                     dismissLoading()
                     response.data?.let { emoticons ->
-                        val sortedEmoticons = emoticons.emoticons.sortedBy { emotion ->
-                            Emotion.valueOf(emotion.emotion).ordinal
+                        val sortedEmoticons = emoticons.sortedBy { emotion ->
+                            emotion.emotionEnum.ordinal
                         }
                         emotionSelectAdapter = EmotionSelectAdapter(sortedEmoticons, { selectedEmoticon ->
                             selectedEmotion = selectedEmoticon
@@ -97,16 +105,13 @@ class EmotionSelectFragment : BaseFragment<FragmentEmotionSelectBinding>(
         emotionSelectViewModel.getEmoticons(emoticonThemeId)
     }
 
-    private fun getDiaryDateFromArguments(): String {
-        return EmotionSelectFragmentArgs.fromBundle(requireArguments()).diaryDate
-    }
+    private fun getEmoticonThemeIdFromArguments() =
+        EmotionSelectFragmentArgs.fromBundle(requireArguments()).emoticonThemeId
 
-    private fun getEmoticonThemeIdFromArguments(): String {
-        return EmotionSelectFragmentArgs.fromBundle(requireArguments()).emoticonThemeId
-    }
+    private fun getEmotionFromArguments() =
+        EmotionSelectFragmentArgs.fromBundle(requireArguments()).emotion
 
-    private fun getEmotionFromArguments(): Emotion {
-        return EmotionSelectFragmentArgs.fromBundle(requireArguments()).emotion
-    }
+    private fun getDiaryAnalysisData() =
+        EmotionSelectFragmentArgs.fromBundle(requireArguments()).diaryAnalysisData
 
 }

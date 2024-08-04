@@ -1,4 +1,4 @@
-package com.betterlife.antifragile.presentation.ui.diary
+package com.betterlife.antifragile.presentation.ui.diary.question
 
 import android.os.Bundle
 import android.view.View

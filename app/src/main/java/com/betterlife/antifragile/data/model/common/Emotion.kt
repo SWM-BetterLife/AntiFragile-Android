@@ -16,4 +16,6 @@ enum class Emotion(val toKorean: String) {
     FEAR("공포"),
     ANGER("분노"),
     FATIGUE("피곤"),
+    ERROR("오류"),
+    NOT_SELECTED("미선택");
 }

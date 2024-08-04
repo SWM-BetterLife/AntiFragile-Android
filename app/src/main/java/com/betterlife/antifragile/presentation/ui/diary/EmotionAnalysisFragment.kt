@@ -6,6 +6,7 @@ import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
+import com.betterlife.antifragile.data.model.common.Emotion
 import com.betterlife.antifragile.data.model.diary.QuestionDiary
 import com.betterlife.antifragile.data.model.diary.TextDiary
 import com.betterlife.antifragile.data.model.diary.llm.DiaryAnalysisData
@@ -15,7 +16,9 @@ import com.betterlife.antifragile.presentation.ui.diary.viewmodel.DiaryViewModel
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.DiaryViewModelFactory
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 
-class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(R.layout.fragment_emotion_analysis){
+class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
+    R.layout.fragment_emotion_analysis
+){
 
     private lateinit var diaryViewModel: DiaryViewModel
     private var textDiary: TextDiary? = null
@@ -125,7 +128,10 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(R.l
     private fun setupSaveButton(diaryAnalysisData: DiaryAnalysisData) {
         binding.btnSave.setOnClickListener {
             val action = EmotionAnalysisFragmentDirections
-                .actionNavEmotionAnalysisToNavEmoticonRecommend(diaryAnalysisData)
+                .actionNavEmotionAnalysisToNavEmoticonRecommend(
+                    diaryAnalysisData,
+                    Emotion.NOT_SELECTED
+                )
             findNavController().navigate(action)
         }
     }

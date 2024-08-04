@@ -165,8 +165,8 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
             binding.btnMoveContent.visibility = View.GONE
             binding.btnAddDiary.visibility = View.VISIBLE
             binding.btnAddDiary.setOnClickListener {
-                val today = getCurrentDate()
-                val action = DiaryCalendarFragmentDirections.actionNavCalendarToNavDiaryTypeSelect(today)
+                val action = DiaryCalendarFragmentDirections
+                    .actionNavCalendarToNavDiaryTypeSelect(getCurrentDate())
                 findNavController().navigate(action)
             }
         } else {
@@ -174,7 +174,8 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
             binding.btnAddDiary.visibility = View.GONE
             binding.btnMoveContent.visibility = View.VISIBLE
             binding.btnMoveContent.setOnClickListener {
-                val action = DiaryCalendarFragmentDirections.actionNavCalendarToNavRecommendContent(diaryId)
+                val action = DiaryCalendarFragmentDirections
+                    .actionNavCalendarToNavRecommendContent(getCurrentDate(), false)
                 findNavController().navigate(action)
             }
         }

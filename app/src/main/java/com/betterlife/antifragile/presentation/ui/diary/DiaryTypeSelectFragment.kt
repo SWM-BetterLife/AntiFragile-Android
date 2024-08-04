@@ -38,7 +38,6 @@ class DiaryTypeSelectFragment : BaseFragment<FragmentDiaryTypeSelectBinding>(R.l
         }
     }
 
-    private fun getDiaryDateFromArguments(): String {
-        return TextDiaryCreateFragmentArgs.fromBundle(requireArguments()).diaryDate
-    }
+    private fun getDiaryDateFromArguments() =
+        DiaryTypeSelectFragmentArgs.fromBundle(requireArguments()).diaryDate
 }
