@@ -60,6 +60,7 @@ class EmotionSelectFragment : BaseFragment<FragmentEmotionSelectBinding>(
             showBackButton(true) {
                 findNavController().popBackStack()
             }
+            showLine()
         }
     }
 

@@ -22,6 +22,7 @@ class EmotionFragment : BaseFragment<FragmentEmotionBinding>(R.layout.fragment_e
                 // TODO: 알림 버튼 클릭 처리
                 showCustomToast("알림 버튼 클릭")
             }
+            showLine()
         }
     }
 }

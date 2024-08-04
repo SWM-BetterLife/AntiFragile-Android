@@ -66,6 +66,7 @@ class RecommendEmoticonFragment : BaseFragment<FragmentRecommendEmoticonBinding>
             showBackButton(true) {
                 findNavController().popBackStack()
             }
+            showLine()
         }
     }
 

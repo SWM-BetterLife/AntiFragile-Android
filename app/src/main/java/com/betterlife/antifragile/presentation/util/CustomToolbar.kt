@@ -11,15 +11,11 @@ class CustomToolbar @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
-    private lateinit var binding: LayoutToolbarBinding
-
-    init {
-        binding = LayoutToolbarBinding.inflate(
-            LayoutInflater.from(context),
-            this,
-            true
-        )
-    }
+    private var binding: LayoutToolbarBinding = LayoutToolbarBinding.inflate(
+        LayoutInflater.from(context),
+        this,
+        true
+    )
 
     fun setMainTitle(title: String) {
         binding.tvMainTitle.text = title
@@ -49,11 +45,16 @@ class CustomToolbar @JvmOverloads constructor(
         }
     }
 
+    fun showLine() {
+        binding.line.visibility = View.VISIBLE
+    }
+
     fun reset() {
         binding.tvMainTitle.visibility = View.GONE
         binding.tvSubTitle.visibility = View.GONE
         binding.btnBack.visibility = View.GONE
         binding.btnNotification.visibility = View.GONE
         binding.btnEdit.visibility = View.GONE
+        binding.line.visibility = View.GONE
     }
 }

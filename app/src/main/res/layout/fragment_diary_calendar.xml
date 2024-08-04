@@ -59,6 +59,13 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <ImageView
+            android:id="@+id/lo_line"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/line"
+            app:layout_constraintTop_toBottomOf="@id/lo_calendar_header" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/lo_calendar_weekdays"
             android:layout_width="match_parent"
@@ -67,7 +74,7 @@
             android:paddingBottom="10dp"
             android:paddingHorizontal="16dp"
             android:background="@color/light_gray"
-            app:layout_constraintTop_toBottomOf="@id/lo_calendar_header">
+            app:layout_constraintTop_toBottomOf="@id/lo_line">
 
             <TextView
                 android:id="@+id/tv_sunday"
@@ -163,6 +170,13 @@
             android:background="@color/light_gray"
             app:layout_constraintTop_toBottomOf="@id/lo_calendar_weekdays"
             app:layout_constraintBottom_toTopOf="@id/lo_bottom" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/line"
+            app:layout_constraintTop_toBottomOf="@id/rv_calendar" />
+
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/lo_bottom"
