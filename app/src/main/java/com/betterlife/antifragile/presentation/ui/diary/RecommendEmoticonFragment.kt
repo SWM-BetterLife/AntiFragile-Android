@@ -22,6 +22,7 @@ import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.diary.adapter.EmoticonByEmotionAdapter
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.RecommendEmoticonViewModelFactory
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.RecommendEmoticonViewModel
+import com.betterlife.antifragile.presentation.ui.main.MainActivity
 import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.DateUtil
@@ -179,6 +180,7 @@ class RecommendEmoticonFragment : BaseFragment<FragmentRecommendEmoticonBinding>
         val action = RecommendEmoticonFragmentDirections
             .actionNavEmoticonRecommendToNavRecommendContent(diaryDate!!, true)
         findNavController().navigate(action)
+        (activity as MainActivity).showBottomNavigation()
     }
 
     private fun navigateToEmotionSelect() {

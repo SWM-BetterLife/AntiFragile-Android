@@ -12,6 +12,7 @@ import com.betterlife.antifragile.databinding.FragmentTextDiaryCreateBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.DiaryViewModel
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.DiaryViewModelFactory
+import com.betterlife.antifragile.presentation.ui.main.MainActivity
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.DateUtil
 
@@ -55,6 +56,8 @@ class TextDiaryCreateFragment : BaseFragment<FragmentTextDiaryCreateBinding>(
                 }
             }
         }
+
+        (activity as MainActivity).hideBottomNavigation()
     }
 
     override fun configureToolbar(toolbar: CustomToolbar) {
@@ -63,6 +66,7 @@ class TextDiaryCreateFragment : BaseFragment<FragmentTextDiaryCreateBinding>(
             setSubTitle(DateUtil.convertDateFormat(diaryDate!!))
             showBackButton(true) {
                 findNavController().popBackStack()
+                (activity as MainActivity).showBottomNavigation()
             }
         }
     }

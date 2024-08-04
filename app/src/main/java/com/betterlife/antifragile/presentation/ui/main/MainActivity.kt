@@ -2,6 +2,7 @@ package com.betterlife.antifragile.presentation.ui.main
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -97,5 +98,15 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                 navController.navigate(action)
             }
         })
+    }
+
+    fun showBottomNavigation() {
+        binding.bottomNavigation.visibility = View.VISIBLE
+        binding.btnAddDiary.visibility = View.VISIBLE
+    }
+
+    fun hideBottomNavigation() {
+        binding.bottomNavigation.visibility = View.GONE
+        binding.btnAddDiary.visibility = View.GONE
     }
 }
