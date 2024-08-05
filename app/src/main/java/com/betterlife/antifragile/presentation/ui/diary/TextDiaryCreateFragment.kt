@@ -10,13 +10,19 @@ import com.betterlife.antifragile.databinding.FragmentTextDiaryCreateBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.DiaryViewModel
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.DiaryViewModelFactory
+import com.betterlife.antifragile.presentation.util.CustomToolbar
+import com.betterlife.antifragile.presentation.util.DateUtil
 
 class TextDiaryCreateFragment : BaseFragment<FragmentTextDiaryCreateBinding>(R.layout.fragment_text_diary_create) {
 
     private lateinit var diaryViewModel: DiaryViewModel
+    private var diaryDate: String? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        diaryDate = getDiaryDateFromArguments()
+        showCustomToast(diaryDate!!)
 
         setupViewModels()
 
@@ -24,7 +30,7 @@ class TextDiaryCreateFragment : BaseFragment<FragmentTextDiaryCreateBinding>(R.l
             // TODO: 사용자가 입력한 값으로 대체
             val textDiary = TextDiary(
                 content = "임시 내용",
-                date = "2024-07-23",
+                date = diaryDate!!
             )
 
             // 텍스트 일기 삽입 및 ID 반환
@@ -42,6 +48,20 @@ class TextDiaryCreateFragment : BaseFragment<FragmentTextDiaryCreateBinding>(R.l
                 }
             }
         }
+    }
+
+    override fun configureToolbar(toolbar: CustomToolbar) {
+        toolbar.apply {
+            reset()
+            setSubTitle(DateUtil.convertDateFormat(diaryDate!!))
+            showBackButton(true) {
+                findNavController().popBackStack()
+            }
+        }
+    }
+
+    private fun getDiaryDateFromArguments(): String {
+        return TextDiaryCreateFragmentArgs.fromBundle(requireArguments()).diaryDate
     }
 
     private fun setupViewModels() {

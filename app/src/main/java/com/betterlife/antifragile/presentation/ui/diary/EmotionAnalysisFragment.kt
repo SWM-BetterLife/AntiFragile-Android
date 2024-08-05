@@ -13,6 +13,7 @@ import com.betterlife.antifragile.databinding.FragmentEmotionAnalysisBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.DiaryViewModel
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.DiaryViewModelFactory
+import com.betterlife.antifragile.presentation.util.CustomToolbar
 
 class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(R.layout.fragment_emotion_analysis){
 
@@ -25,7 +26,6 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(R.l
 
         val diaryId = getDiaryIdFromArguments()
         val diaryType = getDiaryTypeFromArguments()
-        val diaryAnalysisData: DiaryAnalysisData
 
         // ID가 음수인 경우 예외 처리
         if (diaryId < 0) {
@@ -76,6 +76,12 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(R.l
 
     }
 
+    override fun configureToolbar(toolbar: CustomToolbar) {
+        toolbar.apply {
+            reset()
+        }
+    }
+
     private fun getDiaryIdFromArguments() =
         EmotionAnalysisFragmentArgs.fromBundle(requireArguments()).diaryId
 
@@ -118,9 +124,8 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(R.l
 
     private fun setupSaveButton(diaryAnalysisData: DiaryAnalysisData) {
         binding.btnSave.setOnClickListener {
-            // 값 전달 및 Fragment 전환
             val action = EmotionAnalysisFragmentDirections
-                .acitonNavEmotionAnalysisToNavEmoticonRecommend(diaryAnalysisData)
+                .actionNavEmotionAnalysisToNavEmoticonRecommend(diaryAnalysisData)
             findNavController().navigate(action)
         }
     }

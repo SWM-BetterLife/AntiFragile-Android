@@ -11,8 +11,20 @@
         android:label="Calendar"
         tools:layout="@layout/fragment_diary_calendar">
         <action
-            android:id="@+id/action_nav_calendar_to_nav_diary_create"
-            app:destination="@id/nav_text_diary_create"/>
+            android:id="@+id/action_nav_calendar_to_nav_diary_type_select"
+            app:destination="@id/nav_diary_type_select"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_diary_type_select"
+        android:name="com.betterlife.antifragile.presentation.ui.diary.DiaryTypeSelectFragment"
+        tools:layout="diaryTypeSelect">
+        <action
+            android:id="@+id/action_nav_diary_type_select_to_nav_text_diary_create"
+            app:destination="@id/nav_text_diary_create" />
+        <argument
+            android:name="diaryDate"
+            app:argType="string" />
     </fragment>
 
     <fragment
@@ -23,6 +35,9 @@
         <action
             android:id="@+id/action_nav_text_diary_create_to_nav_emotion_analysis"
             app:destination="@id/nav_emotion_analysis"/>
+        <argument
+            android:name="diaryDate"
+            app:argType="string" />
     </fragment>
 
     <fragment
@@ -31,7 +46,7 @@
         android:label="EmotionAnalysis"
         tools:layout="@layout/fragment_emotion_analysis">
         <action
-            android:id="@+id/aciton_nav_emotion_analysis_to_nav_emoticon_recommend"
+            android:id="@+id/action_nav_emotion_analysis_to_nav_emoticon_recommend"
             app:destination="@id/nav_emoticon_recommend"/>
         <argument
             android:name="diaryId"
@@ -69,5 +84,15 @@
         android:name="com.betterlife.antifragile.presentation.ui.mypage.MyPageFragment"
         android:label="MyPage"
         tools:layout="@layout/fragment_my_page"/>
+
+    <action
+        android:id="@+id/action_to_nav_emotion"
+        app:destination="@id/nav_emotion">
+    </action>
+
+    <action
+        android:id="@+id/action_to_nav_diary_type_select"
+        app:destination="@id/nav_diary_type_select">
+    </action>
 
 </navigation>

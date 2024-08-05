@@ -4,22 +4,26 @@
 
     <item
         android:id="@+id/nav_calendar"
-        android:title="@string/bottom_nav_calendar"
-        app:showAsAction="ifRoom|withText" />
+        android:icon="@drawable/nav_calendar_selector"
+        android:title="@string/bottom_nav_calendar" />
 
     <item
         android:id="@+id/nav_emotion"
         android:title="@string/bottom_nav_emotion"
-        app:showAsAction="ifRoom|withText" />
+        android:icon="@drawable/nav_emotion_selector" />
+    <item
+        android:id="@+id/nav_placeholder"
+        android:title=""
+        android:enabled="false"/>
 
     <item
         android:id="@+id/nav_content"
         android:title="@string/bottom_nav_content"
-        app:showAsAction="ifRoom|withText" />
+        android:icon="@drawable/nav_content_selector" />
 
     <item
         android:id="@+id/nav_my_page"
         android:title="@string/bottom_nav_my_page"
-        app:showAsAction="ifRoom|withText" />
+        android:icon="@drawable/nav_mypage_selector" />
 
 </menu>

@@ -4,6 +4,7 @@
     <string name="bottom_nav_emotion">내 감정</string>
     <string name="bottom_nav_content">내 콘텐츠</string>
     <string name="bottom_nav_my_page">마이페이지</string>
+    <string name="add_diary">일기 추가</string>
     <string name="antirfagile_logo">antirfagile 로고</string>
     <string name="naver_login">Naver 로그인</string>
     <string name="kakao_login">Kakao 로그인</string>
@@ -16,4 +17,5 @@
     <string name="friday">금</string>
     <string name="saturday">토</string>
     <string name="sunday">일</string>
+    <string name="modify"><u>수정</u></string>
 </resources>

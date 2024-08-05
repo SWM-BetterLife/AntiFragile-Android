@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.config.RetrofitInterface
 import com.betterlife.antifragile.data.model.base.Status
@@ -17,15 +18,19 @@ import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.DiaryAnalysisViewModel
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.DiaryAnalysisViewModelFactory
 import com.betterlife.antifragile.presentation.util.Constants
+import com.betterlife.antifragile.presentation.util.CustomToolbar
+import com.betterlife.antifragile.presentation.util.DateUtil
 
 class DiaryRecommendEmoticonFragment : BaseFragment<FragmentDiaryRecommendEmoticonBinding>(R.layout.fragment_diary_recommend_emoticon) {
 
     private lateinit var diaryAnalysisViewModel: DiaryAnalysisViewModel
+    private var diaryDate: String? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val diaryAnalysisData = getDiaryAnalysisData()
+        diaryDate = diaryAnalysisData.diaryDate
 
         setupViewModels()
 
@@ -47,6 +52,16 @@ class DiaryRecommendEmoticonFragment : BaseFragment<FragmentDiaryRecommendEmotic
             val request = createDiaryAnalysisRequest(diaryAnalysisData, emoticon)
             // 서버에 감정 분석 저장
             diaryAnalysisViewModel.saveDiaryAnalysis(request)
+        }
+    }
+
+    override fun configureToolbar(toolbar: CustomToolbar) {
+        toolbar.apply {
+            reset()
+            setSubTitle(DateUtil.convertDateFormat(diaryDate!!))
+            showBackButton(true) {
+                findNavController().popBackStack()
+            }
         }
     }
 
