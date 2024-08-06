@@ -21,6 +21,12 @@ class DiaryCalendarViewModel(
     private val _currentYearMonth = MutableLiveData<Pair<Int, Int>>()
     val currentYearMonth: LiveData<Pair<Int, Int>> = _currentYearMonth
 
+    private val _todayDiaryId = MutableLiveData<Int?>()
+    val todayDiaryId: LiveData<Int?> = _todayDiaryId
+
+    private val _selectedDate = MutableLiveData<String>()
+    val selectedDate: LiveData<String> = _selectedDate
+
     init {
         _calendarResponse.value = BaseResponse(Status.INIT, null, null)
         _currentYearMonth.value = Pair(LocalDate.now().year, LocalDate.now().monthValue)
@@ -33,6 +39,7 @@ class DiaryCalendarViewModel(
             _calendarResponse.postValue(response)
             _calendarResponse.value = response
             _currentYearMonth.value = Pair(year, month)
+            updateTodayDiaryId()
         }
     }
 
@@ -52,7 +59,18 @@ class DiaryCalendarViewModel(
         }
     }
 
-    fun getDiaryIdForDate(date: String): Int? {
-        return _calendarResponse.value?.data?.find { it.date == date }?.diaryId
+    fun setTodayDate(date: String) {
+        _selectedDate.value = date
+        updateTodayDiaryId()
+    }
+
+    fun setSelectedDate(date: String) {
+        _selectedDate.value = date
+    }
+
+    private fun updateTodayDiaryId() {
+        _selectedDate.value?.let { date ->
+            _todayDiaryId.value = _calendarResponse.value?.data?.find { it.date == date }?.diaryId
+        }
     }
 }

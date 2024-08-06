@@ -2,6 +2,7 @@ package com.betterlife.antifragile.config
 
 import com.betterlife.antifragile.data.remote.ContentApiService
 import com.betterlife.antifragile.data.remote.DiaryAnalysisApiService
+import com.betterlife.antifragile.data.remote.EmoticonThemeApiService
 import com.betterlife.antifragile.presentation.util.Constants
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -27,7 +28,6 @@ object RetrofitInterface {
         return builder.build()
     }
 
-    // DiaryAnalysisApiService 생성 함수
     fun createDiaryAnalysisApiService(token: String): DiaryAnalysisApiService {
         return Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
@@ -37,7 +37,15 @@ object RetrofitInterface {
             .create(DiaryAnalysisApiService::class.java)
     }
 
-    // ContentApiService 생성 함수
+    fun createEmoticonThemeApiService(token: String): EmoticonThemeApiService {
+        return Retrofit.Builder()
+            .baseUrl(Constants.BASE_URL)
+            .client(getClient(token))
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(EmoticonThemeApiService::class.java)
+    }
+
     fun createContentApiService(token: String): ContentApiService {
         return Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)

@@ -1,5 +1,6 @@
 package com.betterlife.antifragile.presentation.ui.calendar
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -10,6 +11,7 @@ import com.betterlife.antifragile.R
 import com.betterlife.antifragile.config.RetrofitInterface
 import com.betterlife.antifragile.data.local.DiaryDatabase
 import com.betterlife.antifragile.data.model.base.Status
+import com.betterlife.antifragile.data.model.diary.DiaryType
 import com.betterlife.antifragile.data.repository.CalendarRepository
 import com.betterlife.antifragile.databinding.FragmentDiaryCalendarBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
@@ -39,11 +41,7 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
 
         // TODO: 날짜 클릭 시 해당 일기 상세 화면으로 이동하는 로직 구현
 
-        binding.btnNext.setOnClickListener {
-            val todayDate = getCurrentDate()
-            val action = DiaryCalendarFragmentDirections.actionNavCalendarToNavDiaryTypeSelect(todayDate)
-            findNavController().navigate(action)
-        }
+        observeTodayDiaryId()
     }
 
     override fun configureToolbar(toolbar: CustomToolbar) {
@@ -71,16 +69,37 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
 
     private fun setupRecyclerView() {
         diaryCalendarAdapter = DiaryCalendarAdapter { dateModel ->
-            // 날짜 클릭 시 처리
-            dateModel.diaryId?.let { diaryId ->
-                // diaryId를 사용하여 일기 상세 화면으로 이동하는 로직
-                // 예: navigateToDiaryDetail(diaryId)
+            diaryCalendarViewModel.setSelectedDate(dateModel.date)
+            if (dateModel.diaryId == null && dateModel.date == getCurrentDate()) {
+                findNavController().navigate(
+                    DiaryCalendarFragmentDirections.actionNavCalendarToNavDiaryTypeSelect(dateModel.date)
+                )
+            } else {
+                when (dateModel.diaryType) {
+                    DiaryType.TEXT -> {
+                        val action = DiaryCalendarFragmentDirections.actionNavCalendarToNavTextDiaryDetail(
+                            dateModel.date,
+                            dateModel.diaryId!!
+                        )
+                        findNavController().navigate(action)
+                    }
+                    DiaryType.QUESTION -> {
+                        val action = DiaryCalendarFragmentDirections.actionNavCalendarToNavQuestionDiaryDetail(
+                            dateModel.date,
+                            dateModel.diaryId!!
+                        )
+                    }
+                    else -> {
+                        // 일기 미작성인 경우
+                    }
+                }
             }
         }
         binding.rvCalendar.layoutManager = GridLayoutManager(requireContext(), 7)
         binding.rvCalendar.adapter = diaryCalendarAdapter
     }
 
+    @SuppressLint("DefaultLocale")
     private fun setupObservers() {
         diaryCalendarViewModel.calendarResponse.observe(viewLifecycleOwner) { response ->
             when (response.status) {
@@ -111,6 +130,14 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
                 binding.tvMonthYear.text = String.format("%d.%d", year, month)
             }
         }
+
+        diaryCalendarViewModel.selectedDate.observe(viewLifecycleOwner) { selectedDate ->
+            diaryCalendarAdapter.setSelectedDate(selectedDate)
+        }
+
+        diaryCalendarViewModel.todayDiaryId.observe(viewLifecycleOwner) { diaryId ->
+            updateDiaryButtons(diaryId)
+        }
     }
 
     private fun setupListeners() {
@@ -126,6 +153,32 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
     private fun loadCurrentMonth() {
         val calendar = Calendar.getInstance()
         diaryCalendarViewModel.loadCalendarDates(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1)
+    }
+
+    private fun observeTodayDiaryId() {
+        diaryCalendarViewModel.setTodayDate(getCurrentDate())
+    }
+
+    private fun updateDiaryButtons(diaryId: Int?) {
+        if (diaryId == null) {
+            // 오늘 일기 미작성 시
+            binding.btnMoveContent.visibility = View.GONE
+            binding.btnAddDiary.visibility = View.VISIBLE
+            binding.btnAddDiary.setOnClickListener {
+                val action = DiaryCalendarFragmentDirections
+                    .actionNavCalendarToNavDiaryTypeSelect(getCurrentDate())
+                findNavController().navigate(action)
+            }
+        } else {
+            // 오늘 일기 작성 완료 시
+            binding.btnAddDiary.visibility = View.GONE
+            binding.btnMoveContent.visibility = View.VISIBLE
+            binding.btnMoveContent.setOnClickListener {
+                val action = DiaryCalendarFragmentDirections
+                    .actionNavCalendarToNavRecommendContent(getCurrentDate(), false)
+                findNavController().navigate(action)
+            }
+        }
     }
 
     private fun getCurrentDate(): String {

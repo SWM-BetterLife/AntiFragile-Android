@@ -35,10 +35,10 @@ class DiaryTypeSelectFragment : BaseFragment<FragmentDiaryTypeSelectBinding>(R.l
             showBackButton(true) {
                 findNavController().popBackStack()
             }
+            showLine()
         }
     }
 
-    private fun getDiaryDateFromArguments(): String {
-        return TextDiaryCreateFragmentArgs.fromBundle(requireArguments()).diaryDate
-    }
+    private fun getDiaryDateFromArguments() =
+        DiaryTypeSelectFragmentArgs.fromBundle(requireArguments()).diaryDate
 }

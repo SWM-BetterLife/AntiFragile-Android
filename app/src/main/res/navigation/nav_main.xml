@@ -13,6 +13,53 @@
         <action
             android:id="@+id/action_nav_calendar_to_nav_diary_type_select"
             app:destination="@id/nav_diary_type_select"/>
+        <action
+            android:id="@+id/action_nav_calendar_to_nav_recommend_content"
+            app:destination="@id/nav_recommend_content"/>
+        <action
+            android:id="@+id/action_nav_calendar_to_nav_text_diary_detail"
+            app:destination="@id/nav_text_diary_detail"/>
+        <action
+            android:id="@+id/action_nav_calendar_to_nav_question_diary_detail"
+            app:destination="@id/nav_question_diary_detail"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_text_diary_detail"
+        android:name="com.betterlife.antifragile.presentation.ui.diary.text.TextDiaryDetailFragment"
+        android:label="TextDiaryDetail">
+        <argument
+            android:name="diaryId"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="diaryDate"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_question_diary_detail"
+        android:name="com.betterlife.antifragile.presentation.ui.diary.question.QuestionDiaryDetailFragment"
+        android:label="QuestionDiaryDetail">
+        <argument
+            android:name="diaryId"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="diaryDate"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_recommend_content"
+        android:name="com.betterlife.antifragile.presentation.ui.content.RecommendContentFragment"
+        android:label="RecommendContent">
+        <argument
+            android:name="diaryDate"
+            app:argType="string" />
+        <argument
+            android:name="isNewDiary"
+            app:argType="boolean" />
     </fragment>
 
     <fragment
@@ -29,7 +76,7 @@
 
     <fragment
         android:id="@+id/nav_text_diary_create"
-        android:name="com.betterlife.antifragile.presentation.ui.diary.TextDiaryCreateFragment"
+        android:name="com.betterlife.antifragile.presentation.ui.diary.text.TextDiaryCreateFragment"
         android:label="TextDiaryCreate"
         tools:layout="@layout/fragment_text_diary_create">
         <action
@@ -59,9 +106,37 @@
 
     <fragment
         android:id="@+id/nav_emoticon_recommend"
-        android:name="com.betterlife.antifragile.presentation.ui.diary.DiaryRecommendEmoticonFragment"
+        android:name="com.betterlife.antifragile.presentation.ui.diary.RecommendEmoticonFragment"
         android:label="EmotionRecommend"
-        tools:layout="@layout/fragment_diary_recommend_emoticon">
+        tools:layout="@layout/fragment_recommend_emoticon">
+        <action
+            android:id="@+id/action_nav_emoticon_recommend_to_nav_emotion_select"
+            app:destination="@id/nav_emotion_select" />
+        <action
+            android:id="@+id/action_nav_emoticon_Recommend_to_nav_recommend_content"
+            app:destination="@id/nav_recommend_content" />
+        <argument
+            android:name="diaryAnalysisData"
+            app:argType="com.betterlife.antifragile.data.model.diary.llm.DiaryAnalysisData" />
+        <argument
+            android:name="emotion"
+            app:argType="com.betterlife.antifragile.data.model.common.Emotion" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_emotion_select"
+        android:name="com.betterlife.antifragile.presentation.ui.diary.EmotionSelectFragment"
+        android:label="EmotionSelect"
+        tools:layout="@layout/fragment_emotion_select">
+        <action
+            android:id="@+id/action_nav_emotion_select_to_nav_emoticon_recommend"
+            app:destination="@id/nav_emoticon_recommend"/>
+        <argument
+            android:name="emoticonThemeId"
+            app:argType="string" />
+        <argument
+            android:name="emotion"
+            app:argType="com.betterlife.antifragile.data.model.common.Emotion" />
         <argument
             android:name="diaryAnalysisData"
             app:argType="com.betterlife.antifragile.data.model.diary.llm.DiaryAnalysisData" />
