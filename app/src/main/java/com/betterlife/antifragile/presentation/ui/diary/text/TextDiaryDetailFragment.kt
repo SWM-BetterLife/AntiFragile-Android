@@ -36,6 +36,7 @@ class TextDiaryDetailFragment: BaseFragment<FragmentTextDiaryCreateBinding>(
             showEditButton("수정") {
                 // TODO: 수정 버튼 클릭 처리
             }
+            showLine()
         }
     }
 
