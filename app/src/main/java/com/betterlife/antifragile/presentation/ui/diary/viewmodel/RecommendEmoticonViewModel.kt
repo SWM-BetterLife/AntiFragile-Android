@@ -37,10 +37,24 @@ class RecommendEmoticonViewModel(
         }
     }
 
-    fun saveDiaryAnalysis(request: DiaryAnalysisCreateRequest) {
+    fun saveDiaryAnalysis(request: DiaryAnalysisCreateRequest, date: String?) {
+
+        if (date != null) {
+            updateDiaryAnalysis(date, request)
+            return
+        }
         viewModelScope.launch {
             _saveDiaryResponse.value = BaseResponse(Status.LOADING, null, null)
             val response = diaryAnalysisRepository.saveDiaryAnalysis(request)
+            _saveDiaryResponse.postValue(response)
+            _saveDiaryResponse.value = response
+        }
+    }
+
+    private fun updateDiaryAnalysis(date: String, request: DiaryAnalysisCreateRequest) {
+        viewModelScope.launch {
+            _saveDiaryResponse.value = BaseResponse(Status.LOADING, null, null)
+            val response = diaryAnalysisRepository.updateDiaryAnalysis(date, request)
             _saveDiaryResponse.postValue(response)
             _saveDiaryResponse.value = response
         }

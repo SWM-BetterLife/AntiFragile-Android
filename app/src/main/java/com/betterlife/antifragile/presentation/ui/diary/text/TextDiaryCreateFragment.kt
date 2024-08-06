@@ -89,8 +89,7 @@ class TextDiaryCreateFragment : BaseFragment<FragmentTextDiaryCreateBinding>(
                     val action =
                         TextDiaryCreateFragmentDirections
                             .actionNavTextDiaryCreateToNavEmotionAnalysis(
-                            "TEXT",
-                            diaryId.toInt()
+                            "TEXT", false, diaryId.toInt()
                         )
                     findNavController().navigate(action)
                 }, 1000)
@@ -118,7 +117,8 @@ class TextDiaryCreateFragment : BaseFragment<FragmentTextDiaryCreateBinding>(
                                     .actionNavTextDiaryCreateToNavEmoticonRecommend(
                                         getDiaryAnalysisData(),
                                         Emotion.fromString(it.emoticonInfo?.emotion),
-                                        it.emoticonInfo?.emoticonThemeId ?: ""
+                                        it.emoticonInfo?.emoticonThemeId ?: "",
+                                        true
                                     )
                             findNavController().navigate(action)
                         },
@@ -127,6 +127,7 @@ class TextDiaryCreateFragment : BaseFragment<FragmentTextDiaryCreateBinding>(
                                 TextDiaryCreateFragmentDirections
                                     .actionNavTextDiaryCreateToNavEmotionAnalysis(
                                         "TEXT",
+                                        true,
                                         it.id
                                     )
                             findNavController().navigate(action)

@@ -43,11 +43,13 @@ class RecommendEmoticonFragment : BaseFragment<FragmentRecommendEmoticonBinding>
         super.onViewCreated(view, savedInstanceState)
 
         val diaryAnalysisData = getDiaryAnalysisData()
+        val emoticonThemeId = getEmoticonThemeId()
         diaryDate = diaryAnalysisData.diaryDate
 
         setupViewModels()
         setupObservers()
         setupViewPager()
+        Log.d("RecommendEmoticonFragment", "$emoticonThemeId")
         setupButtons()
 
         emotion = getEmotion()
@@ -175,7 +177,12 @@ class RecommendEmoticonFragment : BaseFragment<FragmentRecommendEmoticonBinding>
             emotion = emotion!!.name
         )
         val request = createDiaryAnalysisRequest(diaryAnalysisData, emoticon)
-        recommendEmoticonViewModel.saveDiaryAnalysis(request)
+        if (getIsUpdate()) {
+            recommendEmoticonViewModel.saveDiaryAnalysis(request, diaryDate)
+        } else {
+            recommendEmoticonViewModel.saveDiaryAnalysis(request, null)
+
+        }
 
         val action = RecommendEmoticonFragmentDirections
             .actionNavEmoticonRecommendToNavRecommendContent(diaryDate!!, true)
@@ -187,7 +194,8 @@ class RecommendEmoticonFragment : BaseFragment<FragmentRecommendEmoticonBinding>
         val action = RecommendEmoticonFragmentDirections.actionNavEmoticonRecommendToNavEmotionSelect(
             emoticonThemeId = emoticonAdapter.getSelectedEmoticon(selectedPosition).emoticonThemeId,
             emotion = emotion!!,
-            diaryAnalysisData = getDiaryAnalysisData()
+            diaryAnalysisData = getDiaryAnalysisData(),
+            getIsUpdate()
         )
         findNavController().navigate(action)
     }
@@ -202,6 +210,12 @@ class RecommendEmoticonFragment : BaseFragment<FragmentRecommendEmoticonBinding>
 
     private fun getEmotion() =
         RecommendEmoticonFragmentArgs.fromBundle(requireArguments()).emotion
+
+    private fun getEmoticonThemeId() =
+        RecommendEmoticonFragmentArgs.fromBundle(requireArguments()).emoticonThemeId
+
+    private fun getIsUpdate() =
+        RecommendEmoticonFragmentArgs.fromBundle(requireArguments()).isUpdate
 
     private fun setStatusDiaryAnalysisSave() {
         recommendEmoticonViewModel.saveDiaryResponse.observe(viewLifecycleOwner) { response ->

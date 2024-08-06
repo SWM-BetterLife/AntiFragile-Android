@@ -47,7 +47,8 @@ class EmotionSelectFragment : BaseFragment<FragmentEmotionSelectBinding>(
                 .actionNavEmotionSelectToNavEmoticonRecommend(
                     diaryAnalysisData,
                     selectedEmotion.emotionEnum,
-                    null
+                    emoticonThemeId,
+                    getIsUpdateFromArguments()
                 )
             Log.d("EmotionSelectFragment", "Selected emotion: $selectedEmotion")
             findNavController().navigate(action)
@@ -115,5 +116,8 @@ class EmotionSelectFragment : BaseFragment<FragmentEmotionSelectBinding>(
 
     private fun getDiaryAnalysisData() =
         EmotionSelectFragmentArgs.fromBundle(requireArguments()).diaryAnalysisData
+
+    private fun getIsUpdateFromArguments() =
+        EmotionSelectFragmentArgs.fromBundle(requireArguments()).isUpdate
 
 }

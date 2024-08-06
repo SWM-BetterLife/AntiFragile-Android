@@ -5,11 +5,8 @@ import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.TextView
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.databinding.DialogSelectBinding
 
