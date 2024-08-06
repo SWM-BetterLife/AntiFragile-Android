@@ -46,7 +46,8 @@ class EmotionSelectFragment : BaseFragment<FragmentEmotionSelectBinding>(
             val action = EmotionSelectFragmentDirections
                 .actionNavEmotionSelectToNavEmoticonRecommend(
                     diaryAnalysisData,
-                    selectedEmotion.emotionEnum
+                    selectedEmotion.emotionEnum,
+                    null
                 )
             Log.d("EmotionSelectFragment", "Selected emotion: $selectedEmotion")
             findNavController().navigate(action)

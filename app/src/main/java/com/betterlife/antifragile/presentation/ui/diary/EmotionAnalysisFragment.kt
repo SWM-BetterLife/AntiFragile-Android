@@ -130,7 +130,8 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
             val action = EmotionAnalysisFragmentDirections
                 .actionNavEmotionAnalysisToNavEmoticonRecommend(
                     diaryAnalysisData,
-                    Emotion.NOT_SELECTED
+                    Emotion.NOT_SELECTED,
+                    null
                 )
             findNavController().navigate(action)
         }

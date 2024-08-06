@@ -19,7 +19,9 @@ class DiaryTypeSelectFragment : BaseFragment<FragmentDiaryTypeSelectBinding>(R.l
         diaryDate = getDiaryDateFromArguments()
 
         binding.btnTextType.setOnClickListener {
-            val action = DiaryTypeSelectFragmentDirections.actionNavDiaryTypeSelectToNavTextDiaryCreate(diaryDate!!)
+            val action =
+                DiaryTypeSelectFragmentDirections.actionNavDiaryTypeSelectToNavTextDiaryCreate(
+                    diaryDate!!, null)
             findNavController().navigate(action)
         }
 

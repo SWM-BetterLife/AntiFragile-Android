@@ -11,6 +11,7 @@ import com.betterlife.antifragile.R
 import com.betterlife.antifragile.config.RetrofitInterface
 import com.betterlife.antifragile.data.local.DiaryDatabase
 import com.betterlife.antifragile.data.model.base.Status
+import com.betterlife.antifragile.data.model.diary.TextDiaryDetail
 import com.betterlife.antifragile.data.repository.DiaryAnalysisRepository
 import com.betterlife.antifragile.data.repository.DiaryRepository
 import com.betterlife.antifragile.databinding.FragmentTextDiaryDetailBinding
@@ -28,6 +29,7 @@ class TextDiaryDetailFragment: BaseFragment<FragmentTextDiaryDetailBinding>(
 
     private lateinit var textDiaryViewModel: TextDiaryViewModel
     private var diaryDate: String? = null
+    private var textDiaryDetail: TextDiaryDetail? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -51,7 +53,7 @@ class TextDiaryDetailFragment: BaseFragment<FragmentTextDiaryDetailBinding>(
             showCustomButton(R.drawable.btn_edit) {
                 val action =
                     TextDiaryDetailFragmentDirections.actionNavTextDiaryDetailToNavTextDiaryCreate(
-                    diaryDate!!
+                    diaryDate!!, textDiaryDetail
                 )
                 findNavController().navigate(action)
             }
@@ -82,9 +84,11 @@ class TextDiaryDetailFragment: BaseFragment<FragmentTextDiaryDetailBinding>(
                 Status.SUCCESS -> {
                     dismissLoading()
                     response.data?.let { textDiaryDetail ->
+                        this.textDiaryDetail = textDiaryDetail
                         binding.apply {
                             tvDiaryContent.text = textDiaryDetail.content
-                            tvEmotion.text = textDiaryDetail.emotions?.joinToString { ", " }
+                            Log.d("TextDiaryDetailFragment", "emotions: ${textDiaryDetail.emotions}")
+                            tvEmotion.text = textDiaryDetail.emotions?.joinToString(", ")
                             textDiaryDetail.emoticonInfo?.let { emoticon ->
                                 Glide.with(requireContext())
                                     .load(emoticon.imgUrl)

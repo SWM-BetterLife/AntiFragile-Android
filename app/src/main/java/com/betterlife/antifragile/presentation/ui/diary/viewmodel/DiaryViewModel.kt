@@ -32,6 +32,13 @@ class DiaryViewModel(application: Application) : AndroidViewModel(application) {
         emit(diaryId)
     }
 
+    fun updateTextDiary(id: Int, content: String): LiveData<Int> = liveData {
+        val updatedCount = withContext(Dispatchers.IO) {
+            repository.updateTextDiary(id, content)
+        }
+        emit(updatedCount)
+    }
+
     fun getTextDiaryById(id: Int): LiveData<TextDiary?> = liveData {
         val diary = withContext(Dispatchers.IO) {
             repository.getTextDiaryById(id)
