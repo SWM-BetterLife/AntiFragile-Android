@@ -32,7 +32,7 @@ class DiaryTypeSelectFragment : BaseFragment<FragmentDiaryTypeSelectBinding>(R.l
         toolbar.apply {
             reset()
             setSubTitle(DateUtil.convertDateFormat(diaryDate!!))
-            showBackButton(true) {
+            showBackButton {
                 findNavController().popBackStack()
             }
             showLine()

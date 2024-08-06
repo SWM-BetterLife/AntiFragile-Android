@@ -64,7 +64,7 @@ class RecommendEmoticonFragment : BaseFragment<FragmentRecommendEmoticonBinding>
         toolbar.apply {
             reset()
             setSubTitle(DateUtil.convertDateFormat(diaryDate!!))
-            showBackButton(true) {
+            showBackButton {
                 findNavController().popBackStack()
             }
             showLine()

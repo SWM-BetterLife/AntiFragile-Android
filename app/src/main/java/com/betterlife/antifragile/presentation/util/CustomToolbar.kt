@@ -27,22 +27,17 @@ class CustomToolbar @JvmOverloads constructor(
         binding.tvSubTitle.visibility = View.VISIBLE
     }
 
-    fun showBackButton(show: Boolean, listener: OnClickListener? = null) {
-        binding.btnBack.visibility = if (show) View.VISIBLE else View.GONE
+    fun showBackButton(listener: OnClickListener? = null) {
+        binding.btnBack.visibility = VISIBLE
         binding.btnBack.setOnClickListener(listener)
     }
 
-    fun showNotificationButton(show: Boolean, listener: OnClickListener? = null) {
-        binding.btnNotification.visibility = if (show) View.VISIBLE else View.GONE
-        binding.btnNotification.setOnClickListener(listener)
-    }
-
-    fun showEditButton(text: String, listener: OnClickListener? = null) {
-        binding.btnEdit.apply {
-            visibility = View.VISIBLE
-            setText(text)
-            setOnClickListener(listener)
+    fun showCustomButton(imageResId: Int? = null, listener: View.OnClickListener? = null) {
+        binding.btnCustom.visibility = View.VISIBLE
+        if (imageResId != null) {
+            binding.btnCustom.setImageResource(imageResId)
         }
+        binding.btnCustom.setOnClickListener(listener)
     }
 
     fun showLine() {
@@ -53,8 +48,7 @@ class CustomToolbar @JvmOverloads constructor(
         binding.tvMainTitle.visibility = View.GONE
         binding.tvSubTitle.visibility = View.GONE
         binding.btnBack.visibility = View.GONE
-        binding.btnNotification.visibility = View.GONE
-        binding.btnEdit.visibility = View.GONE
+        binding.btnCustom.visibility = View.GONE
         binding.line.visibility = View.GONE
     }
 }

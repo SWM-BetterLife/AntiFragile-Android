@@ -57,7 +57,7 @@ class EmotionSelectFragment : BaseFragment<FragmentEmotionSelectBinding>(
         toolbar.apply {
             reset()
             setSubTitle(DateUtil.convertDateFormat(diaryDate!!))
-            showBackButton(true) {
+            showBackButton {
                 findNavController().popBackStack()
             }
             showLine()

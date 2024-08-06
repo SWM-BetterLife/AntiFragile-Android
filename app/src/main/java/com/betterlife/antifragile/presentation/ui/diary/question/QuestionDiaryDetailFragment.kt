@@ -30,10 +30,10 @@ class QuestionDiaryDetailFragment: BaseFragment<FragmentQuestionDiaryDetailBindi
         toolbar.apply {
             reset()
             setSubTitle(DateUtil.convertDateFormat(diaryDate!!))
-            showBackButton(true) {
+            showBackButton() {
                 findNavController().popBackStack()
             }
-            showEditButton("수정") {
+            showCustomButton(R.drawable.btn_edit) {
                 // TODO: 수정 버튼 클릭 처리
             }
         }

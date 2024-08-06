@@ -64,7 +64,7 @@ class TextDiaryCreateFragment : BaseFragment<FragmentTextDiaryCreateBinding>(
         toolbar.apply {
             reset()
             setSubTitle(DateUtil.convertDateFormat(diaryDate!!))
-            showBackButton(true) {
+            showBackButton {
                 findNavController().popBackStack()
                 (activity as MainActivity).showBottomNavigation()
             }

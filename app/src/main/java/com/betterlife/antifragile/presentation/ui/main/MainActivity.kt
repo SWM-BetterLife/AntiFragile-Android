@@ -47,9 +47,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         toolbar.apply {
             reset()
             setMainTitle("일기")
-            showNotificationButton(true) {
-                // 알림 버튼 클릭 처리
-            }
         }
     }
 
