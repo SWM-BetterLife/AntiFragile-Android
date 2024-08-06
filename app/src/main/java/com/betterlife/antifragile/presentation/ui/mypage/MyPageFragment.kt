@@ -21,6 +21,7 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
                 // TODO: 알림 버튼 클릭 처리
                 showCustomToast("알림 버튼 클릭")
             }
+            showLine()
         }
     }
 }

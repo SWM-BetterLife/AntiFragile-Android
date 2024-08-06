@@ -1,6 +1,8 @@
-package com.betterlife.antifragile.presentation.ui.diary
+package com.betterlife.antifragile.presentation.ui.diary.text
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -10,10 +12,13 @@ import com.betterlife.antifragile.databinding.FragmentTextDiaryCreateBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.DiaryViewModel
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.DiaryViewModelFactory
+import com.betterlife.antifragile.presentation.ui.main.MainActivity
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.DateUtil
 
-class TextDiaryCreateFragment : BaseFragment<FragmentTextDiaryCreateBinding>(R.layout.fragment_text_diary_create) {
+class TextDiaryCreateFragment : BaseFragment<FragmentTextDiaryCreateBinding>(
+    R.layout.fragment_text_diary_create
+) {
 
     private lateinit var diaryViewModel: DiaryViewModel
     private var diaryDate: String? = null
@@ -27,27 +32,32 @@ class TextDiaryCreateFragment : BaseFragment<FragmentTextDiaryCreateBinding>(R.l
         setupViewModels()
 
         binding.btnSave.setOnClickListener {
-            // TODO: 사용자가 입력한 값으로 대체
             val textDiary = TextDiary(
-                content = "임시 내용",
+                content = binding.etDiaryContent.text.toString(),
                 date = diaryDate!!
             )
 
             // 텍스트 일기 삽입 및 ID 반환
             diaryViewModel.insertTextDiary(textDiary).observe(viewLifecycleOwner) { diaryId ->
                 if (diaryId != -1L) {
-                    val action =
-                        TextDiaryCreateFragmentDirections.actionNavTextDiaryCreateToNavEmotionAnalysis(
-                            "TEXT",
-                            diaryId.toInt()
-                        )
-                    findNavController().navigate(action)
+
+                    binding.tvGetPoint.visibility = View.VISIBLE
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        val action =
+                            TextDiaryCreateFragmentDirections.actionNavTextDiaryCreateToNavEmotionAnalysis(
+                                "TEXT",
+                                diaryId.toInt()
+                            )
+                        findNavController().navigate(action)
+                    }, 1000) // 2000 milliseconds = 2 seconds
+
                 } else {
-                    // 예외 처리: 동일한 날짜의 일기가 이미 존재함을 사용자에게 알림
                     showCustomToast("해당 날짜에 이미 일기가 존재합니다.")
                 }
             }
         }
+
+        (activity as MainActivity).hideBottomNavigation()
     }
 
     override fun configureToolbar(toolbar: CustomToolbar) {
@@ -56,6 +66,7 @@ class TextDiaryCreateFragment : BaseFragment<FragmentTextDiaryCreateBinding>(R.l
             setSubTitle(DateUtil.convertDateFormat(diaryDate!!))
             showBackButton(true) {
                 findNavController().popBackStack()
+                (activity as MainActivity).showBottomNavigation()
             }
         }
     }

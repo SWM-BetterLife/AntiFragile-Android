@@ -1,19 +1,30 @@
 package com.betterlife.antifragile.presentation.ui.main
 
 import android.os.Bundle
+import android.util.Log
+import android.view.View
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.betterlife.antifragile.NavMainDirections
 import com.betterlife.antifragile.R
+import com.betterlife.antifragile.config.RetrofitInterface
+import com.betterlife.antifragile.data.local.DiaryDatabase
+import com.betterlife.antifragile.data.repository.CalendarRepository
 import com.betterlife.antifragile.databinding.ActivityMainBinding
 import com.betterlife.antifragile.presentation.base.BaseActivity
+import com.betterlife.antifragile.presentation.ui.calendar.viewmodel.DiaryCalendarViewModel
+import com.betterlife.antifragile.presentation.ui.calendar.viewmodel.DiaryCalendarViewModelFactory
+import com.betterlife.antifragile.presentation.util.Constants
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
 
+    lateinit var diaryCalendarViewModel: DiaryCalendarViewModel
     lateinit var navController: NavController
     private val initialFragmentIds = mapOf(
         R.id.nav_calendar to R.id.nav_calendar,
@@ -24,8 +35,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setupViewModel()
         setupBottomNavigation()
         setupAddDiaryButton()
+        observeTodayDiaryId()
     }
 
     override fun getLayoutResourceId() = R.layout.activity_main
@@ -38,6 +51,15 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                 // 알림 버튼 클릭 처리
             }
         }
+    }
+
+    private fun setupViewModel() {
+        val diaryDao = DiaryDatabase.getDatabase(applicationContext).diaryDao()
+        val token = Constants.TOKEN
+        val diaryAnalysisApiService = RetrofitInterface.createDiaryAnalysisApiService(token)
+        val calendarRepository = CalendarRepository(diaryDao, diaryAnalysisApiService)
+        val factory = DiaryCalendarViewModelFactory(calendarRepository)
+        diaryCalendarViewModel = ViewModelProvider(this, factory)[DiaryCalendarViewModel::class.java]
     }
 
     private fun setupBottomNavigation() {
@@ -57,21 +79,34 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         }
     }
 
-    private fun isEmotionDiaryWrittenToday(): Boolean {
-        // TODO: 오늘 작성한 감정 일기가 있는지 확인하는 로직 구현
-        return false
-    }
-
     private fun setupAddDiaryButton() {
         binding.btnAddDiary.setOnClickListener {
             val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-            if (isEmotionDiaryWrittenToday()) {
+            diaryCalendarViewModel.setTodayDate(today)
+        }
+    }
+
+    private fun observeTodayDiaryId() {
+        diaryCalendarViewModel.todayDiaryId.observe(this, Observer { diaryId ->
+            val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+            Log.d("MainActivity", "todayDiaryId: $diaryId")
+            if (diaryId != null) {
                 binding.bottomNavigation.selectedItemId = R.id.nav_emotion
             } else {
                 val action = NavMainDirections.actionToNavDiaryTypeSelect(today)
                 binding.bottomNavigation.selectedItemId = R.id.nav_calendar
                 navController.navigate(action)
             }
-        }
+        })
+    }
+
+    fun showBottomNavigation() {
+        binding.bottomNavigation.visibility = View.VISIBLE
+        binding.btnAddDiary.visibility = View.VISIBLE
+    }
+
+    fun hideBottomNavigation() {
+        binding.bottomNavigation.visibility = View.GONE
+        binding.btnAddDiary.visibility = View.GONE
     }
 }
