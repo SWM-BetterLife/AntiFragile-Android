@@ -2,6 +2,7 @@ package com.betterlife.antifragile.data.remote
 
 import com.betterlife.antifragile.data.model.base.BaseResponse
 import com.betterlife.antifragile.data.model.diaryanalysis.request.DiaryAnalysisCreateRequest
+import com.betterlife.antifragile.data.model.diaryanalysis.response.DiaryAnalysisDailyResponse
 import com.betterlife.antifragile.data.model.diaryanalysis.response.DiaryAnalysisEmoticonsResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -22,4 +23,9 @@ interface DiaryAnalysisApiService {
     suspend fun getMonthlyEmoticons(
         @Query("year-month") yearMonth: String
     ): Response<BaseResponse<DiaryAnalysisEmoticonsResponse>>
+
+    @GET("/diary-analyses/emotions")
+    suspend fun getDailyDiaryAnalysis(
+        @Query("date") date: String
+    ): Response<BaseResponse<DiaryAnalysisDailyResponse>>
 }

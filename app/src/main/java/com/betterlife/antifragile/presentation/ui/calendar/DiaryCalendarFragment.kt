@@ -78,15 +78,15 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
                 when (dateModel.diaryType) {
                     DiaryType.TEXT -> {
                         val action = DiaryCalendarFragmentDirections.actionNavCalendarToNavTextDiaryDetail(
-                            dateModel.date,
-                            dateModel.diaryId!!
+                            dateModel.diaryId!!,
+                            dateModel.date
                         )
                         findNavController().navigate(action)
                     }
                     DiaryType.QUESTION -> {
                         val action = DiaryCalendarFragmentDirections.actionNavCalendarToNavQuestionDiaryDetail(
-                            dateModel.date,
-                            dateModel.diaryId!!
+                            dateModel.diaryId!!,
+                            dateModel.date
                         )
                     }
                     else -> {
