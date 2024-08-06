@@ -30,9 +30,9 @@ class DiaryRepository(private val diaryDao: DiaryDao) {
 
     fun getTextDiaryById(
         id: Int)
-    : TextDiary = diaryDao.getTextDiaryById(id)
+    : TextDiary? = diaryDao.getTextDiaryById(id)
 
     fun getQuestionDiaryById(
         id: Int
-    ): QuestionDiary = diaryDao.getQuestionDiaryById(id)
+    ): QuestionDiary? = diaryDao.getQuestionDiaryById(id)
 }

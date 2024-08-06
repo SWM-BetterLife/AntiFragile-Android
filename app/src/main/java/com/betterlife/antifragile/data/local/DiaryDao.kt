@@ -26,10 +26,10 @@ interface DiaryDao {
     fun getMonthlyDiaries(month: String): List<DiarySummary>
 
     @Query("SELECT * FROM text_diary WHERE id = :id")
-    fun getTextDiaryById(id: Int): TextDiary
+    fun getTextDiaryById(id: Int): TextDiary?
 
     @Query("SELECT * FROM question_diary WHERE id = :id")
-    fun getQuestionDiaryById(id: Int): QuestionDiary
+    fun getQuestionDiaryById(id: Int): QuestionDiary?
 
     @Query("SELECT COUNT(*) FROM text_diary WHERE date = :date")
     fun countTextDiariesByDate(date: String): Int

@@ -32,14 +32,14 @@ class DiaryViewModel(application: Application) : AndroidViewModel(application) {
         emit(diaryId)
     }
 
-    fun getTextDiaryById(id: Int): LiveData<TextDiary> = liveData {
+    fun getTextDiaryById(id: Int): LiveData<TextDiary?> = liveData {
         val diary = withContext(Dispatchers.IO) {
             repository.getTextDiaryById(id)
         }
         emit(diary)
     }
 
-    fun getQuestionDiaryById(id: Int): LiveData<QuestionDiary> = liveData {
+    fun getQuestionDiaryById(id: Int): LiveData<QuestionDiary?> = liveData {
         val diary = withContext(Dispatchers.IO) {
             repository.getQuestionDiaryById(id)
         }
