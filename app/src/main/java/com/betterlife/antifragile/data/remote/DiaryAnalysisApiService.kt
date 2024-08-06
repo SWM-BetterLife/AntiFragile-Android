@@ -7,6 +7,7 @@ import com.betterlife.antifragile.data.model.diaryanalysis.response.DiaryAnalysi
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Query
 
@@ -16,6 +17,12 @@ import retrofit2.http.Query
 interface DiaryAnalysisApiService {
     @POST("/diary-analyses")
     suspend fun saveDiaryAnalysis(
+        @Body request: DiaryAnalysisCreateRequest
+    ): Response<BaseResponse<Any?>>
+
+    @PATCH("/diary-analyses")
+    suspend fun updateDiaryAnalysis(
+        @Query("date") date: String,
         @Body request: DiaryAnalysisCreateRequest
     ): Response<BaseResponse<Any?>>
 

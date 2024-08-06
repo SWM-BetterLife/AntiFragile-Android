@@ -17,6 +17,15 @@ class DiaryAnalysisRepository(
         }
     }
 
+    suspend fun updateDiaryAnalysis(
+        date: String,
+        request: DiaryAnalysisCreateRequest
+    ): BaseResponse<Any?> {
+        return safeApiCall {
+            diaryAnalysisApiService.updateDiaryAnalysis(date, request)
+        }
+    }
+
     suspend fun getDailyDiaryAnalysis(
         date: String
     ): BaseResponse<DiaryAnalysisDailyResponse> {
