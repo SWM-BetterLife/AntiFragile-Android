@@ -19,9 +19,8 @@ import com.betterlife.antifragile.presentation.ui.calendar.viewmodel.DiaryCalend
 import com.betterlife.antifragile.presentation.ui.calendar.viewmodel.DiaryCalendarViewModelFactory
 import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
-import java.text.SimpleDateFormat
+import com.betterlife.antifragile.presentation.util.DateUtil.getTodayDate
 import java.util.Calendar
-import java.util.Locale
 
 class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
     R.layout.fragment_diary_calendar
@@ -29,6 +28,7 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
 
     private lateinit var diaryCalendarViewModel: DiaryCalendarViewModel
     private lateinit var diaryCalendarAdapter: DiaryCalendarAdapter
+    private val todayDate = getTodayDate()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -70,7 +70,7 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
     private fun setupRecyclerView() {
         diaryCalendarAdapter = DiaryCalendarAdapter { dateModel ->
             diaryCalendarViewModel.setSelectedDate(dateModel.date)
-            if (dateModel.diaryId == null && dateModel.date == getCurrentDate()) {
+            if (dateModel.diaryId == null && dateModel.date == todayDate) {
                 findNavController().navigate(
                     DiaryCalendarFragmentDirections.actionNavCalendarToNavDiaryTypeSelect(dateModel.date)
                 )
@@ -156,7 +156,7 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
     }
 
     private fun observeTodayDiaryId() {
-        diaryCalendarViewModel.setTodayDate(getCurrentDate())
+        diaryCalendarViewModel.setTodayDate(todayDate)
     }
 
     private fun updateDiaryButtons(diaryId: Int?) {
@@ -166,7 +166,7 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
             binding.btnAddDiary.visibility = View.VISIBLE
             binding.btnAddDiary.setOnClickListener {
                 val action = DiaryCalendarFragmentDirections
-                    .actionNavCalendarToNavDiaryTypeSelect(getCurrentDate())
+                    .actionNavCalendarToNavDiaryTypeSelect(todayDate)
                 findNavController().navigate(action)
             }
         } else {
@@ -175,15 +175,9 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
             binding.btnMoveContent.visibility = View.VISIBLE
             binding.btnMoveContent.setOnClickListener {
                 val action = DiaryCalendarFragmentDirections
-                    .actionNavCalendarToNavRecommendContent(getCurrentDate(), false)
+                    .actionNavCalendarToNavRecommendContent(todayDate, false)
                 findNavController().navigate(action)
             }
         }
-    }
-
-    private fun getCurrentDate(): String {
-        val calendar = Calendar.getInstance()
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        return dateFormat.format(calendar.time)
     }
 }
