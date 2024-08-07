@@ -19,6 +19,7 @@
     <string name="sunday">일</string>
     <string name="not_written_diary">오늘 일기를 아직 안썼어요!</string>
     <string name="create_diary">일기를 작성해주세요</string>
+    <string name="move_to_create_diary">감정일기 쓰러가기</string>
     <string name="edit_box_hint">입력해주세요</string>
     <string name="text_diary_tip">∙  어떤 일이 있었나요?\n∙  그때의 감정은 어땠나요?\n∙  그때 들었던 생각이 무엇인가요?\n∙  그때 취했던 행동이 무엇인가요?</string>
     <string name="text_diary_tip_title">일기에 다음 내용을 작성하면 좋아요!</string>
@@ -27,4 +28,6 @@
     <string name="recommend_emotion">일기에 어울리는\n감정티콘을 골라봤어요!</string>
     <string name="select_diary_type">오늘 작성할\n일기 방식을 선택해주세요!</string>
     <string name="move_to_content">추천 콘텐츠 보러가기</string>
+    <string name="my_emotion_chart">나의 감정차트</string>
+    <string name="question_mark">\?</string>
 </resources>
