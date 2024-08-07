@@ -170,9 +170,15 @@
 
     <fragment
         android:id="@+id/nav_emotion"
-        android:name="com.betterlife.antifragile.presentation.ui.emotion.EmotionFragment"
+        android:name="com.betterlife.antifragile.presentation.ui.emotion.MyEmotionFragment"
         android:label="Emotion"
-        tools:layout="@layout/fragment_emotion"/>
+        tools:layout="@layout/fragment_my_emotion">
+
+        <action
+            android:id="@+id/action_nav_emotion_to_select_diary_type"
+            app:destination="@id/nav_diary_type_select"/>
+
+    </fragment>
 
     <fragment
         android:id="@+id/nav_content"

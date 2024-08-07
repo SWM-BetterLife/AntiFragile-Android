@@ -9,7 +9,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/white">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/lo_emoticon"
@@ -31,6 +32,7 @@
                     android:id="@+id/iv_emoticon"
                     android:layout_width="130dp"
                     android:layout_height="130dp"
+                    android:importantForAccessibility="no"
                     android:src="@drawable/emoticon_blank"
                     android:visibility="gone"
                     app:layout_constraintTop_toTopOf="parent"
@@ -48,6 +50,7 @@
                     android:background="@drawable/emoticon_blank"
                     android:gravity="center"
                     android:layout_marginTop="20dp"
+                    android:visibility="gone"
                     app:layout_goneMarginTop="20dp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -57,7 +60,6 @@
                     android:id="@+id/tv_emotion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="행복함"
                     android:textSize="18sp"
                     android:textColor="@color/black"
                     android:textStyle="bold"
@@ -73,7 +75,7 @@
                     android:id="@+id/tv_my_emotion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="나의 감정"
+                    android:text="@string/today_my_emotion"
                     android:textSize="14sp"
                     android:textColor="@color/gray"
                     android:letterSpacing="0.02"
@@ -95,7 +97,8 @@
                     android:paddingVertical="10dp"
                     android:paddingHorizontal="20dp"
                     android:layout_marginTop="30dp"
-                    android:layout_marginBottom="50dp"
+                    android:layout_marginBottom="20dp"
+                    android:visibility="gone"
                     app:layout_constraintTop_toBottomOf="@id/tv_emoticon_inactive"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@id/tv_emoticon_inactive"
@@ -107,6 +110,7 @@
                 android:id="@+id/iv_background_emoticon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:importantForAccessibility="no"
                 android:src="@drawable/bg_smile_emoticon"
                 android:scaleType="fitXY"
                 android:visibility="gone"
@@ -127,7 +131,6 @@
             android:gravity="center"
             android:background="@drawable/btn_rectangle_radius_100"
             android:layout_marginTop="30dp"
-            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/lo_emoticon"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
