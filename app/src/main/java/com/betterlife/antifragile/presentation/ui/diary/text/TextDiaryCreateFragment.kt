@@ -48,6 +48,7 @@ class TextDiaryCreateFragment : BaseFragment<FragmentTextDiaryCreateBinding>(
                 findNavController().popBackStack()
                 (activity as MainActivity).showBottomNavigation()
             }
+            showLine()
         }
     }
 
