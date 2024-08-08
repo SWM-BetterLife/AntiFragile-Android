@@ -50,22 +50,9 @@
             app:layout_constraintStart_toEndOf="@id/btn_back" />
 
         <ImageView
-            android:id="@+id/btn_notification"
+            android:id="@+id/btn_custom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_alarm"
-            android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <TextView
-            android:id="@+id/btn_edit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/modify"
-            android:textColor="@color/main_color"
-            android:textSize="16sp"
             android:visibility="gone"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

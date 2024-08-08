@@ -17,7 +17,6 @@
     <string name="friday">금</string>
     <string name="saturday">토</string>
     <string name="sunday">일</string>
-    <string name="modify"><u>수정</u></string>
     <string name="not_written_diary">오늘 일기를 아직 안썼어요!</string>
     <string name="create_diary">일기를 작성해주세요</string>
     <string name="edit_box_hint">입력해주세요</string>
@@ -27,4 +26,5 @@
     <string name="get_point_message">일기를 작성해서 3포인트를 받았어요!</string>
     <string name="recommend_emotion">일기에 어울리는\n감정티콘을 골라봤어요!</string>
     <string name="select_diary_type">오늘 작성할\n일기 방식을 선택해주세요!</string>
+    <string name="move_to_content">추천 콘텐츠 보러가기</string>
 </resources>

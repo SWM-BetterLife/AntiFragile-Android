@@ -15,6 +15,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.betterlife.antifragile.presentation.customview.LoadingDialog
+import com.betterlife.antifragile.presentation.customview.SelectDialog
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -85,6 +86,27 @@ abstract class BaseFragment<B : ViewDataBinding>(
             }
             show()
         }
+    }
+
+    fun showSelectDialog(
+        context: Context,
+        title: String,
+        description: String,
+        leftButtonText: String,
+        rightButtonText: String,
+        leftButtonListener: (() -> Unit)? = null,
+        rightButtonListener: (() -> Unit)? = null
+    ) {
+        val selectDialog = SelectDialog(
+            context = context,
+            title = title,
+            description = description,
+            leftButtonText = leftButtonText,
+            rightButtonText = rightButtonText,
+            leftButtonListener = leftButtonListener,
+            rightButtonListener = rightButtonListener
+        )
+        selectDialog.show()
     }
 
     override fun onDestroyView() {

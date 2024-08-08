@@ -28,11 +28,15 @@ class DiaryRepository(private val diaryDao: DiaryDao) {
         }
     }
 
+    suspend fun updateTextDiary(id: Int, content: String): Int {
+        return diaryDao.updateTextDiary(id, content)
+    }
+
     fun getTextDiaryById(
         id: Int)
-    : TextDiary = diaryDao.getTextDiaryById(id)
+    : TextDiary? = diaryDao.getTextDiaryById(id)
 
     fun getQuestionDiaryById(
         id: Int
-    ): QuestionDiary = diaryDao.getQuestionDiaryById(id)
+    ): QuestionDiary? = diaryDao.getQuestionDiaryById(id)
 }

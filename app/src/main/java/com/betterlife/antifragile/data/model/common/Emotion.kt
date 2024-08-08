@@ -18,4 +18,16 @@ enum class Emotion(val toKorean: String) {
     FATIGUE("피곤"),
     ERROR("오류"),
     NOT_SELECTED("미선택");
+
+    companion object {
+        fun fromString(value: String?): Emotion {
+            return if (value == null) {
+                ERROR
+            } else {
+                entries.find {
+                    it.name.equals(value, ignoreCase = true) && it != ERROR && it != NOT_SELECTED
+                } ?: ERROR
+            }
+        }
+    }
 }

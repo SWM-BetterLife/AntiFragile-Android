@@ -1,10 +1,9 @@
 package com.betterlife.antifragile.data.repository
 
 import com.betterlife.antifragile.data.model.base.BaseResponse
-import com.betterlife.antifragile.data.model.base.Status
 import com.betterlife.antifragile.data.model.diaryanalysis.request.DiaryAnalysisCreateRequest
+import com.betterlife.antifragile.data.model.diaryanalysis.response.DiaryAnalysisDailyResponse
 import com.betterlife.antifragile.data.remote.DiaryAnalysisApiService
-import com.betterlife.antifragile.presentation.util.ApiErrorUtil.parseErrorResponse
 
 class DiaryAnalysisRepository(
     private val diaryAnalysisApiService: DiaryAnalysisApiService
@@ -15,6 +14,23 @@ class DiaryAnalysisRepository(
     ): BaseResponse<Any?> {
         return safeApiCall {
             diaryAnalysisApiService.saveDiaryAnalysis(request)
+        }
+    }
+
+    suspend fun updateDiaryAnalysis(
+        date: String,
+        request: DiaryAnalysisCreateRequest
+    ): BaseResponse<Any?> {
+        return safeApiCall {
+            diaryAnalysisApiService.updateDiaryAnalysis(date, request)
+        }
+    }
+
+    suspend fun getDailyDiaryAnalysis(
+        date: String
+    ): BaseResponse<DiaryAnalysisDailyResponse> {
+        return safeApiCall {
+            diaryAnalysisApiService.getDailyDiaryAnalysis(date)
         }
     }
 }

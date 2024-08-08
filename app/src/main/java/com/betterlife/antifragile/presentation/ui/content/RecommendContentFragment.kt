@@ -21,11 +21,12 @@ class RecommendContentFragment : BaseFragment<FragmentRecommendContentBinding>(
         toolbar.apply {
             reset()
             setSubTitle("맞춤형 콘텐츠")
-            showBackButton(true) {
+            showBackButton {
                 findNavController().popBackStack()
             }
-            showEditButton("재추천 받기") {
+            showCustomButton(R.drawable.btn_re) {
                 // TODO: 재추천 받기 버튼 클릭 처리
+
             }
         }
     }

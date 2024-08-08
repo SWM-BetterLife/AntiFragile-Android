@@ -48,7 +48,7 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
         toolbar.apply {
             reset()
             setMainTitle("일기")
-            showNotificationButton(true) {
+            showCustomButton(R.drawable.btn_alarm) {
                 // TODO:  알림 버튼 클릭 처리
                 showCustomToast("알림 버튼 클릭")
             }
@@ -78,15 +78,15 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
                 when (dateModel.diaryType) {
                     DiaryType.TEXT -> {
                         val action = DiaryCalendarFragmentDirections.actionNavCalendarToNavTextDiaryDetail(
-                            dateModel.date,
-                            dateModel.diaryId!!
+                            dateModel.diaryId!!,
+                            dateModel.date
                         )
                         findNavController().navigate(action)
                     }
                     DiaryType.QUESTION -> {
                         val action = DiaryCalendarFragmentDirections.actionNavCalendarToNavQuestionDiaryDetail(
-                            dateModel.date,
-                            dateModel.diaryId!!
+                            dateModel.diaryId!!,
+                            dateModel.date
                         )
                     }
                     else -> {

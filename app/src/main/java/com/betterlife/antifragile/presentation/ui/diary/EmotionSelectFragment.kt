@@ -46,7 +46,9 @@ class EmotionSelectFragment : BaseFragment<FragmentEmotionSelectBinding>(
             val action = EmotionSelectFragmentDirections
                 .actionNavEmotionSelectToNavEmoticonRecommend(
                     diaryAnalysisData,
-                    selectedEmotion.emotionEnum
+                    selectedEmotion.emotionEnum,
+                    emoticonThemeId,
+                    getIsUpdateFromArguments()
                 )
             Log.d("EmotionSelectFragment", "Selected emotion: $selectedEmotion")
             findNavController().navigate(action)
@@ -57,7 +59,7 @@ class EmotionSelectFragment : BaseFragment<FragmentEmotionSelectBinding>(
         toolbar.apply {
             reset()
             setSubTitle(DateUtil.convertDateFormat(diaryDate!!))
-            showBackButton(true) {
+            showBackButton {
                 findNavController().popBackStack()
             }
             showLine()
@@ -114,5 +116,8 @@ class EmotionSelectFragment : BaseFragment<FragmentEmotionSelectBinding>(
 
     private fun getDiaryAnalysisData() =
         EmotionSelectFragmentArgs.fromBundle(requireArguments()).diaryAnalysisData
+
+    private fun getIsUpdateFromArguments() =
+        EmotionSelectFragmentArgs.fromBundle(requireArguments()).isUpdate
 
 }
