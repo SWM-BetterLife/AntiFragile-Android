@@ -34,4 +34,6 @@
     <string name="edit_complete">작성 완료</string>
     <string name="select_emoticon">마음에 들어요</string>
     <string name="choose_self">직접 고를게요</string>
+    <string name="select_complete">선택 완료</string>
+    <string name="behavior_emoticon_expand">com.example.myapp.EmoticonExpandBehavior</string>
 </resources>
