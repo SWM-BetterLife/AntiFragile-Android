@@ -1,9 +1,13 @@
 package com.betterlife.antifragile.presentation.ui.diary.text
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
@@ -62,6 +66,31 @@ class TextDiaryCreateFragment : BaseFragment<FragmentTextDiaryCreateBinding>(
     private fun setupView() {
         textDiaryDetail?.let {
             binding.etDiaryContent.setText(it.content)
+        }
+
+        binding.etDiaryContent.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                updateSaveButtonState(s.toString())
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+
+        updateSaveButtonState(binding.etDiaryContent.text.toString())
+    }
+
+    private fun updateSaveButtonState(content: String) {
+        val color = if (content.isEmpty()) {
+            ContextCompat.getColor(requireContext(), R.color.light_gray_2)
+        } else {
+            ContextCompat.getColor(requireContext(), R.color.main_color)
+        }
+
+        binding.btnSave.apply {
+            isEnabled = content.isNotEmpty()
+            backgroundTintList = ColorStateList.valueOf(color)
         }
     }
 
