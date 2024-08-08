@@ -32,4 +32,6 @@
     <string name="question_mark">\?</string>
     <string name="today_my_emotion">오늘 나의 감정</string>
     <string name="edit_complete">작성 완료</string>
+    <string name="select_emoticon">마음에 들어요</string>
+    <string name="choose_self">직접 고를게요</string>
 </resources>

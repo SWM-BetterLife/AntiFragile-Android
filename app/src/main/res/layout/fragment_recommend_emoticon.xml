@@ -15,16 +15,43 @@
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/recommend_emotion"
-            android:textSize="18sp"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:gravity="center"
             android:layout_marginTop="40dp"
-            app:layout_constraintTop_toTopOf="parent"
+            android:gravity="center"
+            android:text="@string/recommend_emotion"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:lineHeight="25dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="UnusedAttribute" />
+        <ImageView
+            android:id="@+id/btn_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginBottom="14dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_arrow_left"
+            app:layout_constraintBottom_toBottomOf="@id/tv_title"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/btn_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:clickable="true"
+            android:focusable="true"
+             android:layout_marginBottom="14dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_arrow_right"
+            app:layout_constraintBottom_toBottomOf="@id/tv_title"
             app:layout_constraintEnd_toEndOf="parent" />
-        
+
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/lo_select_emoticon"
             android:layout_width="match_parent"
@@ -36,72 +63,46 @@
                 android:id="@+id/vp_select_emotion"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:clipToPadding="false"
                 android:clipChildren="false"
+                android:clipToPadding="false"
                 android:paddingStart="40dp"
                 android:paddingEnd="40dp"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/btn_left"
-                android:layout_width="34dp"
-                android:layout_height="34dp"
-                android:layout_marginStart="16dp"
-                android:src="@drawable/ic_emoticon_left"
-                android:clickable="true"
-                android:focusable="true"
-                android:elevation="4dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <ImageView
-                android:id="@+id/btn_right"
-                android:layout_width="34dp"
-                android:layout_height="34dp"
-                android:layout_marginEnd="16dp"
-                android:src="@drawable/ic_emoticon_right"
-                android:clickable="true"
-                android:focusable="true"
-                android:elevation="4dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-            
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
             android:id="@+id/btn_save"
             android:layout_width="328dp"
             android:layout_height="58dp"
-            android:text="마음에 들어요"
-            android:textSize="14sp"
-            android:textColor="@color/white"
-            android:letterSpacing="0.02"
-            android:gravity="center"
-            android:background="@drawable/btn_rectangle_radius_100"
             android:layout_marginTop="40dp"
-            app:layout_constraintTop_toBottomOf="@id/lo_select_emoticon"
+            android:background="@drawable/btn_rectangle_radius_100"
+            android:gravity="center"
+            android:letterSpacing="0.02"
+            android:text="@string/select_emoticon"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/lo_select_emoticon" />
 
         <TextView
             android:id="@+id/btn_choose_self"
             android:layout_width="328dp"
             android:layout_height="58dp"
-            android:text="직접 고를게요"
-            android:textSize="14sp"
-            android:textColor="@color/main_color"
-            android:letterSpacing="0.02"
-            android:gravity="center"
-            android:background="@drawable/btn_rectangle_radius_100_transparent"
             android:layout_marginTop="10dp"
-            app:layout_constraintTop_toBottomOf="@id/btn_save"
+            android:background="@drawable/btn_rectangle_radius_100_transparent"
+            android:gravity="center"
+            android:letterSpacing="0.02"
+            android:text="@string/choose_self"
+            android:textColor="@color/main_color"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/btn_save" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
