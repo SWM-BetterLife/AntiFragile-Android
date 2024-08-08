@@ -87,7 +87,6 @@ class TextDiaryDetailFragment: BaseFragment<FragmentTextDiaryDetailBinding>(
                         this.textDiaryDetail = textDiaryDetail
                         binding.apply {
                             tvDiaryContent.text = textDiaryDetail.content
-                            Log.d("TextDiaryDetailFragment", "emotions: ${textDiaryDetail.emotions}")
                             tvEmotion.text = textDiaryDetail.emotions?.joinToString(", ")
                             textDiaryDetail.emoticonInfo?.let { emoticon ->
                                 Glide.with(requireContext())
