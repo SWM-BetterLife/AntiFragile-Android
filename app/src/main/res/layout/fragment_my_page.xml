@@ -17,7 +17,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/line"
-            android:layout_marginTop="16dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
@@ -60,7 +59,7 @@
                     android:id="@+id/btn_update"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="나의 정보 수정"
+                    android:text="프로필 수정"
                     android:background="@drawable/btn_rectangle_radius_100_transparent"
                     android:paddingLeft="30dp"
                     android:paddingRight="30dp"

@@ -1,13 +1,10 @@
 package com.betterlife.antifragile.data.model.member.request
 
+import com.betterlife.antifragile.data.model.enums.Gender
+
 data class MemberProfileModifyRequest(
     val nickname: String,
     val age: Int,
     val gender: Gender,
     val job: String
 )
-
-enum class Gender(val toKorean: String) {
-    MALE("남성"),
-    FEMALE("여성")
-}

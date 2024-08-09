@@ -1,5 +1,7 @@
 package com.betterlife.antifragile.data.model.member.response
 
+import com.betterlife.antifragile.data.model.enums.Gender
+
 data class MemberProfileModifyResponse(
     val nickname: String,
     val age: Int,
@@ -7,8 +9,3 @@ data class MemberProfileModifyResponse(
     val job: String,
     val profileImgUrl: String
 )
-
-enum class Gender(val toKorean: String) {
-    MALE("남성"),
-    FEMALE("여성")
-}

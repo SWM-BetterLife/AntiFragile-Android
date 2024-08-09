@@ -1,5 +1,7 @@
 package com.betterlife.antifragile.data.model.member.response
 
+import com.betterlife.antifragile.data.model.enums.LoginType
+
 data class MemberDetailResponse(
     val id: String,
     val email: String,
@@ -9,9 +11,3 @@ data class MemberDetailResponse(
     val diaryTotalNum: Int,
     val loginType: LoginType
 )
-
-enum class LoginType(val toKorean: String) {
-    GOOGLE("구글"),
-    NAVER("네이버"),
-    KAKAO("카카오")
-}
