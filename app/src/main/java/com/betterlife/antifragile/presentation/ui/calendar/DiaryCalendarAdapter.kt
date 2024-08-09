@@ -28,7 +28,9 @@ class DiaryCalendarAdapter(private val onDateClick: (CalendarDateModel) -> Unit)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
-        val binding = ItemCalendarBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemCalendarBinding.inflate(
+            LayoutInflater.from(parent.context), parent, false
+        )
         return CalendarViewHolder(binding, onDateClick)
     }
 
@@ -42,35 +44,53 @@ class DiaryCalendarAdapter(private val onDateClick: (CalendarDateModel) -> Unit)
         private val binding: ItemCalendarBinding,
         private val onDateClick: (CalendarDateModel) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
+
         @SuppressLint("NotifyDataSetChanged")
         fun bind(calendarDateModel: CalendarDateModel, isSelected: Boolean) {
             val day = calendarDateModel.date.split("-").last().toInt().toString()
-            binding.tvDay.text = day
-            binding.root.alpha = if (calendarDateModel.isCurrentMonth) 1f else 0.3f
+            val isCurrentMonth = calendarDateModel.isCurrentMonth
 
-            if (isSelected) {
-                binding.tvDay.setTextColor(binding.root.context.getColor(R.color.main_color))
-            } else {
-                binding.tvDay.setTextColor(binding.root.context.getColor(R.color.black))
-            }
+            binding.apply {
+                tvDay.text = day
+                if (isCurrentMonth) {
+                    ivEmoticon.visibility = View.VISIBLE
+                    if (calendarDateModel.emoticonUrl != null) {
+                        Glide.with(binding.root.context)
+                            .load(calendarDateModel.emoticonUrl)
+                            .into(binding.ivEmoticon)
+                    } else {
+                        binding.ivEmoticon.setImageDrawable(null)
+                    }
 
-            if (calendarDateModel.isCurrentMonth) {
-                if (calendarDateModel.emoticonUrl == null) {
-                    binding.ivEmoticon.setImageResource(R.drawable.emoticon_blank)
+                    if (isSelected) {
+                        tvDay.setTextColor(binding.root.context.getColor(R.color.white))
+                        tvDay.setBackgroundResource(R.drawable.circle_filled)
+                        tvDay.backgroundTintList =
+                            binding.root.context.getColorStateList(R.color.calender_date_selected_color)
+
+                        if (calendarDateModel.diaryId == null) {
+                            ivEmoticon.backgroundTintList =
+                                binding.root.context.getColorStateList(R.color.calendar_emoticon_selected_color)
+                        }
+                    } else {
+                        tvDay.setTextColor(binding.root.context.getColor(R.color.black))
+                        tvDay.setBackgroundResource(0)
+
+                        if (calendarDateModel.diaryId == null) {
+                            ivEmoticon.backgroundTintList =
+                                binding.root.context.getColorStateList(R.color.light_gray_2)
+                        }
+                    }
+
+                    root.setOnClickListener {
+                        selectedDate = calendarDateModel.date
+                        notifyDataSetChanged()
+                        onDateClick(calendarDateModel)
+                    }
                 } else {
-                    Glide.with(binding.root.context)
-                        .load(calendarDateModel.emoticonUrl)
-                        .into(binding.ivEmoticon)
+                    tvDay.setTextColor(binding.root.context.getColor(R.color.gray))
+                    ivEmoticon.visibility = View.GONE
                 }
-                binding.ivEmoticon.visibility = View.VISIBLE
-            } else {
-                binding.ivEmoticon.visibility = View.GONE
-            }
-
-            binding.root.setOnClickListener {
-                selectedDate = calendarDateModel.date
-                notifyDataSetChanged()
-                onDateClick(calendarDateModel)
             }
         }
     }

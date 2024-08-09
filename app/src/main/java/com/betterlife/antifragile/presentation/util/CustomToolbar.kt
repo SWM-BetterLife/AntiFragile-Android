@@ -45,10 +45,10 @@ class CustomToolbar @JvmOverloads constructor(
     }
 
     fun reset() {
-        binding.tvMainTitle.visibility = View.GONE
-        binding.tvSubTitle.visibility = View.GONE
-        binding.btnBack.visibility = View.GONE
-        binding.btnCustom.visibility = View.GONE
-        binding.line.visibility = View.GONE
+        binding.tvMainTitle.visibility = View.INVISIBLE
+        binding.tvSubTitle.visibility = View.INVISIBLE
+        binding.btnBack.visibility = View.INVISIBLE
+        binding.btnCustom.visibility = View.INVISIBLE
+        binding.line.visibility = View.INVISIBLE
     }
 }
