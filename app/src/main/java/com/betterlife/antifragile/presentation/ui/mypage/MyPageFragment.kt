@@ -103,6 +103,7 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
     }
 
     private fun setupButton() {
+        customLogoutBtn()
         customWithdrawBtn()
 
         binding.apply {
@@ -141,5 +142,14 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
             setSpan(UnderlineSpan(), 0, text.length, 0)
         }
         btnWithdraw.text = spannableString
+    }
+
+    private fun customLogoutBtn() {
+        val btnLogout= view?.findViewById<Button>(R.id.btn_logout) ?: return
+        val text = btnLogout.text.toString()
+        val spannableString = SpannableString(text).apply {
+            setSpan(UnderlineSpan(), 0, text.length, 0)
+        }
+        btnLogout.text = spannableString
     }
 }
