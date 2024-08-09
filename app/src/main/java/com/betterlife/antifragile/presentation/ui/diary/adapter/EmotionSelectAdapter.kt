@@ -52,7 +52,7 @@ class EmotionSelectAdapter(
 
         holder.container.isSelected = (selectedPosition == position)
         if (selectedPosition == position) {
-            holder.container.setBackgroundResource(R.drawable.bg_emoticon_select)
+            holder.container.setBackgroundResource(R.drawable.bg_calendar_emoticon)
             holder.emotionText.setTextColor(holder.itemView.context.getColor(R.color.white))
         } else {
             holder.container.setBackgroundResource(R.color.white)
