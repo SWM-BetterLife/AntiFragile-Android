@@ -20,8 +20,8 @@ import com.betterlife.antifragile.data.repository.EmoticonThemeRepository
 import com.betterlife.antifragile.databinding.FragmentRecommendEmoticonBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.diary.adapter.EmoticonByEmotionAdapter
-import com.betterlife.antifragile.presentation.ui.diary.viewmodel.RecommendEmoticonViewModelFactory
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.RecommendEmoticonViewModel
+import com.betterlife.antifragile.presentation.ui.diary.viewmodel.RecommendEmoticonViewModelFactory
 import com.betterlife.antifragile.presentation.ui.main.MainActivity
 import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
@@ -43,11 +43,13 @@ class RecommendEmoticonFragment : BaseFragment<FragmentRecommendEmoticonBinding>
         super.onViewCreated(view, savedInstanceState)
 
         val diaryAnalysisData = getDiaryAnalysisData()
+        val emoticonThemeId = getEmoticonThemeId()
         diaryDate = diaryAnalysisData.diaryDate
 
         setupViewModels()
         setupObservers()
         setupViewPager()
+        Log.d("RecommendEmoticonFragment", "$emoticonThemeId")
         setupButtons()
 
         emotion = getEmotion()
@@ -64,7 +66,7 @@ class RecommendEmoticonFragment : BaseFragment<FragmentRecommendEmoticonBinding>
         toolbar.apply {
             reset()
             setSubTitle(DateUtil.convertDateFormat(diaryDate!!))
-            showBackButton(true) {
+            showBackButton {
                 findNavController().popBackStack()
             }
             showLine()
@@ -175,7 +177,12 @@ class RecommendEmoticonFragment : BaseFragment<FragmentRecommendEmoticonBinding>
             emotion = emotion!!.name
         )
         val request = createDiaryAnalysisRequest(diaryAnalysisData, emoticon)
-        recommendEmoticonViewModel.saveDiaryAnalysis(request)
+        if (getIsUpdate()) {
+            recommendEmoticonViewModel.saveDiaryAnalysis(request, diaryDate)
+        } else {
+            recommendEmoticonViewModel.saveDiaryAnalysis(request, null)
+
+        }
 
         val action = RecommendEmoticonFragmentDirections
             .actionNavEmoticonRecommendToNavRecommendContent(diaryDate!!, true)
@@ -187,7 +194,8 @@ class RecommendEmoticonFragment : BaseFragment<FragmentRecommendEmoticonBinding>
         val action = RecommendEmoticonFragmentDirections.actionNavEmoticonRecommendToNavEmotionSelect(
             emoticonThemeId = emoticonAdapter.getSelectedEmoticon(selectedPosition).emoticonThemeId,
             emotion = emotion!!,
-            diaryAnalysisData = getDiaryAnalysisData()
+            diaryAnalysisData = getDiaryAnalysisData(),
+            getIsUpdate()
         )
         findNavController().navigate(action)
     }
@@ -202,6 +210,12 @@ class RecommendEmoticonFragment : BaseFragment<FragmentRecommendEmoticonBinding>
 
     private fun getEmotion() =
         RecommendEmoticonFragmentArgs.fromBundle(requireArguments()).emotion
+
+    private fun getEmoticonThemeId() =
+        RecommendEmoticonFragmentArgs.fromBundle(requireArguments()).emoticonThemeId
+
+    private fun getIsUpdate() =
+        RecommendEmoticonFragmentArgs.fromBundle(requireArguments()).isUpdate
 
     private fun setStatusDiaryAnalysisSave() {
         recommendEmoticonViewModel.saveDiaryResponse.observe(viewLifecycleOwner) { response ->

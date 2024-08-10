@@ -17,6 +17,11 @@ interface DiaryDao {
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertQuestionDiary(questionDiary: QuestionDiary): Long
 
+    @Query("UPDATE text_diary SET content = :content WHERE id = :id")
+    suspend fun updateTextDiary(id: Int, content: String): Int
+
+    // TODO: QuestionDiary 업데이트 쿼리 추가
+
     @Query("""
         SELECT id, date, 'TEXT' AS diaryType FROM text_diary WHERE date LIKE :month || '%'
         UNION ALL
@@ -26,10 +31,10 @@ interface DiaryDao {
     fun getMonthlyDiaries(month: String): List<DiarySummary>
 
     @Query("SELECT * FROM text_diary WHERE id = :id")
-    fun getTextDiaryById(id: Int): TextDiary
+    fun getTextDiaryById(id: Int): TextDiary?
 
     @Query("SELECT * FROM question_diary WHERE id = :id")
-    fun getQuestionDiaryById(id: Int): QuestionDiary
+    fun getQuestionDiaryById(id: Int): QuestionDiary?
 
     @Query("SELECT COUNT(*) FROM text_diary WHERE date = :date")
     fun countTextDiariesByDate(date: String): Int

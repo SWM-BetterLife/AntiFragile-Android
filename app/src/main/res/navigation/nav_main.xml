@@ -28,10 +28,16 @@
         android:id="@+id/nav_text_diary_detail"
         android:name="com.betterlife.antifragile.presentation.ui.diary.text.TextDiaryDetailFragment"
         android:label="TextDiaryDetail">
+        <action
+            android:id="@+id/action_nav_text_diary_detail_to_nav_text_diary_create"
+            app:destination="@id/nav_text_diary_create"/>
+        <action
+            android:id="@+id/action_nav_text_diary_detail_to_nav_recommend_content"
+            app:destination="@id/nav_recommend_content"/>
         <argument
             android:name="diaryId"
             app:argType="integer"
-            android:defaultValue="0" />
+            app:nullable="false"/>
         <argument
             android:name="diaryDate"
             app:argType="string" />
@@ -44,7 +50,7 @@
         <argument
             android:name="diaryId"
             app:argType="integer"
-            android:defaultValue="0" />
+            app:nullable="false"/>
         <argument
             android:name="diaryDate"
             app:argType="string" />
@@ -82,9 +88,16 @@
         <action
             android:id="@+id/action_nav_text_diary_create_to_nav_emotion_analysis"
             app:destination="@id/nav_emotion_analysis"/>
+        <action
+            android:id="@+id/action_nav_text_diary_create_to_nav_emoticon_recommend"
+            app:destination="@id/nav_emoticon_recommend"/>
         <argument
             android:name="diaryDate"
             app:argType="string" />
+        <argument
+            android:name="textDiaryDetail"
+            app:argType="com.betterlife.antifragile.data.model.diary.TextDiaryDetail"
+            app:nullable="true" />
     </fragment>
 
     <fragment
@@ -102,6 +115,9 @@
         <argument
             android:name="diaryType"
             app:argType="string" />
+        <argument
+            android:name="isUpdate"
+            app:argType="boolean" />
     </fragment>
 
     <fragment
@@ -121,6 +137,13 @@
         <argument
             android:name="emotion"
             app:argType="com.betterlife.antifragile.data.model.common.Emotion" />
+        <argument
+            android:name="emoticonThemeId"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="isUpdate"
+            app:argType="boolean" />
     </fragment>
 
     <fragment
@@ -140,13 +163,22 @@
         <argument
             android:name="diaryAnalysisData"
             app:argType="com.betterlife.antifragile.data.model.diary.llm.DiaryAnalysisData" />
+        <argument
+            android:name="isUpdate"
+            app:argType="boolean" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_emotion"
-        android:name="com.betterlife.antifragile.presentation.ui.emotion.EmotionFragment"
+        android:name="com.betterlife.antifragile.presentation.ui.emotion.MyEmotionFragment"
         android:label="Emotion"
-        tools:layout="@layout/fragment_emotion"/>
+        tools:layout="@layout/fragment_my_emotion">
+
+        <action
+            android:id="@+id/action_nav_emotion_to_select_diary_type"
+            app:destination="@id/nav_diary_type_select"/>
+
+    </fragment>
 
     <fragment
         android:id="@+id/nav_content"

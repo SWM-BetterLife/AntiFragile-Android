@@ -8,7 +8,6 @@ import com.betterlife.antifragile.data.model.calendar.CalendarDateModel
 import com.betterlife.antifragile.data.model.diary.DiarySummary
 import com.betterlife.antifragile.data.model.diaryanalysis.response.DiaryAnalysisEmoticonsResponse
 import com.betterlife.antifragile.data.remote.DiaryAnalysisApiService
-import com.betterlife.antifragile.presentation.util.ApiErrorUtil.parseErrorResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.Calendar

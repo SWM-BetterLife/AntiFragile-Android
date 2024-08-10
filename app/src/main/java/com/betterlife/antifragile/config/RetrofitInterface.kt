@@ -3,6 +3,7 @@ package com.betterlife.antifragile.config
 import com.betterlife.antifragile.data.remote.ContentApiService
 import com.betterlife.antifragile.data.remote.DiaryAnalysisApiService
 import com.betterlife.antifragile.data.remote.EmoticonThemeApiService
+import com.betterlife.antifragile.data.remote.MemberApiService
 import com.betterlife.antifragile.presentation.util.Constants
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -53,5 +54,14 @@ object RetrofitInterface {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ContentApiService::class.java)
+    }
+
+    fun createMemberApiService(token: String): MemberApiService {
+        return Retrofit.Builder()
+            .baseUrl(Constants.BASE_URL)
+            .client(getClient(token))
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(MemberApiService::class.java)
     }
 }

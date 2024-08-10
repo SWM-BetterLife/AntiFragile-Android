@@ -18,7 +18,7 @@ class ContentFragment : BaseFragment<FragmentContentBinding>(R.layout.fragment_c
         toolbar.apply {
             reset()
             setMainTitle("내 콘텐츠")
-            showNotificationButton(true) {
+            showCustomButton(R.drawable.btn_alarm) {
                 // TODO: 알림 버튼 클릭 처리
                 showCustomToast("알림 버튼 클릭")
             }

@@ -9,7 +9,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/white">
         
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/lo_calendar_header"
@@ -34,7 +35,6 @@
                 android:id="@+id/tv_month_year"
                 android:layout_width="wrap_content"
                 android:layout_height="29dp"
-                android:text="2024.07"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"
@@ -64,6 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/line"
+            android:importantForAccessibility="no"
             app:layout_constraintTop_toBottomOf="@id/lo_calendar_header" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -73,7 +74,7 @@
             android:paddingTop="20dp"
             android:paddingBottom="10dp"
             android:paddingHorizontal="16dp"
-            android:background="@color/light_gray"
+            android:background="@color/light_gray_1"
             app:layout_constraintTop_toBottomOf="@id/lo_line">
 
             <TextView
@@ -167,7 +168,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:paddingHorizontal="16dp"
-            android:background="@color/light_gray"
+            android:background="@color/light_gray_1"
             app:layout_constraintTop_toBottomOf="@id/lo_calendar_weekdays"
             app:layout_constraintBottom_toTopOf="@id/lo_bottom" />
 
@@ -175,6 +176,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/line"
+            android:importantForAccessibility="no"
             app:layout_constraintTop_toBottomOf="@id/rv_calendar" />
 
 
@@ -185,69 +187,22 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/btn_move_content"
-                android:layout_width="0dp"
-                android:layout_height="88dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginHorizontal="16dp"
-                android:padding="20dp"
-                android:background="@drawable/btn_rectangle_radius_20"
-                android:visibility="gone"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
-
-                <ImageView
-                    android:id="@+id/iv_thumbnail_content"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@color/white"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/tv_content_btn_title"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:text="김윤아님의 감정을 분석해서 추천한 콘텐츠 보러가기"
-                    android:textSize="16sp"
-                    android:textColor="@color/white"
-                    android:maxLines="2"
-                    android:layout_marginStart="20dp"
-                    android:includeFontPadding="false"
-                    app:layout_constraintTop_toTopOf="@id/iv_thumbnail_content"
-                    app:layout_constraintBottom_toBottomOf="@id/iv_thumbnail_content"
-                    app:layout_constraintStart_toEndOf="@id/iv_thumbnail_content" />
-                
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:src="@drawable/ic_arrow_right_light"
-                    app:layout_constraintTop_toTopOf="@id/iv_thumbnail_content"
-                    app:layout_constraintBottom_toBottomOf="@id/iv_thumbnail_content"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/btn_add_diary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="200dp"
-                    android:layout_height="41dp"
-                    android:paddingVertical="10dp"
-                    android:paddingHorizontal="15dp"
-                    android:layout_marginBottom="7dp"
-                    android:background="@drawable/btn_rectangle_radius_100"
-                    app:layout_constraintBottom_toBottomOf="@id/bubbleTail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="20dp"
+                    android:paddingHorizontal="24dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/ic_text_bubble"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent">
 
@@ -259,34 +214,12 @@
                         android:textSize="13sp"
                         android:textColor="@color/white"
                         android:letterSpacing="0.02"
-                        android:includeFontPadding="false"
+                        android:paddingVertical="4dp"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/iv_add_diary"/>
-
-                    <ImageView
-                        android:id="@+id/iv_add_diary"
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
-                        android:src="@drawable/ic_arrow_right_light"
-                        android:layout_marginStart="6dp"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/tv_add_diary"
-                        app:layout_constraintEnd_toEndOf="parent"/>
+                        app:layout_constraintEnd_toEndOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <ImageView
-                    android:id="@+id/bubbleTail"
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:importantForAccessibility="no"
-                    android:src="@drawable/ic_button_tail"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

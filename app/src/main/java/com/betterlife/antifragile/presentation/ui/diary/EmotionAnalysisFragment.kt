@@ -91,6 +91,10 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
     private fun getDiaryTypeFromArguments() =
         EmotionAnalysisFragmentArgs.fromBundle(requireArguments()).diaryType
 
+    private fun getIsUpdateFromArguments() =
+        EmotionAnalysisFragmentArgs.fromBundle(requireArguments()).isUpdate
+
+
     private fun setupViewModels() {
         diaryViewModel = ViewModelProvider(
             this,
@@ -130,7 +134,9 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
             val action = EmotionAnalysisFragmentDirections
                 .actionNavEmotionAnalysisToNavEmoticonRecommend(
                     diaryAnalysisData,
-                    Emotion.NOT_SELECTED
+                    Emotion.NOT_SELECTED,
+                    null,
+                    getIsUpdateFromArguments()
                 )
             findNavController().navigate(action)
         }
