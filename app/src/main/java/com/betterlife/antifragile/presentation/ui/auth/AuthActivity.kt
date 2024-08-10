@@ -9,7 +9,7 @@ class AuthActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.fragment_auth)
+        setContentView(R.layout.activity_auth)
 
         if (savedInstanceState == null) {
             replaceFragment(LoginFragment())

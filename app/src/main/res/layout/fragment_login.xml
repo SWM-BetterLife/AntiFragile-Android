@@ -9,14 +9,20 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_splash"
-        >
+        android:background="@color/white">
 
         <com.betterlife.antifragile.presentation.util.CustomToolbar
             android:id="@+id/lo_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/bg_imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/bg_auth_login"/>
 
         <LinearLayout
             android:id="@+id/lo_button"
