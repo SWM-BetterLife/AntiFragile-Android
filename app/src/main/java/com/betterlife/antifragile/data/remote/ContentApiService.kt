@@ -1,8 +1,11 @@
 package com.betterlife.antifragile.data.remote
 
 import com.betterlife.antifragile.data.model.base.BaseResponse
+import com.betterlife.antifragile.data.model.content.response.ContentDetailResponse
 import com.betterlife.antifragile.data.model.content.response.ContentRecommendResponse
+import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 import java.time.LocalDate
 
@@ -12,5 +15,12 @@ import java.time.LocalDate
 interface ContentApiService {
 
     @GET("contents")
-    suspend fun getContents(@Query("date") date: LocalDate): BaseResponse<ContentRecommendResponse>
+    suspend fun getContents(
+        @Query("date") date: LocalDate
+    ): Response<BaseResponse<ContentRecommendResponse>>
+
+    @GET("/contents/{contentId}")
+    suspend fun getContentDetail(
+        @Path("contentId") contentId: String
+    ): Response<BaseResponse<ContentDetailResponse>>
 }
