@@ -1,16 +1,21 @@
 package com.betterlife.antifragile.presentation.ui.diary.text
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.config.RetrofitInterface
 import com.betterlife.antifragile.data.local.DiaryDatabase
 import com.betterlife.antifragile.data.model.base.Status
+import com.betterlife.antifragile.data.model.common.Emotion
 import com.betterlife.antifragile.data.model.diary.TextDiaryDetail
 import com.betterlife.antifragile.data.repository.DiaryAnalysisRepository
 import com.betterlife.antifragile.data.repository.DiaryRepository
@@ -75,6 +80,7 @@ class TextDiaryDetailFragment: BaseFragment<FragmentTextDiaryDetailBinding>(
         textDiaryViewModel.getTextDiaryDetail(id, date)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupObservers() {
         textDiaryViewModel.textDiaryDetail.observe(viewLifecycleOwner) { response ->
             when (response.status) {
@@ -87,21 +93,27 @@ class TextDiaryDetailFragment: BaseFragment<FragmentTextDiaryDetailBinding>(
                         this.textDiaryDetail = textDiaryDetail
                         binding.apply {
                             tvDiaryContent.text = textDiaryDetail.content
-                            Log.d("TextDiaryDetailFragment", "emotions: ${textDiaryDetail.emotions}")
-                            tvEmotion.text = textDiaryDetail.emotions?.joinToString(", ")
+                            tvEmotion.text = Emotion.fromString(
+                                textDiaryDetail.emoticonInfo?.emotion
+                            ).toKorean
                             textDiaryDetail.emoticonInfo?.let { emoticon ->
                                 Glide.with(requireContext())
                                     .load(emoticon.imgUrl)
                                     .into(ivEmoticon)
                             }
+                            setEmotionBackground(
+                                loEmoticon, textDiaryDetail.emoticonInfo?.emotion ?: "오류"
+                            )
                         }
                     }
                 }
                 Status.FAIL, Status.ERROR -> {
                     binding.apply {
                         tvDiaryContent.text = "일기를 불러오는 데 실패했습니다."
-                        tvEmotion.text = ""
                         ivEmoticon.setImageResource(R.drawable.emoticon_blank)
+                        setEmotionBackground(
+                            loEmoticon, textDiaryDetail?.emoticonInfo?.emotion ?: "오류"
+                        )
                     }
                     showCustomToast(response.errorMessage ?: "일기를 불러오는 데 실패했습니다.")
                     Handler(Looper.getMainLooper()).postDelayed({
@@ -115,6 +127,10 @@ class TextDiaryDetailFragment: BaseFragment<FragmentTextDiaryDetailBinding>(
         }
     }
 
+    private fun setEmotionBackground(layout: ConstraintLayout, emotion: String) {
+        layout.setBackgroundResource(Emotion.fromString(emotion).getBackgroundResource())
+    }
+
     private fun setupButton() {
         binding.btnMoveContent.setOnClickListener {
             val action =
@@ -124,7 +140,6 @@ class TextDiaryDetailFragment: BaseFragment<FragmentTextDiaryDetailBinding>(
             findNavController().navigate(action)
         }
     }
-
 
     private fun getDiaryDateFromArguments(): String {
         return TextDiaryDetailFragmentArgs.fromBundle(requireArguments()).diaryDate

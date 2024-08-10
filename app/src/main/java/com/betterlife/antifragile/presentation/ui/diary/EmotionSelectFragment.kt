@@ -58,7 +58,7 @@ class EmotionSelectFragment : BaseFragment<FragmentEmotionSelectBinding>(
     override fun configureToolbar(toolbar: CustomToolbar) {
         toolbar.apply {
             reset()
-            setSubTitle(DateUtil.convertDateFormat(diaryDate!!))
+            setSubTitle("나의 감정티콘")
             showBackButton {
                 findNavController().popBackStack()
             }

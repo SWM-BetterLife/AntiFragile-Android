@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="main_color">#44A6DF</color>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
+    <color name="main_color">#7D48FF</color>
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
@@ -10,7 +8,10 @@
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#999999</color>
     <color name="light_gray_1">#FAFAFA</color>
-    <color name="light_gray_2">#BEBEBE</color>
+    <color name="light_gray_2">#EAEAEA</color>
+    <color name="light_gray_3">#BEBEBE</color>
+    <color name="calender_date_selected_color">#44A6DF</color>
+    <color name="calendar_emoticon_selected_color">#8044A6DF</color>
     <color name="hint_text_color">#999999</color>
     <color name="semi_transparent_black">#BF000000</color>
 </resources>
