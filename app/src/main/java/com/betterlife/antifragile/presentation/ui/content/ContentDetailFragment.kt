@@ -21,6 +21,7 @@ import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentDetai
 import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentDetailViewModelFactory
 import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
+import com.betterlife.antifragile.presentation.util.ImageUtil.loadImageCircle
 import java.util.regex.Pattern
 
 class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(
@@ -70,6 +71,14 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(
                         val videoId = extractVideoIdFromUrl(contentDetailResponse.url)
                         if (videoId != null) {
                             loadYouTubeVideo(videoId)
+                            binding.apply {
+                                tvTitle.text = contentDetailResponse.title
+                                tvContentDescription.text = contentDetailResponse.description
+                                tvLikeCount.text = contentDetailResponse.likeNumber.toString()
+                                tvChannelName.text = contentDetailResponse.channel.name
+                                tvSubscribeCount.text = contentDetailResponse.channel.subscribeNumber.toString()
+                                ivChannelProfile.loadImageCircle(contentDetailResponse.channel.img)
+                            }
                         } else {
                             showErrorMessage()
                         }
