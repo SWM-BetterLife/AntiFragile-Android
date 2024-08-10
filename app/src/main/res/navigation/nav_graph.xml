@@ -9,8 +9,8 @@
         android:name="com.betterlife.antifragile.presentation.ui.splash.SplashActivity"
         android:label="Splash" />
     <activity
-        android:id="@+id/loginActivity"
-        android:name="com.betterlife.antifragile.presentation.ui.login.LoginActivity"
+        android:id="@+id/authActivity"
+        android:name="com.betterlife.antifragile.presentation.ui.auth.AuthActivity"
         android:label="Login" />
 
     <activity

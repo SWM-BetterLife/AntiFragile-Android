@@ -1,5 +1,6 @@
 package com.betterlife.antifragile.config
 
+import com.betterlife.antifragile.data.remote.AuthApiService
 import com.betterlife.antifragile.data.remote.ContentApiService
 import com.betterlife.antifragile.data.remote.DiaryAnalysisApiService
 import com.betterlife.antifragile.data.remote.EmoticonThemeApiService
@@ -63,5 +64,14 @@ object RetrofitInterface {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(MemberApiService::class.java)
+    }
+
+    fun createAuthApiService(): AuthApiService {
+        return Retrofit.Builder()
+            .baseUrl(Constants.BASE_URL)
+            .client(getClient(null))
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(AuthApiService::class.java)
     }
 }

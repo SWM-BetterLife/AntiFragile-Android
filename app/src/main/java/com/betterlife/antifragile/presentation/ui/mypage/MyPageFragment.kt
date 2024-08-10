@@ -14,7 +14,7 @@ import com.betterlife.antifragile.data.model.base.Status
 import com.betterlife.antifragile.data.repository.MemberRepository
 import com.betterlife.antifragile.databinding.FragmentMyPageBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
-import com.betterlife.antifragile.presentation.ui.login.LoginActivity
+import com.betterlife.antifragile.presentation.ui.auth.AuthActivity
 import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 
@@ -125,7 +125,7 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
     private fun handleLogout() {
         logout()
 
-        val intent = Intent(requireActivity(), LoginActivity::class.java)
+        val intent = Intent(requireActivity(), AuthActivity::class.java)
         requireActivity().supportFragmentManager.popBackStack()
         startActivity(intent)
         requireActivity().finish()

@@ -1,5 +1,6 @@
-package com.betterlife.antifragile.presentation.ui.login.oauth
+package com.betterlife.antifragile.presentation.ui.auth.oauth
 
+import android.content.Context
 import android.util.Base64
 import android.util.Log
 import android.widget.Toast
@@ -8,7 +9,6 @@ import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
 import androidx.credentials.exceptions.GetCredentialException
-import com.betterlife.antifragile.presentation.ui.login.LoginActivity
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
@@ -17,9 +17,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class GoogleLogin(private val activity: LoginActivity) {
+class GoogleLogin(private val activity: Context) {
 
-    fun startGoogleLogin(hashedNonce: String) {
+    suspend fun startGoogleLogin(hashedNonce: String): String? {
         val credentialManager = CredentialManager.create(activity)
 
         val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
@@ -33,24 +33,23 @@ class GoogleLogin(private val activity: LoginActivity) {
             .addCredentialOption(googleIdOption)
             .build()
 
-        CoroutineScope(Dispatchers.Main).launch {
-            try {
-                val result = credentialManager.getCredential(
-                    request = request,
-                    context = activity
-                )
-
-                handleSignIn(result, hashedNonce)
-            } catch (e: GetCredentialException) {
-                Toast.makeText(activity, e.message, Toast.LENGTH_SHORT).show()
-            } catch (e: GoogleIdTokenParsingException) {
-                Toast.makeText(activity, e.message, Toast.LENGTH_SHORT).show()
-            }
+        return try {
+            val result = credentialManager.getCredential(
+                request = request,
+                context = activity
+            )
+            handleSignIn(result, hashedNonce)
+        } catch (e: GetCredentialException) {
+            Toast.makeText(activity, e.message, Toast.LENGTH_SHORT).show()
+            null
+        } catch (e: GoogleIdTokenParsingException) {
+            Toast.makeText(activity, e.message, Toast.LENGTH_SHORT).show()
+            null
         }
     }
 
-    private fun handleSignIn(result: GetCredentialResponse, hashedNonce: String) {
-        when (val credential = result.credential) {
+    private fun handleSignIn(result: GetCredentialResponse, hashedNonce: String): String? {
+        return when (val credential = result.credential) {
             is CustomCredential -> {
                 if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
                     try {
@@ -63,21 +62,25 @@ class GoogleLogin(private val activity: LoginActivity) {
                         val decodedToken = decodeJwt(googleIdToken)
                         val nonceFromToken = decodedToken?.get("nonce") as? String
 
-                        if (nonceFromToken.equals(hashedNonce)) {
+                        if (nonceFromToken == hashedNonce) {
                             Log.d("TAG", "Nonce is valid. User ID: $googleId")
+                            googleId
                         } else {
                             Log.e("TAG", "Invalid nonce. Expected: $hashedNonce, but received: $nonceFromToken")
+                            null
                         }
-
                     } catch (e: GoogleIdTokenParsingException) {
                         Log.e("TAG", "Received an invalid google id token response", e)
+                        null
                     }
                 } else {
                     Log.e("TAG", "Unexpected type of credential")
+                    null
                 }
             }
             else -> {
                 Log.e("TAG", "Unexpected type of credential")
+                null
             }
         }
     }
