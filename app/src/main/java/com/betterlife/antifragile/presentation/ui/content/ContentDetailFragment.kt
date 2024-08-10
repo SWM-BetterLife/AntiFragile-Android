@@ -9,15 +9,26 @@ import android.webkit.WebChromeClient
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
+import com.betterlife.antifragile.config.RetrofitInterface
+import com.betterlife.antifragile.data.model.base.Status
+import com.betterlife.antifragile.data.repository.ContentRepository
 import com.betterlife.antifragile.databinding.FragmentContentDetailBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
+import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentDetailViewModel
+import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentDetailViewModelFactory
+import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
+import java.util.regex.Pattern
 
 class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(
     R.layout.fragment_content_detail
 ) {
+
+    private lateinit var contentDetailViewModel: ContentDetailViewModel
+
     private var customView: View? = null
     private var customViewCallback: WebChromeClient.CustomViewCallback? = null
     private var originalSystemUiVisibility: Int = 0
@@ -27,9 +38,54 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setupViewModel()
         setupWebView()
-        loadYouTubeVideo("D4lt7ozEzHs")
+        setupObservers()
+
+        val contentId ="66af51729442ed49efe58546"
+        contentDetailViewModel.getContentDetail(contentId)
     }
+
+    private fun setupViewModel() {
+        // TODO: 로그인 구현 후, preference나 다른 방법으로 token을 받아와야 함
+        val token = Constants.TOKEN
+        val contentApiService = RetrofitInterface.createContentApiService(token)
+        val contentRepository = ContentRepository(contentApiService)
+        val viewModelFactory = ContentDetailViewModelFactory(contentRepository)
+        contentDetailViewModel = ViewModelProvider(
+            this, viewModelFactory
+        )[ContentDetailViewModel::class.java]
+    }
+
+    private fun setupObservers() {
+        contentDetailViewModel.contentDetailResponse.observe(viewLifecycleOwner) { response ->
+            when (response.status) {
+                Status.LOADING -> {
+                    showLoading(requireContext())
+                }
+                Status.SUCCESS -> {
+                    dismissLoading()
+                    response.data?.let { contentDetailResponse ->
+                        val videoId = extractVideoIdFromUrl(contentDetailResponse.url)
+                        if (videoId != null) {
+                            loadYouTubeVideo(videoId)
+                        } else {
+                            showErrorMessage()
+                        }
+                    }
+                }
+                Status.FAIL, Status.ERROR -> {
+                    dismissLoading()
+                    Log.e("ContentDetailFragment", "Error: ${response.errorMessage}")
+                }
+                else -> {
+                    Log.d("DiaryCalendarFragment", "Unknown status: ${response.status}")
+                }
+            }
+        }
+    }
+
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun setupWebView() {
@@ -158,6 +214,23 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(
                 customViewCallback?.onCustomViewHidden()
             }
         }
+    }
+
+    private fun extractVideoIdFromUrl(url: String?): String? {
+        if (url == null) return null
+        val regex = "(?:youtube(?:-nocookie)?\\.com/(?:[^/\\n\\s]+/.+/|(?:v|e(?:mbed)?)|.*[?&]v=)|youtu\\.be/)([a-zA-Z0-9_-]{11})"
+        val pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE)
+        val matcher = pattern.matcher(url)
+        return if (matcher.find()) {
+            matcher.group(1)
+        } else {
+            null
+        }
+    }
+
+    private fun showErrorMessage() {
+        binding.wvContent.visibility = View.GONE
+        binding.tvErrorMessage.visibility = View.VISIBLE
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
