@@ -55,6 +55,7 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
                 Log.d("EmotionAnalysisFragment", "$textDiary")
                 val diaryAnalysisData = createDiaryAnalysisData(textDiary?.date ?: "")
 
+                // TODO: LLM 붙이면 postDelayed 제거
                 Handler(Looper.getMainLooper()).postDelayed({
                     moveToEmoticonRecommend(diaryAnalysisData)
                 }, 4000)

@@ -34,10 +34,8 @@ class CustomLoadingDialog(
     }
 
     private fun setupLoading() {
-        // 이미지 리소스 설정
         binding.ivEmoticon.setImageResource(emoticonResId)
 
-        // 이미지 애니메이션 설정
         val translateAnimation = TranslateAnimation(0f, 0f, -15f, 15f)
         translateAnimation.duration = 1000
         translateAnimation.repeatMode = TranslateAnimation.REVERSE
