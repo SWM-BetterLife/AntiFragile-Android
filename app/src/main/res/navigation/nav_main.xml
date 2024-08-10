@@ -184,7 +184,38 @@
         android:id="@+id/nav_content"
         android:name="com.betterlife.antifragile.presentation.ui.content.ContentFragment"
         android:label="Content"
-        tools:layout="@layout/fragment_content"/>
+        tools:layout="@layout/fragment_content">
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_content_detail"
+        android:name="com.betterlife.antifragile.presentation.ui.content.ContentDetailFragment"
+        android:label="ContentDetail"
+        tools:layout="@layout/fragment_content_detail">
+
+        <action
+            android:id="@+id/action_nav_content_detail_to_nav_content_view_complete"
+            app:destination="@id/nav_content_view_complete"/>
+
+        <argument
+            android:name="contentId"
+            app:argType="string" />
+        <argument
+            android:name="diaryDate"
+            app:argType="string" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_content_view_complete"
+        android:name="com.betterlife.antifragile.presentation.ui.content.ContentViewCompleteFragment"
+        android:label="ContentViewComplete"
+        tools:layout="@layout/fragment_content_view_complete">
+
+        <argument
+            android:name="diaryDate"
+            app:argType="string" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_my_page"

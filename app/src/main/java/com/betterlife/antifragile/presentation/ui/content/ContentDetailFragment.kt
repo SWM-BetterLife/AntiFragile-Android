@@ -44,6 +44,8 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(
         setupWebView()
         setupObservers()
 
+        // TODO: contentId는 이전 화면에서 받아와야 함
+        // TODO: diaryDate도 이전 화면에서 받아와야 함
         val contentId ="66af51729442ed49efe58546"
         contentDetailViewModel.getContentDetail(contentId)
     }
@@ -204,8 +206,11 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(
             if (!isVideoEndedHandled) {
                 isVideoEndedHandled = true
                 activity?.runOnUiThread {
-                    Toast.makeText(context, "영상 시청 완료!", Toast.LENGTH_SHORT).show()
-                    Log.d("ContentDetailFragment", "Video ended")
+                    findNavController().navigate(
+                        // TODO: 전달받은 일기 날짜 넣기
+                        ContentDetailFragmentDirections
+                            .actionNavContentDetailToNavContentViewComplete("2024-08-10")
+                    )
                 }
             }
         }
