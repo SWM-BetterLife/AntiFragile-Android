@@ -37,4 +37,5 @@
     <string name="select_complete">선택 완료</string>
     <string name="behavior_emoticon_expand">com.example.myapp.EmoticonExpandBehavior</string>
     <string name="select_emoticon_emotion">일기에 어울리는\n감정티콘을 골라주세요!</string>
+    <string name="loading">Loading...</string>
 </resources>
