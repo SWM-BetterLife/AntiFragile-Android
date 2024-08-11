@@ -1,6 +1,8 @@
 package com.betterlife.antifragile.presentation.ui.diary
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
@@ -12,6 +14,7 @@ import com.betterlife.antifragile.data.model.diary.TextDiary
 import com.betterlife.antifragile.data.model.diary.llm.DiaryAnalysisData
 import com.betterlife.antifragile.databinding.FragmentEmotionAnalysisBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
+import com.betterlife.antifragile.presentation.customview.CustomLoadingDialog
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.DiaryViewModel
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.DiaryViewModelFactory
 import com.betterlife.antifragile.presentation.util.CustomToolbar
@@ -23,6 +26,7 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
     private lateinit var diaryViewModel: DiaryViewModel
     private var textDiary: TextDiary? = null
     private var questionDiary: QuestionDiary? = null
+    private var customLoadingDialog: CustomLoadingDialog? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -37,6 +41,7 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
         }
 
         setupViewModels()
+        showLoading()
 
         // 로컬 DB에 저장된 텍스트 일기 또는 질문 일기 조회
         if (diaryType == "TEXT") {
@@ -50,7 +55,10 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
                 Log.d("EmotionAnalysisFragment", "$textDiary")
                 val diaryAnalysisData = createDiaryAnalysisData(textDiary?.date ?: "")
 
-                setupSaveButton(diaryAnalysisData)
+                // TODO: LLM 붙이면 postDelayed 제거
+                Handler(Looper.getMainLooper()).postDelayed({
+                    moveToEmoticonRecommend(diaryAnalysisData)
+                }, 4000)
             }
         } else if (diaryType == "QUESTION"){
             getQuestionDiary(diaryId) { retrievedQuestionDiary ->
@@ -69,7 +77,7 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
                     diaryDate = questionDiary?.date ?: ""
                 )
 
-                setupSaveButton(diaryAnalysisData)
+                moveToEmoticonRecommend(diaryAnalysisData)
             }
         } else {
             showCustomToast("잘못된 diaryType입니다. 이전 화면으로 돌아갑니다.")
@@ -100,9 +108,7 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
             this,
             DiaryViewModelFactory(requireActivity().application)
         ).get(DiaryViewModel::class.java)
-
     }
-
     // 로컬 db에 저장된 텍스트 일기 조회
     private fun getTextDiary(diaryId: Int, callback: (TextDiary?) -> Unit) {
         diaryViewModel.getTextDiaryById(diaryId).observe(viewLifecycleOwner) { retrievedDiary ->
@@ -118,6 +124,15 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
         }
     }
 
+    private fun showLoading() {
+        customLoadingDialog = CustomLoadingDialog(
+            context = requireContext(),
+            emoticonResId = R.drawable.emoticon_smile,
+            loadingTexts = arrayOf("감정 분석 중", "감정 분석 중.", "감정 분석 중..", "감정 분석 중...")
+        )
+        customLoadingDialog?.show()
+    }
+
     private fun createDiaryAnalysisData(date: String): DiaryAnalysisData {
         return DiaryAnalysisData(
             emotions = listOf("wwwww", "감정2"),
@@ -129,16 +144,25 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
         )
     }
 
-    private fun setupSaveButton(diaryAnalysisData: DiaryAnalysisData) {
-        binding.btnSave.setOnClickListener {
-            val action = EmotionAnalysisFragmentDirections
-                .actionNavEmotionAnalysisToNavEmoticonRecommend(
-                    diaryAnalysisData,
-                    Emotion.NOT_SELECTED,
-                    null,
-                    getIsUpdateFromArguments()
-                )
-            findNavController().navigate(action)
-        }
+    private fun moveToEmoticonRecommend(diaryAnalysisData: DiaryAnalysisData) {
+        val action = EmotionAnalysisFragmentDirections
+            .actionNavEmotionAnalysisToNavEmoticonRecommend(
+                diaryAnalysisData,
+                Emotion.NOT_SELECTED,
+                null,
+                getIsUpdateFromArguments()
+            )
+        findNavController().navigate(action)
     }
+
+    override fun onPause() {
+        super.onPause()
+        customLoadingDialog?.dismiss()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        customLoadingDialog?.dismiss()
+    }
+
 }
