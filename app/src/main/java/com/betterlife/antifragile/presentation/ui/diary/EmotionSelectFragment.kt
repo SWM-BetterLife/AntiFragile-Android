@@ -1,16 +1,13 @@
 package com.betterlife.antifragile.presentation.ui.diary
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.betterlife.antifragile.R
-import com.betterlife.antifragile.config.RetrofitInterface
-import com.betterlife.antifragile.data.model.base.Status
+import com.betterlife.antifragile.data.model.diary.llm.DiaryAnalysisData
 import com.betterlife.antifragile.data.model.emoticontheme.EmotionSelectData
-import com.betterlife.antifragile.data.repository.EmoticonThemeRepository
 import com.betterlife.antifragile.databinding.FragmentEmotionSelectBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.diary.adapter.EmotionSelectAdapter
@@ -18,7 +15,6 @@ import com.betterlife.antifragile.presentation.ui.diary.viewmodel.EmotionSelectV
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.EmotionSelectViewModelFactory
 import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
-import com.betterlife.antifragile.presentation.util.DateUtil
 
 class EmotionSelectFragment : BaseFragment<FragmentEmotionSelectBinding>(
     R.layout.fragment_emotion_select
@@ -26,33 +22,19 @@ class EmotionSelectFragment : BaseFragment<FragmentEmotionSelectBinding>(
 
     private lateinit var emotionSelectViewModel: EmotionSelectViewModel
     private lateinit var emotionSelectAdapter: EmotionSelectAdapter
-    private var diaryDate: String? = null
     private lateinit var selectedEmotion: EmotionSelectData
+    private lateinit var emoticonThemeId: String
+    private lateinit var diaryAnalysisData: DiaryAnalysisData
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val diaryAnalysisData = getDiaryAnalysisData()
-        diaryDate = diaryAnalysisData.diaryDate
-
-        val emoticonThemeId = getEmoticonThemeIdFromArguments()
-        val initialEmotion = getEmotionFromArguments().name
-
+        setVariables()
         setupViewModel()
         setupRecyclerView()
-        setupObservers(emoticonThemeId, initialEmotion)
-
-        binding.btnSave.setOnClickListener {
-            val action = EmotionSelectFragmentDirections
-                .actionNavEmotionSelectToNavEmoticonRecommend(
-                    diaryAnalysisData,
-                    selectedEmotion.emotionEnum,
-                    emoticonThemeId,
-                    getIsUpdateFromArguments()
-                )
-            Log.d("EmotionSelectFragment", "Selected emotion: $selectedEmotion")
-            findNavController().navigate(action)
-        }
+        setupObservers(getEmotionFromArguments().name)
+        loadEmoticonData()
+        setupButton()
     }
 
     override fun configureToolbar(toolbar: CustomToolbar) {
@@ -66,58 +48,60 @@ class EmotionSelectFragment : BaseFragment<FragmentEmotionSelectBinding>(
         }
     }
 
+    private fun setVariables() {
+        diaryAnalysisData =
+            EmotionSelectFragmentArgs.fromBundle(requireArguments()).diaryAnalysisData
+        emoticonThemeId = EmotionSelectFragmentArgs.fromBundle(requireArguments()).emoticonThemeId
+    }
+
     private fun setupViewModel() {
-        val token = Constants.TOKEN
-        val emoticonThemeApiService = RetrofitInterface.createEmoticonThemeApiService(token)
-        val emoticonThemeRepository = EmoticonThemeRepository(emoticonThemeApiService)
-        val factory = EmotionSelectViewModelFactory(emoticonThemeRepository)
-        emotionSelectViewModel = ViewModelProvider(this, factory)[EmotionSelectViewModel::class.java]
+        val factory = EmotionSelectViewModelFactory(Constants.TOKEN)
+        emotionSelectViewModel =
+            ViewModelProvider(this, factory)[EmotionSelectViewModel::class.java]
     }
 
     private fun setupRecyclerView() {
         binding.loSelectEmoticon.layoutManager = GridLayoutManager(context, 5)
     }
 
-    private fun setupObservers(emoticonThemeId: String, initialEmotion: String) {
-        emotionSelectViewModel.emoticonResponse.observe(viewLifecycleOwner) { response ->
-            when (response.status) {
-                Status.LOADING -> {
-                    showLoading(requireContext())
+    private fun setupObservers(initialEmotion: String) {
+        setupBaseObserver(
+            liveData = emotionSelectViewModel.emoticonResponse,
+            onSuccess = { response ->
+                val sortedEmoticons = response.sortedBy { emotion ->
+                    emotion.emotionEnum.ordinal
                 }
-                Status.SUCCESS -> {
-                    dismissLoading()
-                    response.data?.let { emoticons ->
-                        val sortedEmoticons = emoticons.sortedBy { emotion ->
-                            emotion.emotionEnum.ordinal
-                        }
-                        emotionSelectAdapter = EmotionSelectAdapter(sortedEmoticons, { selectedEmoticon ->
-                            selectedEmotion = selectedEmoticon
-                        }, initialEmotion)
-                        binding.loSelectEmoticon.adapter = emotionSelectAdapter
-                    }
-                }
-                Status.FAIL, Status.ERROR -> {
-                    dismissLoading()
-                    showCustomToast(response.errorMessage ?: "감정티콘 테마의 감정티콘 조회에 실패했습니다.")
-                }
-                else -> {
-                    Log.d("EmotionSelectFragment", "Unknown status: ${response.status}")
-                }
+                emotionSelectAdapter = EmotionSelectAdapter(sortedEmoticons, { selectedEmoticon ->
+                    selectedEmotion = selectedEmoticon
+                }, initialEmotion)
+                binding.loSelectEmoticon.adapter = emotionSelectAdapter
+            },
+            onError = {
+                showCustomToast(it.errorMessage ?: "감정티콘 테마의 감정티콘 조회에 실패했습니다.")
             }
-        }
-        emotionSelectViewModel.getEmoticons(emoticonThemeId)
+        )
     }
 
-    private fun getEmoticonThemeIdFromArguments() =
-        EmotionSelectFragmentArgs.fromBundle(requireArguments()).emoticonThemeId
+    private fun setupButton() {
+        binding.btnSave.setOnClickListener {
+            findNavController().navigate(
+                EmotionSelectFragmentDirections.actionNavEmotionSelectToNavEmoticonRecommend(
+                    diaryAnalysisData,
+                    selectedEmotion.emotionEnum,
+                    emoticonThemeId,
+                    getIsUpdateFromArguments()
+                )
+            )
+        }
+    }
+
+    private fun loadEmoticonData() {
+        emotionSelectViewModel.getEmoticons(emoticonThemeId)
+    }
 
     private fun getEmotionFromArguments() =
         EmotionSelectFragmentArgs.fromBundle(requireArguments()).emotion
 
-    private fun getDiaryAnalysisData() =
-        EmotionSelectFragmentArgs.fromBundle(requireArguments()).diaryAnalysisData
-
     private fun getIsUpdateFromArguments() =
         EmotionSelectFragmentArgs.fromBundle(requireArguments()).isUpdate
-
 }
