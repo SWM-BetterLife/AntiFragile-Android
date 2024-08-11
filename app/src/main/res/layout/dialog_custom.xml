@@ -70,10 +70,9 @@
                 android:maxLines="1"
                 android:inputType="text"
                 android:paddingHorizontal="16dp"
-                android:background="@android:color/transparent"
                 android:paddingTop="25dp"
                 android:paddingBottom="35dp"
-                android:backgroundTint="@color/white"
+                android:background="@color/white"
                 app:layout_constraintTop_toTopOf="@id/line"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
