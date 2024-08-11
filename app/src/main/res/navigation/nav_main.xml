@@ -66,6 +66,10 @@
         <argument
             android:name="isNewDiary"
             app:argType="boolean" />
+        <argument
+            android:name="feedback"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 
     <fragment

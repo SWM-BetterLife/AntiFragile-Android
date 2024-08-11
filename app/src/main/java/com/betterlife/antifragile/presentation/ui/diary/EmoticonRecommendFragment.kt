@@ -122,15 +122,20 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
             getDiaryAnalysisData(),
             Emoticon(selectedEmoticon.emoticonThemeId, emotion.name)
         )
-        recommendEmoticonViewModel.saveDiaryAnalysis(
-            request, if (getIsUpdate()) diaryDate else null
-        )
 
-        findNavController().navigate(
-            EmoticonRecommendFragmentDirections.actionNavEmoticonRecommendToNavRecommendContent(
-                diaryDate, !getIsUpdate()
+        if (getIsUpdate()) {
+            recommendEmoticonViewModel.saveDiaryAnalysis(request, diaryDate)
+            // TODO: 재추천 횟수 조회 api 호출
+            // TODO: 재추천 횟수가 1회 이상이면 재추천 여부 다이얼로그 띄우기
+            // TODO: 재추천 횟수가 0회이면 추천 콘텐츠 조회로 이동(false, true)
+        } else {
+            recommendEmoticonViewModel.saveDiaryAnalysis(request, null)
+            findNavController().navigate(
+                EmoticonRecommendFragmentDirections.actionNavEmoticonRecommendToNavRecommendContent(
+                    diaryDate, !getIsUpdate(), null
+                )
             )
-        )
+        }
         (activity as MainActivity).showBottomNavigation()
     }
 
