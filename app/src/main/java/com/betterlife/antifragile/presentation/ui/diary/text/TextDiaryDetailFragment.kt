@@ -4,14 +4,12 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.data.model.base.CustomErrorMessage
-import com.betterlife.antifragile.data.model.base.Status
 import com.betterlife.antifragile.data.model.common.Emotion
 import com.betterlife.antifragile.data.model.diary.TextDiaryDetail
 import com.betterlife.antifragile.databinding.FragmentTextDiaryDetailBinding
@@ -21,15 +19,15 @@ import com.betterlife.antifragile.presentation.ui.diary.viewmodel.TextDiaryViewM
 import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.DateUtil
-import com.bumptech.glide.Glide
 
 class TextDiaryDetailFragment: BaseFragment<FragmentTextDiaryDetailBinding>(
     R.layout.fragment_text_diary_detail
 ) {
 
     private lateinit var textDiaryViewModel: TextDiaryViewModel
-    private lateinit var textDiaryDetail: TextDiaryDetail
     private lateinit var diaryDate: String
+    private var textDiaryDetail: TextDiaryDetail? = null
+
     private var diaryId: Int = -1
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -75,6 +73,7 @@ class TextDiaryDetailFragment: BaseFragment<FragmentTextDiaryDetailBinding>(
         setupBaseObserver(
             liveData = textDiaryViewModel.textDiaryDetail,
             onSuccess = { textDiaryDetail ->
+                this.textDiaryDetail = textDiaryDetail
                 binding.textDiaryDetail = textDiaryDetail
                 setEmotionBackground(
                     binding.loEmoticon, textDiaryDetail.emoticonInfo?.emotion ?: "오류"
