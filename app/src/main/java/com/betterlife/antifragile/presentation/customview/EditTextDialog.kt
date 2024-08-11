@@ -11,14 +11,14 @@ import android.view.Window
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.databinding.DialogCustomBinding
 
-class SelectDialog(
+class EditTextDialog(
     context: Context,
     private val title: String,
-    private val description: String,
+    private val hint: String,
     private val leftButtonText: String,
     private val rightButtonText: String,
     private val leftButtonListener: (() -> Unit)? = null,
-    private val rightButtonListener: (() -> Unit)? = null
+    private val rightButtonListener: ((String) -> Unit)? = null
 ) : Dialog(context) {
 
     private lateinit var binding: DialogCustomBinding
@@ -35,20 +35,20 @@ class SelectDialog(
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
         binding.tvTitle.text = title
-        binding.tvDescription.visibility = View.VISIBLE
-        binding.tvDescription.text = description
-        binding.etFeedback.visibility = View.INVISIBLE
+        binding.tvDescription.visibility = View.INVISIBLE
+        binding.etFeedback.visibility = View.VISIBLE
+        binding.etFeedback.hint = hint
         binding.btnLeft.text = leftButtonText
         binding.btnRight.text = rightButtonText
 
-        // 버튼 리스너 설정
         binding.btnLeft.setOnClickListener {
             leftButtonListener?.invoke()
             dismiss()
         }
 
         binding.btnRight.setOnClickListener {
-            rightButtonListener?.invoke()
+            val feedback = binding.etFeedback.text.toString()
+            rightButtonListener?.invoke(feedback)
             dismiss()
         }
 
