@@ -1,16 +1,20 @@
 package com.betterlife.antifragile.presentation.ui.content
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
+import com.betterlife.antifragile.config.RetrofitInterface
+import com.betterlife.antifragile.data.repository.ContentRepository
 import com.betterlife.antifragile.databinding.FragmentRecommendContentBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentRecommendViewModel
 import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentRecommendViewModelFactory
 import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
+import java.time.LocalDate
 
 class RecommendContentFragment : BaseFragment<FragmentRecommendContentBinding>(
     R.layout.fragment_recommend_content
@@ -23,6 +27,34 @@ class RecommendContentFragment : BaseFragment<FragmentRecommendContentBinding>(
 
         setupViewModel()
 
+        val diaryDateString = arguments?.getString("diaryDate")
+        val isNewDiary = arguments?.getBoolean("isNewDiary") ?: false
+        val feedback = arguments?.getString("feedback")
+
+        val diaryDate = diaryDateString?.let { LocalDate.parse(it) }
+
+        // 로직 구성
+        diaryDate?.let { date ->
+            when {
+                isNewDiary -> {
+                    // 신규 일기 생성 -> 추천 API 호출
+                    contentRecommendViewModel.getRecommendContents(null, date)
+                }
+                !isNewDiary && feedback == null -> {
+                    // 기존 일기 -> 조회 API 호출
+                    contentRecommendViewModel.getContentList(date)
+                }
+                !isNewDiary && feedback != null -> {
+                    // 재추천 -> 재추천 API 호출
+                    contentRecommendViewModel.getRecommendContents(feedback, date)
+                }
+                else -> {
+                    Log.e("RecommendContentFragment", "Unhandled case for isNewDiary and feedback")
+                }
+            }
+        } ?: run {
+            Log.e("RecommendContentFragment", "Invalid or missing diaryDate")
+        }
     }
 
     override fun configureToolbar(toolbar: CustomToolbar) {
