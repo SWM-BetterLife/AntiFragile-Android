@@ -16,6 +16,7 @@ import com.betterlife.antifragile.data.model.emoticontheme.response.EmoticonByEm
 import com.betterlife.antifragile.databinding.FragmentEmoticonRecommendBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.diary.adapter.EmoticonByEmotionAdapter
+import com.betterlife.antifragile.presentation.ui.diary.handler.EmoticonRecommendViewPagerHandler
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.EmoticonRecommendViewModel
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.EmoticonRecommendViewModelFactory
 import com.betterlife.antifragile.presentation.ui.main.MainActivity
@@ -30,7 +31,7 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
 
     private lateinit var recommendEmoticonViewModel: EmoticonRecommendViewModel
     private lateinit var emoticonAdapter: EmoticonByEmotionAdapter
-    private lateinit var viewPager: ViewPager2
+    private lateinit var viewPagerHandler: EmoticonRecommendViewPagerHandler
     private lateinit var diaryDate: String
     private lateinit var emotion: Emotion
     private var selectedPosition = 0
@@ -40,8 +41,8 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
 
         setupVariables()
         setupViewModels()
-        setupObservers()
         setupViewPager()
+        setupObservers()
         loadEmoticonData()
         setupButtons()
     }
@@ -72,17 +73,7 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
         setupBaseObserver(
             liveData = recommendEmoticonViewModel.saveDiaryResponse,
             onSuccess = { },
-            onError = { errorMessage ->
-                if (errorMessage == CustomErrorMessage.DIARY_ANALYSIS_ALREADY_EXIST.message) {
-                    // 일기 분석이 이미 존재하여 저장을 실패한 경우
-                    showCustomToast("이미 해당 날짜에 사용자의 일기 분석이 존재합니다.")
-                } else if (errorMessage == CustomErrorMessage.DIARY_ANALYSIS_NOT_FOUND.message) {
-                    // 일기 분석이 존재하지 않아 수정을 실패한 경우
-                    showCustomToast("감정 분석 정보가 존재하지 않아 수정에 실패했습니다.")
-                } else {
-                    showCustomToast(errorMessage ?: "감정 분석 저장에 실패했습니다.")
-                }
-            }
+            onError = { handleSaveError(it) }
         )
 
         setupBaseObserver(
@@ -101,47 +92,23 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
     }
 
     private fun setupViewPager() {
+        viewPagerHandler = EmoticonRecommendViewPagerHandler(
+            viewPager = binding.vpSelectEmotion,
+            onUpdateNavigationButtons = { updateNavigationButtons() },
+            viewPagerPadding = resources.getDimensionPixelOffset(R.dimen.viewpager_padding)
+        )
+
         emoticonAdapter = EmoticonByEmotionAdapter { position ->
-            selectedPosition = position
-            viewPager.setCurrentItem(position, true)
-            updateNavigationButtons()
+            viewPagerHandler.onPageSelected(position)
         }
 
-        viewPager = binding.vpSelectEmotion.apply {
-            adapter = emoticonAdapter
-            offscreenPageLimit = 1
-            setPageTransformer { page, position ->
-                page.apply {
-                    val scaleFactor = calculateScaleFactor(position)
-                    scaleX = scaleFactor
-                    scaleY = scaleFactor
-                    translationX = calculateTranslationX(page, position, scaleFactor)
-                }
-            }
-
-            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    selectedPosition = position
-                    updateNavigationButtons()
-                }
-            })
-        }
-
-        configureViewPagerPadding()
-        updateNavigationButtons()
+        viewPagerHandler.setAdapter(emoticonAdapter)
     }
 
     private fun setupButtons() {
-        binding.btnLeft.setOnClickListener {
-            viewPager.setCurrentItem(selectedPosition - 1, true)
-        }
-
-        binding.btnRight.setOnClickListener {
-            viewPager.setCurrentItem(selectedPosition + 1, true)
-        }
-
+        binding.btnLeft.setOnClickListener { viewPagerHandler.moveToPreviousPage() }
+        binding.btnRight.setOnClickListener { viewPagerHandler.moveToNextPage() }
         binding.btnSave.setOnClickListener { saveDiaryAnalysis() }
-
         binding.btnChooseSelf.setOnClickListener { navigateToEmotionSelect() }
     }
 
@@ -161,7 +128,7 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
 
         findNavController().navigate(
             EmoticonRecommendFragmentDirections.actionNavEmoticonRecommendToNavRecommendContent(
-                diaryDate, true
+                diaryDate, !getIsUpdate()
             )
         )
         (activity as MainActivity).showBottomNavigation()
@@ -177,28 +144,6 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
                 getIsUpdate()
             )
         )
-    }
-    private fun configureViewPagerPadding() {
-        (viewPager.getChildAt(0) as? RecyclerView)?.apply {
-            val padding = resources.getDimensionPixelOffset(R.dimen.viewpager_padding)
-            setPadding(padding, 0, padding, 0)
-            clipToPadding = false
-        }
-    }
-
-    private fun calculateScaleFactor(position: Float): Float {
-        return when {
-            position < -1 || position > 1 -> 0.7f
-            position == 0f -> 1f
-            else -> 0.7f + (1 - 0.7f) * (1 - abs(position))
-        }
-    }
-
-    private fun calculateTranslationX(page: View, position: Float, scaleFactor: Float): Float {
-        val verticalMargin = page.height * (1 - scaleFactor) / 2
-        val horizontalMargin = page.width * (1 - scaleFactor) / 2
-        return if (position < 0)
-            horizontalMargin - verticalMargin / 2 else -horizontalMargin + verticalMargin / 2
     }
 
     private fun updateNavigationButtons() {
@@ -219,6 +164,16 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
             comment = diaryAnalysisData.comment,
             emoticon = emoticon
         )
+    }
+
+    private fun handleSaveError(errorMessage: String?) {
+        when (errorMessage) {
+            CustomErrorMessage.DIARY_ANALYSIS_ALREADY_EXIST.message ->
+                showCustomToast("이미 해당 날짜에 사용자의 일기 분석이 존재합니다.")
+            CustomErrorMessage.DIARY_ANALYSIS_NOT_FOUND.message ->
+                showCustomToast("감정 분석 정보가 존재하지 않아 수정에 실패했습니다.")
+            else -> showCustomToast(errorMessage ?: "감정 분석 저장에 실패했습니다.")
+        }
     }
 
     private fun getDiaryAnalysisData() =
