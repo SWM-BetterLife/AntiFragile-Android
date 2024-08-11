@@ -7,10 +7,11 @@ import com.betterlife.antifragile.data.model.content.response.Content
 import com.betterlife.antifragile.databinding.ItemContentBinding
 import com.betterlife.antifragile.presentation.util.ImageUtil.loadImage
 import com.betterlife.antifragile.presentation.util.ImageUtil.loadImageCircle
-import com.bumptech.glide.Glide
 
-class ContentAdapter(private val contentList: List<Content>) :
-    RecyclerView.Adapter<ContentAdapter.ContentViewHolder>() {
+class ContentAdapter(
+    private val contentList: List<Content>,
+    private val onItemClick: (Content) -> Unit
+) : RecyclerView.Adapter<ContentAdapter.ContentViewHolder>() {
 
     inner class ContentViewHolder(
         private val binding: ItemContentBinding
@@ -27,6 +28,10 @@ class ContentAdapter(private val contentList: List<Content>) :
                 tvSubscribeCount.text = content.channel.subscribeNumber.toString()
 
                 btnLikeContent.isSelected = content.isLiked
+
+                root.setOnClickListener {
+                    onItemClick(content) // 클릭 시 리스너 호출
+                }
             }
         }
     }

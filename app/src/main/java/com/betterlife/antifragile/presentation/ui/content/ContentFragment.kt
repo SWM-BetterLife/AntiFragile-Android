@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.betterlife.antifragile.R
@@ -22,20 +23,28 @@ class ContentFragment : BaseFragment<FragmentContentBinding>(R.layout.fragment_c
 
     private lateinit var contentViewModel: ContentViewModel
     private lateinit var contentAdapter: ContentAdapter
+    private lateinit var navController: NavController
+    private var today = LocalDate.now()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        navController = findNavController()
 
         setupViewModel()
         setupObserver()
         setupRecyclerView()
 
-        val today = LocalDate.now()
         contentViewModel.getContentList(today)
     }
 
     private fun setupRecyclerView() {
-        contentAdapter = ContentAdapter(emptyList())
+        contentAdapter = ContentAdapter(emptyList()) { content ->
+            // 콘텐츠 클릭 시 이동하는 코드
+            val action = ContentFragmentDirections.
+            actionContentFragmentToContentDetailFragment(content.id, today.toString())
+            navController.navigate(action)
+        }
         binding.rvContentList.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = contentAdapter
@@ -63,7 +72,11 @@ class ContentFragment : BaseFragment<FragmentContentBinding>(R.layout.fragment_c
                 Status.SUCCESS -> {
                     dismissLoading()
                     response.data?.let { contentListResponse ->
-                        contentAdapter = ContentAdapter(contentListResponse.contents)
+                        contentAdapter = ContentAdapter(contentListResponse.contents) { content ->
+                            val action = ContentFragmentDirections.
+                                actionContentFragmentToContentDetailFragment(content.id, today.toString())
+                            navController.navigate(action)
+                        }
                         binding.rvContentList.adapter = contentAdapter
                     }
                 }

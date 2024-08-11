@@ -44,10 +44,14 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(
         setupWebView()
         setupObservers()
 
-        // TODO: contentId는 이전 화면에서 받아와야 함
-        // TODO: diaryDate도 이전 화면에서 받아와야 함
-        val contentId ="66af51729442ed49efe58546"
-        contentDetailViewModel.getContentDetail(contentId)
+        val contentId = arguments?.getString("contentId")
+        val diaryDate = arguments?.getString("diaryDate")
+        if (contentId != null && diaryDate != null) {
+            contentDetailViewModel.getContentDetail(contentId)
+        } else {
+            // contentId나 date가 없을 경우 처리할 로직 추가
+            Log.e("ContentDetailFragment", "Missing contentId or date")
+        }
     }
 
     private fun setupViewModel() {
