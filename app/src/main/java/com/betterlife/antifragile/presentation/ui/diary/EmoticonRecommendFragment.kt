@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.data.model.base.CustomErrorMessage
 import com.betterlife.antifragile.data.model.common.Emotion
@@ -24,7 +22,6 @@ import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.DateUtil
 import com.betterlife.antifragile.presentation.util.RecommendDialogUtil
-import kotlin.math.abs
 
 class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>(
     R.layout.fragment_emoticon_recommend
@@ -33,7 +30,7 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
     private lateinit var recommendEmoticonViewModel: EmoticonRecommendViewModel
     private lateinit var emoticonAdapter: EmoticonByEmotionAdapter
     private lateinit var viewPagerHandler: EmoticonRecommendViewPagerHandler
-    private lateinit var diaryDate: String
+    private lateinit var diaryAnalysisData: DiaryAnalysisData
     private lateinit var emotion: Emotion
     private var selectedPosition = 0
 
@@ -51,7 +48,7 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
     override fun configureToolbar(toolbar: CustomToolbar) {
         toolbar.apply {
             reset()
-            setSubTitle(DateUtil.convertDateFormat(diaryDate))
+            setSubTitle(DateUtil.convertDateFormat(diaryAnalysisData.diaryDate))
             showBackButton {
                 findNavController().popBackStack()
             }
@@ -60,7 +57,8 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
     }
 
     private fun setupVariables() {
-        diaryDate = getDiaryAnalysisData().diaryDate
+        diaryAnalysisData =
+            EmoticonRecommendFragmentArgs.fromBundle(requireArguments()).diaryAnalysisData
         emotion = EmoticonRecommendFragmentArgs.fromBundle(requireArguments()).emotion
     }
 
@@ -74,7 +72,7 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
         setupBaseObserver(
             liveData = recommendEmoticonViewModel.saveDiaryResponse,
             onSuccess = { },
-            onError = { handleSaveError(it) }
+            onError = { handleSaveError(it.errorMessage) }
         )
 
         setupBaseObserver(
@@ -87,7 +85,7 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
                 updateNavigationButtons()
             },
             onError = {
-                showCustomToast(it ?: "감정티콘 조회에 실패했습니다.")
+                showCustomToast(it.errorMessage ?: "감정티콘 조회에 실패했습니다.")
             }
         )
     }
@@ -120,12 +118,12 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
     private fun saveDiaryAnalysis() {
         val selectedEmoticon = emoticonAdapter.getSelectedEmoticon(selectedPosition)
         val request = createDiaryAnalysisRequest(
-            getDiaryAnalysisData(),
+            diaryAnalysisData,
             Emoticon(selectedEmoticon.emoticonThemeId, emotion.name)
         )
 
         if (getIsUpdate()) {
-            recommendEmoticonViewModel.saveDiaryAnalysis(request, diaryDate)
+            recommendEmoticonViewModel.saveDiaryAnalysis(request, diaryAnalysisData.diaryDate)
 
             RecommendDialogUtil.showRecommendDialogs(
                 fragment = this,
@@ -145,7 +143,9 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
 
     private fun navigateToRecommendContent(isNewDiary: Boolean, feedback: String?) {
         val action = EmoticonRecommendFragmentDirections
-            .actionNavEmoticonRecommendToNavRecommendContent(diaryDate, isNewDiary, feedback)
+            .actionNavEmoticonRecommendToNavRecommendContent(
+                diaryAnalysisData.diaryDate, isNewDiary, feedback
+            )
         findNavController().navigate(action)
     }
 
@@ -155,7 +155,7 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
                 emoticonThemeId = emoticonAdapter
                     .getSelectedEmoticon(selectedPosition).emoticonThemeId,
                 emotion = emotion,
-                diaryAnalysisData = getDiaryAnalysisData(),
+                diaryAnalysisData = diaryAnalysisData,
                 getIsUpdate()
             )
         )
@@ -190,9 +190,6 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
             else -> showCustomToast(errorMessage ?: "감정 분석 저장에 실패했습니다.")
         }
     }
-
-    private fun getDiaryAnalysisData() =
-        EmoticonRecommendFragmentArgs.fromBundle(requireArguments()).diaryAnalysisData
 
     // TODO: 이모티콘 테마에 따라 시작 viewpager position 설정
     private fun getEmoticonThemeId() =
