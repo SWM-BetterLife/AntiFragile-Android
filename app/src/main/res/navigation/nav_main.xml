@@ -122,9 +122,9 @@
 
     <fragment
         android:id="@+id/nav_emoticon_recommend"
-        android:name="com.betterlife.antifragile.presentation.ui.diary.RecommendEmoticonFragment"
+        android:name="com.betterlife.antifragile.presentation.ui.diary.EmoticonRecommendFragment"
         android:label="EmotionRecommend"
-        tools:layout="@layout/fragment_recommend_emoticon">
+        tools:layout="@layout/fragment_emoticon_recommend">
         <action
             android:id="@+id/action_nav_emoticon_recommend_to_nav_emotion_select"
             app:destination="@id/nav_emotion_select" />
