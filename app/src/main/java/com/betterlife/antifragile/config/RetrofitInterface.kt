@@ -66,6 +66,14 @@ object RetrofitInterface {
             .create(MemberApiService::class.java)
     }
 
+    fun createMemberApiService(): MemberApiService {
+        return Retrofit.Builder()
+            .baseUrl(Constants.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(MemberApiService::class.java)
+    }
+
     fun createAuthApiService(): AuthApiService {
         return Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)

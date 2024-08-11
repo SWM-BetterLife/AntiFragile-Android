@@ -6,10 +6,13 @@ import android.view.View
 import com.betterlife.antifragile.BuildConfig
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.config.RetrofitInterface
-import com.betterlife.antifragile.data.model.auth.AuthSignUpRequest
+import com.betterlife.antifragile.data.model.auth.request.AuthLoginRequest
+import com.betterlife.antifragile.data.model.base.CustomErrorMessage
 import com.betterlife.antifragile.data.model.base.Status
 import com.betterlife.antifragile.data.model.enums.LoginType
+import com.betterlife.antifragile.data.model.enums.LoginType.GOOGLE
 import com.betterlife.antifragile.data.repository.AuthRepository
+import com.betterlife.antifragile.data.repository.MemberRepository
 import com.betterlife.antifragile.databinding.FragmentLoginBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.auth.oauth.GoogleLogin
@@ -24,6 +27,8 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
 
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var googleLogin: GoogleLogin
+    private var email: String? = null
+    private var loginType: LoginType? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -43,29 +48,81 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
 
     private fun setupViewModel() {
         val authApiService = RetrofitInterface.createAuthApiService()
+        val memberApiService = RetrofitInterface.createMemberApiService()
         val authRepository = AuthRepository(authApiService)
-        val factory = LoginViewModelFactory(authRepository)
+        val memberRepository = MemberRepository(memberApiService)
+        val factory = LoginViewModelFactory(authRepository, memberRepository)
         loginViewModel = factory.create(LoginViewModel::class.java)
     }
 
     private fun setupObserver() {
-        loginViewModel.authSignUpResponse.observe(viewLifecycleOwner) { response ->
+        setStatusAuthLogin()
+        setStatusMemberExistence()
+    }
+
+    private fun setStatusAuthLogin() {
+        loginViewModel.authLoginResponse.observe(viewLifecycleOwner) { response ->
             when (response.status) {
                 Status.LOADING -> {
                     showLoading(requireContext())
                 }
                 Status.SUCCESS -> {
                     dismissLoading()
+                    Log.d("AuthFragment", "SUCCESS: ${response.data?.tokenIssue?.accessToken}")
                 }
                 Status.FAIL -> {
                     dismissLoading()
-                    showCustomToast(response.errorMessage ?: "회원가입 실패.")
+                    if (
+                        response.errorMessage == CustomErrorMessage.AUTH_LOGIN_NOT_AUTHENTICATED.message
+                    ) {
+                        showCustomToast(response.errorMessage)
+                    } else if (
+                        response.errorMessage == CustomErrorMessage.MEMBER_NOT_FOUND.message
+                    ) {
+                        showCustomToast("해당 계정은 회원가입이 필요합니다.")
+                    }
                     Log.d("AuthFragment", "FAIL: ${response.errorMessage}")
-                    //todo: 회원가입 실패시 처리
+
                 }
                 Status.ERROR -> {
                     dismissLoading()
-                    showCustomToast(response.errorMessage ?: "회원가입 실패.")
+                    showCustomToast(response.errorMessage ?: "로그인 실패.")
+                    Log.d("AuthFragment", "ERROR: ${response.errorMessage}")
+                }
+                else -> {
+                    Log.d("AuthFragment", "Unknown status: ${response.status}")
+                }
+            }
+        }
+    }
+
+    private fun setStatusMemberExistence() {
+        loginViewModel.memberExistenceResponse.observe(viewLifecycleOwner) { response ->
+            when (response.status) {
+                Status.LOADING -> {
+                    showLoading(requireContext())
+                }
+                Status.SUCCESS -> {
+                    dismissLoading()
+                    Log.d("AuthFragment", "SUCCESS: ${response.data?.isExist}")
+                    if (response.data?.isExist == true) {
+                        /* 이미 회원가입 되어 있는 경우 */
+                        email?.let {
+                            loginType?.let { it2 -> login(it, BuildConfig.GOOGLE_LOGIN_PASSWORD, it2) }
+                        }
+                    } else {
+                        /* 회원 가입이 안되어 있는 경우 */
+
+                    }
+                }
+                Status.FAIL -> {
+                    dismissLoading()
+                    Log.d("AuthFragment", "FAIL: ${response.errorMessage}")
+                }
+                Status.ERROR -> {
+                    dismissLoading()
+                    showCustomToast(response.errorMessage ?: "로그인 타입이 일치하지 않습니다.")
+                    Log.d("AuthFragment", "ERROR: ${response.errorMessage}")
                 }
                 else -> {
                     Log.d("AuthFragment", "Unknown status: ${response.status}")
@@ -89,31 +146,38 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
         val digest = md.digest(bytes)
         val hashedNonce = digest.fold("") { str, it -> str + "%02x".format(it) }
 
-        val googleId = runBlocking {
+        email = runBlocking {
             googleLogin.startGoogleLogin(hashedNonce)
         }
+        loginType = GOOGLE
 
-        if (googleId != null) {
-            Log.d("TAG", "Google ID: $googleId")
+        if (email != null) {
+            Log.d("TAG", "Google ID: $email")
+            //todo: 예외 처리
         } else {
             Log.d("TAG", "Google Login failed")
         }
 
-        googleId?.let {
-            signUp(it, LoginType.GOOGLE)
+        email?.let {
+            checkMemberExistence(it, loginType!!)
         }
     }
 
-    private fun signUp(email: String, loginType: LoginType) {
-        val signUpRequest = createAuthSignUpRequest(email, loginType)
-        loginViewModel.signUp(signUpRequest)
+    private fun checkMemberExistence(email: String, loginType: LoginType) {
+        loginViewModel.checkMemberExistence(email, loginType)
     }
 
-    private fun createAuthSignUpRequest(
+    private fun login(email: String, password: String, loginType: LoginType) {
+        val request = createAuthLoginRequest(email, password, loginType)
+        loginViewModel.login(request)
+    }
+
+    private fun createAuthLoginRequest(
         email: String,
+        password: String,
         loginType: LoginType
-    ): AuthSignUpRequest {
-        return AuthSignUpRequest(email, BuildConfig.GOOGLE_LOGIN_PASSWORD, loginType)
+    ): AuthLoginRequest {
+        return AuthLoginRequest(email, password, loginType)
     }
 
 }

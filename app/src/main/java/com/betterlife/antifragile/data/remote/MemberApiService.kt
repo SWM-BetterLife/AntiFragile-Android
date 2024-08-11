@@ -1,7 +1,9 @@
 package com.betterlife.antifragile.data.remote
 
 import com.betterlife.antifragile.data.model.base.BaseResponse
+import com.betterlife.antifragile.data.model.enums.LoginType
 import com.betterlife.antifragile.data.model.member.response.MemberDetailResponse
+import com.betterlife.antifragile.data.model.member.response.MemberExistenceResponse
 import com.betterlife.antifragile.data.model.member.response.MemberProfileModifyResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -10,6 +12,7 @@ import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Query
 
 /*
  * 맴버 API 엔드포인트를 정의하는 인터페이스
@@ -24,4 +27,10 @@ interface MemberApiService {
         @Part profileImgFile: MultipartBody.Part? = null,
         @Part("profileModifyRequest") profileModifyRequest: RequestBody
     ): Response<BaseResponse<MemberProfileModifyResponse>>
+
+    @GET("/members/existence")
+    suspend fun checkMemberExistence(
+        @Query("email") email: String,
+        @Query("loginType") loginType: LoginType
+    ): Response<BaseResponse<MemberExistenceResponse>>
 }
