@@ -79,14 +79,14 @@ class TextDiaryDetailFragment: BaseFragment<FragmentTextDiaryDetailBinding>(
                     binding.loEmoticon, textDiaryDetail.emoticonInfo?.emotion ?: "오류"
                 )
             },
-            onError = { errorMessage ->
+            onError = {
                 if (
-                    errorMessage == CustomErrorMessage.DIARY_ANALYSIS_NOT_FOUND.message
+                    it.errorMessage == CustomErrorMessage.DIARY_ANALYSIS_NOT_FOUND.message
                 ) {
                     // TODO: 감정 분석을 하지 않은 경우 -> 감정분석하러 이동
                     showCustomToast("감정 분석을 하지 않은 일기입니다.")
                 } else {
-                    showCustomToast(errorMessage ?: "일기를 불러오는 데 실패했습니다.")
+                    showCustomToast(it.errorMessage ?: "일기를 불러오는 데 실패했습니다.")
                     Handler(Looper.getMainLooper()).postDelayed({
                         findNavController().popBackStack()
                     }, 1000)

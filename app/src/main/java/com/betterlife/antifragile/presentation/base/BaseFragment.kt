@@ -95,7 +95,7 @@ abstract class BaseFragment<B : ViewDataBinding>(
     protected fun <T> setupBaseObserver(
         liveData: LiveData<BaseResponse<T>>,
         onSuccess: (T) -> Unit,
-        onError: (String?) -> Unit,
+        onError: (BaseResponse<T>) -> Unit,
         onLoading: () -> Unit = { showLoading(requireContext()) },
         onComplete: () -> Unit = { dismissLoading() }
     ) {
@@ -108,7 +108,7 @@ abstract class BaseFragment<B : ViewDataBinding>(
                 }
                 Status.FAIL, Status.ERROR -> {
                     onComplete()
-                    onError(response.errorMessage)
+                    onError(response)
                 }
                 else -> Log.d("BaseFragment", "Unknown status: ${response.status}")
             }
