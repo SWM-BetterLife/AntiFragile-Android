@@ -7,6 +7,7 @@ import com.betterlife.antifragile.data.model.content.response.Content
 import com.betterlife.antifragile.databinding.ItemContentBinding
 import com.betterlife.antifragile.presentation.util.ImageUtil.loadImage
 import com.betterlife.antifragile.presentation.util.ImageUtil.loadImageCircle
+import com.betterlife.antifragile.presentation.util.ImageUtil.setImage
 
 class ContentAdapter(
     private val contentList: List<Content>,
@@ -21,7 +22,7 @@ class ContentAdapter(
             binding.apply {
                 tvTitle.text = content.title
                 tvLikeCount.text = content.likeNumber.toString()
-                ivVideoThumbnail.loadImage(content.thumbnailImg)
+                ivVideoThumbnail.setImage(content.thumbnailImg)
 
                 ivChannelProfile.loadImageCircle(content.channel.img)
                 tvChannelName.text = content.channel.name

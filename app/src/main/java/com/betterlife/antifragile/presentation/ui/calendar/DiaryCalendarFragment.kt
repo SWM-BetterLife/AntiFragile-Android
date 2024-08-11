@@ -8,11 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.betterlife.antifragile.R
-import com.betterlife.antifragile.config.RetrofitInterface
-import com.betterlife.antifragile.data.local.DiaryDatabase
-import com.betterlife.antifragile.data.model.base.Status
 import com.betterlife.antifragile.data.model.diary.DiaryType
-import com.betterlife.antifragile.data.repository.CalendarRepository
 import com.betterlife.antifragile.databinding.FragmentDiaryCalendarBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.calendar.viewmodel.DiaryCalendarViewModel
@@ -38,9 +34,6 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
         setupObservers()
         setupListeners()
         loadCurrentMonth()
-
-        // TODO: 날짜 클릭 시 해당 일기 상세 화면으로 이동하는 로직 구현
-
         observeTodayDiaryId()
     }
 
@@ -56,15 +49,9 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
     }
 
     private fun setupViewModel() {
-        val diaryDao = DiaryDatabase.getDatabase(requireContext()).diaryDao()
-
-        // TODO: 로그인 구현 후, preference나 다른 방법으로 token을 받아와야 함
-        val token = Constants.TOKEN
-        val diaryAnalysisApiService = RetrofitInterface.createDiaryAnalysisApiService(token)
-
-        val calendarRepository = CalendarRepository(diaryDao, diaryAnalysisApiService)
-        val factory = DiaryCalendarViewModelFactory(calendarRepository)
-        diaryCalendarViewModel = ViewModelProvider(this, factory)[DiaryCalendarViewModel::class.java]
+        val factory = DiaryCalendarViewModelFactory(requireContext(), Constants.TOKEN)
+        diaryCalendarViewModel =
+            ViewModelProvider(this, factory)[DiaryCalendarViewModel::class.java]
     }
 
     private fun setupRecyclerView() {
@@ -80,14 +67,14 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
                 when (dateModel.diaryType) {
                     DiaryType.TEXT -> {
                         val action = DiaryCalendarFragmentDirections.actionNavCalendarToNavTextDiaryDetail(
-                            dateModel.diaryId!!,
+                            dateModel.diaryId,
                             dateModel.date
                         )
                         findNavController().navigate(action)
                     }
                     DiaryType.QUESTION -> {
                         val action = DiaryCalendarFragmentDirections.actionNavCalendarToNavQuestionDiaryDetail(
-                            dateModel.diaryId!!,
+                            dateModel.diaryId,
                             dateModel.date
                         )
                         findNavController().navigate(action)
@@ -104,34 +91,18 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
 
     @SuppressLint("DefaultLocale")
     private fun setupObservers() {
-        diaryCalendarViewModel.calendarResponse.observe(viewLifecycleOwner) { response ->
-            when (response.status) {
-                Status.LOADING -> {
-                    showLoading(requireContext())
-                }
-
-                Status.SUCCESS -> {
-                    dismissLoading()
-                    response.data?.let { dates ->
-                        diaryCalendarAdapter.setDates(dates)
-                    }
-                }
-
-                Status.FAIL, Status.ERROR -> {
-                    dismissLoading()
-                    response.data?.let { dates ->
-                        diaryCalendarAdapter.setDates(dates)
-                    }
-                    Log.d("DiaryCalendarFragment", "Error: ${response.errorMessage}")
-                }
-
-                else -> {
-                    Log.d("DiaryCalendarFragment", "Unknown status: ${response.status}")
-                }
+        setupBaseObserver(
+            liveData = diaryCalendarViewModel.calendarResponse,
+            onSuccess = { response ->
+                diaryCalendarAdapter.setDates(response)
+            },
+            onError = {
+                diaryCalendarAdapter.setDates(it.data!!)
+                Log.d("DiaryCalendarFragment", "Error: ${it.errorMessage}")
             }
-            diaryCalendarViewModel.currentYearMonth.observe(viewLifecycleOwner) { (year, month) ->
-                binding.tvMonthYear.text = String.format("%d.%d", year, month)
-            }
+        )
+        diaryCalendarViewModel.currentYearMonth.observe(viewLifecycleOwner) { (year, month) ->
+            binding.tvMonthYear.text = String.format("%d.%d", year, month)
         }
 
         diaryCalendarViewModel.selectedDate.observe(viewLifecycleOwner) { selectedDate ->
