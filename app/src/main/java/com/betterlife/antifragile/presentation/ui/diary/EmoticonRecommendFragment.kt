@@ -42,9 +42,8 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
         setupViewModels()
         setupObservers()
         setupViewPager()
+        loadEmoticonData()
         setupButtons()
-
-        recommendEmoticonViewModel.getEmoticonsByEmotion(emotion.name)
     }
 
     override fun configureToolbar(toolbar: CustomToolbar) {
@@ -146,7 +145,7 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
         binding.btnChooseSelf.setOnClickListener { navigateToEmotionSelect() }
     }
 
-    private fun loadEmoticons(emotion: Emotion) {
+    private fun loadEmoticonData() {
         recommendEmoticonViewModel.getEmoticonsByEmotion(emotion.name)
     }
 
@@ -225,6 +224,7 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
     private fun getDiaryAnalysisData() =
         EmoticonRecommendFragmentArgs.fromBundle(requireArguments()).diaryAnalysisData
 
+    // TODO: 이모티콘 테마에 따라 시작 viewpager position 설정
     private fun getEmoticonThemeId() =
         EmoticonRecommendFragmentArgs.fromBundle(requireArguments()).emoticonThemeId
 
