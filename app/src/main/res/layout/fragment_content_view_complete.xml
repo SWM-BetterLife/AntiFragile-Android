@@ -15,7 +15,8 @@
             android:id="@+id/lo_view_complete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_emoticon_normal">
+            android:background="@drawable/bg_emoticon_normal"
+            app:layout_constraintTop_toTopOf="parent">
             <ImageView
                 android:id="@+id/iv_emoticon"
                 android:layout_width="102dp"
