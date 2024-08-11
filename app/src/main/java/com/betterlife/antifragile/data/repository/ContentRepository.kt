@@ -10,6 +10,23 @@ class ContentRepository(
     private val contentApiService: ContentApiService
 ) : BaseRepository() {
 
+    suspend fun getRecommendContents(
+        date: LocalDate
+    ): BaseResponse<ContentListResponse> {
+        return safeApiCall {
+            contentApiService.recommendContents(date)
+        }
+    }
+
+    suspend fun getReRecommendContents(
+        date: LocalDate,
+        feedback: String
+    ): BaseResponse<ContentListResponse> {
+        return safeApiCall {
+            contentApiService.reRecommendContents(date, feedback)
+        }
+    }
+
     suspend fun getContents(
         date: LocalDate
     ): BaseResponse<ContentListResponse> {
