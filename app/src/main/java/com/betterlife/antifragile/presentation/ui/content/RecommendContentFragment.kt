@@ -15,6 +15,8 @@ class RecommendContentFragment : BaseFragment<FragmentRecommendContentBinding>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+
     }
 
     override fun configureToolbar(toolbar: CustomToolbar) {
@@ -26,8 +28,9 @@ class RecommendContentFragment : BaseFragment<FragmentRecommendContentBinding>(
             }
             showCustomButton(R.drawable.btn_re) {
                 // TODO: 재추천 받기 버튼 클릭 처리
-
             }
         }
     }
+
+
 }

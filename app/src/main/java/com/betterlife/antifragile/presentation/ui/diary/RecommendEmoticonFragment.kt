@@ -185,7 +185,7 @@ class RecommendEmoticonFragment : BaseFragment<FragmentRecommendEmoticonBinding>
         }
 
         val action = RecommendEmoticonFragmentDirections
-            .actionNavEmoticonRecommendToNavRecommendContent(diaryDate!!, true)
+            .actionNavEmoticonRecommendToNavRecommendContent(diaryDate!!, !getIsUpdate(), false)
         findNavController().navigate(action)
         (activity as MainActivity).showBottomNavigation()
     }

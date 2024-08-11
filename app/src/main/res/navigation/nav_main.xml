@@ -66,6 +66,9 @@
         <argument
             android:name="isNewDiary"
             app:argType="boolean" />
+        <argument
+            android:name="isGetContent"
+            app:argType="boolean" />
     </fragment>
 
     <fragment
