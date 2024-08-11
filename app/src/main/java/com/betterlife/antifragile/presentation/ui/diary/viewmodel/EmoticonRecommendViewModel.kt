@@ -12,7 +12,7 @@ import com.betterlife.antifragile.data.repository.DiaryAnalysisRepository
 import com.betterlife.antifragile.data.repository.EmoticonThemeRepository
 import kotlinx.coroutines.launch
 
-class RecommendEmoticonViewModel(
+class EmoticonRecommendViewModel(
     private val diaryAnalysisRepository: DiaryAnalysisRepository,
     private val emoticonThemeRepository: EmoticonThemeRepository
 ) : ViewModel() {

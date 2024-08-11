@@ -1,27 +1,23 @@
 package com.betterlife.antifragile.presentation.ui.diary
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.betterlife.antifragile.R
-import com.betterlife.antifragile.config.RetrofitInterface
-import com.betterlife.antifragile.data.model.base.Status
+import com.betterlife.antifragile.data.model.base.CustomErrorMessage
 import com.betterlife.antifragile.data.model.common.Emotion
 import com.betterlife.antifragile.data.model.diary.llm.DiaryAnalysisData
 import com.betterlife.antifragile.data.model.diaryanalysis.request.DiaryAnalysisCreateRequest
 import com.betterlife.antifragile.data.model.diaryanalysis.request.Emoticon
 import com.betterlife.antifragile.data.model.emoticontheme.response.EmoticonByEmotion
-import com.betterlife.antifragile.data.repository.DiaryAnalysisRepository
-import com.betterlife.antifragile.data.repository.EmoticonThemeRepository
 import com.betterlife.antifragile.databinding.FragmentEmoticonRecommendBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.diary.adapter.EmoticonByEmotionAdapter
-import com.betterlife.antifragile.presentation.ui.diary.viewmodel.RecommendEmoticonViewModel
-import com.betterlife.antifragile.presentation.ui.diary.viewmodel.RecommendEmoticonViewModelFactory
+import com.betterlife.antifragile.presentation.ui.diary.viewmodel.EmoticonRecommendViewModel
+import com.betterlife.antifragile.presentation.ui.diary.viewmodel.EmoticonRecommendViewModelFactory
 import com.betterlife.antifragile.presentation.ui.main.MainActivity
 import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
@@ -32,40 +28,29 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
     R.layout.fragment_emoticon_recommend
 ) {
 
-    private lateinit var recommendEmoticonViewModel: RecommendEmoticonViewModel
+    private lateinit var recommendEmoticonViewModel: EmoticonRecommendViewModel
     private lateinit var emoticonAdapter: EmoticonByEmotionAdapter
     private lateinit var viewPager: ViewPager2
-    private var diaryDate: String? = null
-    private var emotion: Emotion? = null
+    private lateinit var diaryDate: String
+    private lateinit var emotion: Emotion
     private var selectedPosition = 0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val diaryAnalysisData = getDiaryAnalysisData()
-        val emoticonThemeId = getEmoticonThemeId()
-        diaryDate = diaryAnalysisData.diaryDate
-
+        setupVariables()
         setupViewModels()
         setupObservers()
         setupViewPager()
-        Log.d("RecommendEmoticonFragment", "$emoticonThemeId")
         setupButtons()
 
-        emotion = getEmotion()
-
-        if (emotion == Emotion.NOT_SELECTED) {
-            // TODO: diaryAnalysisData의 Emotions로 감정티콘 추천
-            emotion = Emotion.JOY
-        }
-
-        recommendEmoticonViewModel.getEmoticonsByEmotion(emotion!!.name)
+        recommendEmoticonViewModel.getEmoticonsByEmotion(emotion.name)
     }
 
     override fun configureToolbar(toolbar: CustomToolbar) {
         toolbar.apply {
             reset()
-            setSubTitle(DateUtil.convertDateFormat(diaryDate!!))
+            setSubTitle(DateUtil.convertDateFormat(diaryDate))
             showBackButton {
                 findNavController().popBackStack()
             }
@@ -73,23 +58,47 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
         }
     }
 
+    private fun setupVariables() {
+        diaryDate = getDiaryAnalysisData().diaryDate
+        emotion = EmoticonRecommendFragmentArgs.fromBundle(requireArguments()).emotion
+    }
+
     private fun setupViewModels() {
-        // TODO: 로그인 구현 후, preference나 다른 방법으로 token을 받아와야 함
-        val token = Constants.TOKEN
-        val diaryAnalysisApiService = RetrofitInterface.createDiaryAnalysisApiService(token)
-        val diaryAnalysisRepository = DiaryAnalysisRepository(diaryAnalysisApiService)
-        val emoticonThemeApiService = RetrofitInterface.createEmoticonThemeApiService(token)
-        val emoticonThemeRepository = EmoticonThemeRepository(emoticonThemeApiService)
-        val factory = RecommendEmoticonViewModelFactory(
-            diaryAnalysisRepository, emoticonThemeRepository
-        )
+        val factory = EmoticonRecommendViewModelFactory(Constants.TOKEN)
         recommendEmoticonViewModel =
-            ViewModelProvider(this, factory).get(RecommendEmoticonViewModel::class.java)
+            ViewModelProvider(this, factory)[EmoticonRecommendViewModel::class.java]
     }
 
     private fun setupObservers() {
-        setStatusDiaryAnalysisSave()
-        setStatusEmoticonByEmotion()
+        setupBaseObserver(
+            liveData = recommendEmoticonViewModel.saveDiaryResponse,
+            onSuccess = { },
+            onError = { errorMessage ->
+                if (errorMessage == CustomErrorMessage.DIARY_ANALYSIS_ALREADY_EXIST.message) {
+                    // 일기 분석이 이미 존재하여 저장을 실패한 경우
+                    showCustomToast("이미 해당 날짜에 사용자의 일기 분석이 존재합니다.")
+                } else if (errorMessage == CustomErrorMessage.DIARY_ANALYSIS_NOT_FOUND.message) {
+                    // 일기 분석이 존재하지 않아 수정을 실패한 경우
+                    showCustomToast("감정 분석 정보가 존재하지 않아 수정에 실패했습니다.")
+                } else {
+                    showCustomToast(errorMessage ?: "감정 분석 저장에 실패했습니다.")
+                }
+            }
+        )
+
+        setupBaseObserver(
+            liveData = recommendEmoticonViewModel.emoticonResponse,
+            onSuccess = { response ->
+                val emoticons = response.emoticons.map {
+                    EmoticonByEmotion(it.emoticonThemeId, it.imgUrl)
+                }
+                emoticonAdapter.updateEmoticons(emoticons)
+                updateNavigationButtons()
+            },
+            onError = {
+                showCustomToast(it ?: "감정티콘 조회에 실패했습니다.")
+            }
+        )
     }
 
     private fun setupViewPager() {
@@ -104,24 +113,10 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
             offscreenPageLimit = 1
             setPageTransformer { page, position ->
                 page.apply {
-                    val pageWidth = width
-                    val pageHeight = height
-                    val scaleFactor = when {
-                        position < -1 || position > 1 -> 0.7f
-                        position == 0f -> 1f
-                        else -> 0.7f + (1 - 0.7f) * (1 - abs(position))
-                    }
-
+                    val scaleFactor = calculateScaleFactor(position)
                     scaleX = scaleFactor
                     scaleY = scaleFactor
-
-                    val verticalMargin = pageHeight * (1 - scaleFactor) / 2
-                    val horizontalMargin = pageWidth * (1 - scaleFactor) / 2
-                    translationX = if (position < 0) {
-                        horizontalMargin - verticalMargin / 2
-                    } else {
-                        -horizontalMargin + verticalMargin / 2
-                    }
+                    translationX = calculateTranslationX(page, position, scaleFactor)
                 }
             }
 
@@ -133,37 +128,23 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
             })
         }
 
-        (viewPager.getChildAt(0) as? RecyclerView)?.apply {
-            val padding = resources.getDimensionPixelOffset(R.dimen.viewpager_padding)
-            setPadding(padding, 0, padding, 0)
-            clipToPadding = false
-        }
-
+        configureViewPagerPadding()
         updateNavigationButtons()
     }
 
     private fun setupButtons() {
         binding.btnLeft.setOnClickListener {
-            if (selectedPosition > 0) {
-                viewPager.setCurrentItem(selectedPosition - 1, true)
-            }
+            viewPager.setCurrentItem(selectedPosition - 1, true)
         }
 
         binding.btnRight.setOnClickListener {
-            if (selectedPosition < emoticonAdapter.itemCount - 1) {
-                viewPager.setCurrentItem(selectedPosition + 1, true)
-            }
+            viewPager.setCurrentItem(selectedPosition + 1, true)
         }
 
-        binding.btnSave.setOnClickListener {
-            saveDiaryAnalysis()
-        }
+        binding.btnSave.setOnClickListener { saveDiaryAnalysis() }
 
-        binding.btnChooseSelf.setOnClickListener {
-            navigateToEmotionSelect()
-        }
+        binding.btnChooseSelf.setOnClickListener { navigateToEmotionSelect() }
     }
-
 
     private fun loadEmoticons(emotion: Emotion) {
         recommendEmoticonViewModel.getEmoticonsByEmotion(emotion.name)
@@ -171,109 +152,60 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
 
     private fun saveDiaryAnalysis() {
         val selectedEmoticon = emoticonAdapter.getSelectedEmoticon(selectedPosition)
-        val diaryAnalysisData = getDiaryAnalysisData()
-        val emoticon = Emoticon(
-            emoticonThemeId = selectedEmoticon.emoticonThemeId,
-            emotion = emotion!!.name
+        val request = createDiaryAnalysisRequest(
+            getDiaryAnalysisData(),
+            Emoticon(selectedEmoticon.emoticonThemeId, emotion.name)
         )
-        val request = createDiaryAnalysisRequest(diaryAnalysisData, emoticon)
-        if (getIsUpdate()) {
-            recommendEmoticonViewModel.saveDiaryAnalysis(request, diaryDate)
-        } else {
-            recommendEmoticonViewModel.saveDiaryAnalysis(request, null)
+        recommendEmoticonViewModel.saveDiaryAnalysis(
+            request, if (getIsUpdate()) diaryDate else null
+        )
 
-        }
-
-        val action = EmoticonRecommendFragmentDirections
-            .actionNavEmoticonRecommendToNavRecommendContent(diaryDate!!, true)
-        findNavController().navigate(action)
+        findNavController().navigate(
+            EmoticonRecommendFragmentDirections.actionNavEmoticonRecommendToNavRecommendContent(
+                diaryDate, true
+            )
+        )
         (activity as MainActivity).showBottomNavigation()
     }
 
     private fun navigateToEmotionSelect() {
-        val action = EmoticonRecommendFragmentDirections.actionNavEmoticonRecommendToNavEmotionSelect(
-            emoticonThemeId = emoticonAdapter.getSelectedEmoticon(selectedPosition).emoticonThemeId,
-            emotion = emotion!!,
-            diaryAnalysisData = getDiaryAnalysisData(),
-            getIsUpdate()
+        findNavController().navigate(
+            EmoticonRecommendFragmentDirections.actionNavEmoticonRecommendToNavEmotionSelect(
+                emoticonThemeId = emoticonAdapter
+                    .getSelectedEmoticon(selectedPosition).emoticonThemeId,
+                emotion = emotion,
+                diaryAnalysisData = getDiaryAnalysisData(),
+                getIsUpdate()
+            )
         )
-        findNavController().navigate(action)
+    }
+    private fun configureViewPagerPadding() {
+        (viewPager.getChildAt(0) as? RecyclerView)?.apply {
+            val padding = resources.getDimensionPixelOffset(R.dimen.viewpager_padding)
+            setPadding(padding, 0, padding, 0)
+            clipToPadding = false
+        }
+    }
+
+    private fun calculateScaleFactor(position: Float): Float {
+        return when {
+            position < -1 || position > 1 -> 0.7f
+            position == 0f -> 1f
+            else -> 0.7f + (1 - 0.7f) * (1 - abs(position))
+        }
+    }
+
+    private fun calculateTranslationX(page: View, position: Float, scaleFactor: Float): Float {
+        val verticalMargin = page.height * (1 - scaleFactor) / 2
+        val horizontalMargin = page.width * (1 - scaleFactor) / 2
+        return if (position < 0)
+            horizontalMargin - verticalMargin / 2 else -horizontalMargin + verticalMargin / 2
     }
 
     private fun updateNavigationButtons() {
         binding.btnLeft.visibility = if (selectedPosition > 0) View.VISIBLE else View.INVISIBLE
-        binding.btnRight.visibility = if (selectedPosition < emoticonAdapter.itemCount - 1) View.VISIBLE else View.INVISIBLE
-    }
-
-    private fun getDiaryAnalysisData() =
-        EmoticonRecommendFragmentArgs.fromBundle(requireArguments()).diaryAnalysisData
-
-    private fun getEmotion() =
-        EmoticonRecommendFragmentArgs.fromBundle(requireArguments()).emotion
-
-    private fun getEmoticonThemeId() =
-        EmoticonRecommendFragmentArgs.fromBundle(requireArguments()).emoticonThemeId
-
-    private fun getIsUpdate() =
-        EmoticonRecommendFragmentArgs.fromBundle(requireArguments()).isUpdate
-
-    private fun setStatusDiaryAnalysisSave() {
-        recommendEmoticonViewModel.saveDiaryResponse.observe(viewLifecycleOwner) { response ->
-            when (response.status) {
-                Status.LOADING -> {
-                    showLoading(requireContext())
-                }
-
-                Status.SUCCESS -> {
-                    dismissLoading()
-                }
-
-                Status.FAIL, Status.ERROR -> {
-                    dismissLoading()
-                    showCustomToast(response.errorMessage ?: "감정 분석 저장에 실패했습니다.")
-                }
-
-                else -> {
-                    Log.d(
-                        "DiaryRecommendEmoticonFragment",
-                        "setStatusDiaryAnalysisSave: ${response.status}"
-                    )
-                }
-            }
-        }
-    }
-
-    private fun setStatusEmoticonByEmotion() {
-        recommendEmoticonViewModel.emoticonResponse.observe(viewLifecycleOwner) { response ->
-            when (response.status) {
-                Status.LOADING -> {
-                    showLoading(requireContext())
-                }
-
-                Status.SUCCESS -> {
-                    dismissLoading()
-                    response.data?.let { emoticonData ->
-                        val emoticons = emoticonData.emoticons.map {
-                            EmoticonByEmotion(it.emoticonThemeId, it.imgUrl)
-                        }
-                        emoticonAdapter.updateEmoticons(emoticons)
-                        updateNavigationButtons()
-                    }
-                }
-
-                Status.FAIL, Status.ERROR -> {
-                    dismissLoading()
-                    showCustomToast(response.errorMessage ?: "감정티콘 조회에 실패했습니다.")
-                }
-
-                else -> {
-                    Log.d(
-                        "DiaryRecommendEmoticonFragment",
-                        "setStatusEmoticonByEmotion: ${response.status}"
-                    )
-                }
-            }
-        }
+        binding.btnRight.visibility =
+            if (selectedPosition < emoticonAdapter.itemCount - 1) View.VISIBLE else View.INVISIBLE
     }
 
     private fun createDiaryAnalysisRequest(
@@ -289,4 +221,13 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
             emoticon = emoticon
         )
     }
+
+    private fun getDiaryAnalysisData() =
+        EmoticonRecommendFragmentArgs.fromBundle(requireArguments()).diaryAnalysisData
+
+    private fun getEmoticonThemeId() =
+        EmoticonRecommendFragmentArgs.fromBundle(requireArguments()).emoticonThemeId
+
+    private fun getIsUpdate() =
+        EmoticonRecommendFragmentArgs.fromBundle(requireArguments()).isUpdate
 }

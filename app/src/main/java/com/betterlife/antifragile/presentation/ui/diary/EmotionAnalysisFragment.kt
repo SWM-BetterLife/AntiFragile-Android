@@ -134,7 +134,7 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
             val action = EmotionAnalysisFragmentDirections
                 .actionNavEmotionAnalysisToNavEmoticonRecommend(
                     diaryAnalysisData,
-                    Emotion.NOT_SELECTED,
+                    Emotion.JOY,
                     null,
                     getIsUpdateFromArguments()
                 )
