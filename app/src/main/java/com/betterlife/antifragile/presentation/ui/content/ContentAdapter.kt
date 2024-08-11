@@ -18,7 +18,6 @@ class ContentAdapter(private val contentList: List<Content>) :
 
         fun bind(content: Content) {
             binding.apply {
-                //tvDate.text = content // date
                 tvTitle.text = content.title
                 tvLikeCount.text = content.likeNumber.toString()
                 ivVideoThumbnail.loadImage(content.thumbnailImg)
