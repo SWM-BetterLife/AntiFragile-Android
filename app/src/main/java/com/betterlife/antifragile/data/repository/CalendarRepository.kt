@@ -13,8 +13,8 @@ import kotlinx.coroutines.withContext
 import java.util.Calendar
 
 class CalendarRepository(
-    private val diaryDao: DiaryDao,
-    private val diaryAnalysisApiService: DiaryAnalysisApiService
+    private val diaryRepository: DiaryRepository,
+    private val diaryAnalysisRepository: DiaryAnalysisRepository
 ) : BaseRepository() {
 
 
@@ -45,8 +45,8 @@ class CalendarRepository(
                 calendar.add(Calendar.DAY_OF_MONTH, 1)
             }
 
-            val diaries = getMonthlyDiaries(year, month)
-            val emoticonsResponse = getMonthlyEmoticons(year, month)
+            val diaries = diaryRepository.getMonthlyDiaries(year, month)
+            val emoticonsResponse = diaryAnalysisRepository.getMonthlyEmoticons(year, month)
 
             val emoticons = if (emoticonsResponse.status == Status.SUCCESS) {
                 emoticonsResponse.data?.emoticons ?: emptyList()
@@ -73,22 +73,6 @@ class CalendarRepository(
             }
         } catch (e: Exception) {
             BaseResponse(Status.ERROR, e.message, null)
-        }
-    }
-
-    @SuppressLint("DefaultLocale")
-    fun getMonthlyDiaries(year: Int, month: Int): List<DiarySummary> {
-        val monthString = String.format("%04d-%02d", year, month)
-        return diaryDao.getMonthlyDiaries(monthString)
-    }
-
-    @SuppressLint("DefaultLocale")
-    private suspend fun getMonthlyEmoticons(
-        year: Int, month: Int
-    ): BaseResponse<DiaryAnalysisEmoticonsResponse> {
-        val monthString = String.format("%04d-%02d", year, month)
-        return safeApiCall {
-            diaryAnalysisApiService.getMonthlyEmoticons(monthString)
         }
     }
 
