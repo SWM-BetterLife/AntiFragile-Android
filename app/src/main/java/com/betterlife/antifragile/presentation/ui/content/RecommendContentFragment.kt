@@ -21,12 +21,11 @@ class RecommendContentFragment : BaseFragment<FragmentRecommendContentBinding>(
 
     private lateinit var contentRecommendViewModel: ContentRecommendViewModel
 
-    private var recommendDialogUtil: RecommendDialogUtil? = null
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setupViewModel()
+        setupObservers()
 
         val diaryDateString = arguments?.getString("diaryDate")
         val isNewDiary = arguments?.getBoolean("isNewDiary") ?: false
@@ -58,6 +57,28 @@ class RecommendContentFragment : BaseFragment<FragmentRecommendContentBinding>(
         }
     }
 
+    private fun setupObservers() {
+        // TODO: 추천 & 재추천 & 조회 API 호출 결과 처리
+        setupBaseObserver(
+            liveData = contentRecommendViewModel.remainRecommendNumber,
+            onSuccess = { response ->
+                RecommendDialogUtil.showRecommendDialogs(
+                    fragment = this,
+                    remainNumber = response.remainNumber,
+                    onLeftButtonClicked = { },
+                    onRightButtonFeedbackProvided = { feedback ->
+                        // TODO: 콘텐츠 재추천 받기 API 호출
+                    },
+                    onExcessRemainNumber = { }
+                )
+            },
+            onError = {
+                showCustomToast(it.errorMessage ?: "남은 추천 횟수 조회에 실패했습니다.")
+            }
+        )
+    }
+
+
     override fun configureToolbar(toolbar: CustomToolbar) {
         toolbar.apply {
             reset()
@@ -66,22 +87,7 @@ class RecommendContentFragment : BaseFragment<FragmentRecommendContentBinding>(
                 findNavController().popBackStack()
             }
             showCustomButton(R.drawable.btn_re) {
-                // TODO: 재추천 받기 버튼 클릭 처리
-                RecommendDialogUtil.showRecommendDialogs(
-                    fragment = this@RecommendContentFragment,
-                    onLeftButtonClicked = {
-                    },
-                    onRightButtonFeedbackProvided = { feedback ->
-                        val diaryDateString = arguments?.getString("diaryDate")
-                        val diaryDate = diaryDateString?.let { LocalDate.parse(it) }
-
-                        diaryDate?.let { date ->
-                            contentRecommendViewModel.getRecommendContents(feedback, date)
-                        } ?: run {
-                            Log.e("RecommendContentFragment", "Invalid or missing diaryDate")
-                        }
-                    }
-                )
+                contentRecommendViewModel.getRemainRecommendNumber()
             }
         }
     }
