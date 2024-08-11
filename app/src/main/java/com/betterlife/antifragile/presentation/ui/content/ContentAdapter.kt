@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.betterlife.antifragile.data.model.content.response.Content
 import com.betterlife.antifragile.databinding.ItemContentBinding
+import com.betterlife.antifragile.presentation.util.ImageUtil.loadImage
+import com.betterlife.antifragile.presentation.util.ImageUtil.loadImageCircle
 import com.bumptech.glide.Glide
 
 class ContentAdapter(private val contentList: List<Content>) :
@@ -19,18 +21,12 @@ class ContentAdapter(private val contentList: List<Content>) :
                 //tvDate.text = content // date
                 tvTitle.text = content.title
                 tvLikeCount.text = content.likeNumber.toString()
-                // Load thumbnail image using your preferred image loading library
-                Glide.with(ivVideoThumbnail.context)
-                    .load(content.thumbnailImg)
-                    .into(ivVideoThumbnail)
+                ivVideoThumbnail.loadImage(content.thumbnailImg)
 
-                Glide.with(ivChannelProfile.context)
-                    .load(content.channel.img)
-                    .into(ivChannelProfile)
+                ivChannelProfile.loadImageCircle(content.channel.img)
                 tvChannelName.text = content.channel.name
                 tvSubscribeCount.text = content.channel.subscribeNumber.toString()
 
-                // Handle like button and other UI logic
                 btnLikeContent.isSelected = content.isLiked
             }
         }
