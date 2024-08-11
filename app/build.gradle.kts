@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -6,6 +9,9 @@ plugins {
     id("kotlin-parcelize")
 }
 
+var properties = Properties()
+properties.load(FileInputStream("local.properties"))
+
 android {
     namespace = "com.betterlife.antifragile"
     compileSdk = 34
@@ -13,6 +19,7 @@ android {
     buildFeatures {
         dataBinding = true
         viewBinding = true
+        buildConfig = true
         buildConfig = true
     }
 
@@ -24,6 +31,13 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField(
+            "String", "GOOGLE_CLIENT_ID", properties.getProperty("google_client_id")
+        )
+        buildConfigField(
+            "String", "GOOGLE_LOGIN_PASSWORD", properties.getProperty("google_login_password")
+        )
     }
 
     buildTypes {

@@ -9,6 +9,7 @@ import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
 import androidx.credentials.exceptions.GetCredentialException
+import com.betterlife.antifragile.BuildConfig
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
@@ -24,7 +25,7 @@ class GoogleLogin(private val activity: Context) {
 
         val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
             .setFilterByAuthorizedAccounts(false)
-            .setServerClientId("396393982817-tkt4h65qebasusc9jc9gc2c9kj16jgvf.apps.googleusercontent.com")
+            .setServerClientId(BuildConfig.GOOGLE_CLIENT_ID)
             .setAutoSelectEnabled(true)
             .setNonce(hashedNonce)
             .build()

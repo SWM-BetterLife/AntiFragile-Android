@@ -3,6 +3,7 @@ package com.betterlife.antifragile.presentation.ui.auth
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import com.betterlife.antifragile.BuildConfig
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.config.RetrofitInterface
 import com.betterlife.antifragile.data.model.auth.AuthSignUpRequest
@@ -112,7 +113,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
         email: String,
         loginType: LoginType
     ): AuthSignUpRequest {
-        return AuthSignUpRequest(email, loginType)
+        return AuthSignUpRequest(email, BuildConfig.GOOGLE_LOGIN_PASSWORD, loginType)
     }
 
 }
