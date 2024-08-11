@@ -97,7 +97,7 @@ class MyEmotionFragment : BaseFragment<FragmentMyEmotionBinding>(
             tvMyEmotion.visibility = activeVisibility
             ivBackgroundEmoticon.visibility = activeVisibility
 
-            tvEmoticonInactive.visibility = inactiveVisibility
+            ivEmoticonInactive.visibility = inactiveVisibility
             btnMoveCreateDiary.visibility = inactiveVisibility
         }
     }
@@ -114,9 +114,9 @@ class MyEmotionFragment : BaseFragment<FragmentMyEmotionBinding>(
                 findNavController().navigate(action)
             }
 
+            btnMoveEmotionChart.visibility = View.GONE
             btnMoveEmotionChart.setOnClickListener {
                 // TODO: 감정 차트 화면으로 이동
-                btnMoveEmotionChart.visibility = View.GONE
             }
         }
     }
