@@ -1,4 +1,4 @@
-package com.betterlife.antifragile.presentation.ui.content
+package com.betterlife.antifragile.presentation.ui.content.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

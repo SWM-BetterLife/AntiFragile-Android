@@ -45,4 +45,5 @@
     <string name="re_recommend">영상 재추천 받기</string>
     <string name="move_to_select_content">영상 선택 화면으로 돌아가기</string>
     <string name="move_to_diary">감정 일기로 돌아가기</string>
+    <string name="share">공유</string>
 </resources>

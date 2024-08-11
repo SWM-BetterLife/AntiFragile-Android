@@ -2,7 +2,7 @@ package com.betterlife.antifragile.data.repository
 
 import com.betterlife.antifragile.data.model.base.BaseResponse
 import com.betterlife.antifragile.data.model.content.response.ContentDetailResponse
-import com.betterlife.antifragile.data.model.content.response.ContentRecommendResponse
+import com.betterlife.antifragile.data.model.content.response.ContentListResponse
 import com.betterlife.antifragile.data.remote.ContentApiService
 import java.time.LocalDate
 
@@ -12,7 +12,7 @@ class ContentRepository(
 
     suspend fun getContents(
         date: LocalDate
-    ): BaseResponse<ContentRecommendResponse> {
+    ): BaseResponse<ContentListResponse> {
         return safeApiCall {
             contentApiService.getContents(date)
         }

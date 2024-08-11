@@ -91,7 +91,7 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(
                     Log.e("ContentDetailFragment", "Error: ${response.errorMessage}")
                 }
                 else -> {
-                    Log.d("DiaryCalendarFragment", "Unknown status: ${response.status}")
+                    Log.d("ContentDetailFragment", "Unknown status: ${response.status}")
                 }
             }
         }
