@@ -6,14 +6,13 @@ import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
-import com.betterlife.antifragile.config.RetrofitInterface
-import com.betterlife.antifragile.data.repository.ContentRepository
 import com.betterlife.antifragile.databinding.FragmentRecommendContentBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentRecommendViewModel
 import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentRecommendViewModelFactory
 import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
+import com.betterlife.antifragile.presentation.util.RecommendDialogUtil
 import java.time.LocalDate
 
 class RecommendContentFragment : BaseFragment<FragmentRecommendContentBinding>(
@@ -21,6 +20,8 @@ class RecommendContentFragment : BaseFragment<FragmentRecommendContentBinding>(
 ) {
 
     private lateinit var contentRecommendViewModel: ContentRecommendViewModel
+
+    private var recommendDialogUtil: RecommendDialogUtil? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -66,6 +67,21 @@ class RecommendContentFragment : BaseFragment<FragmentRecommendContentBinding>(
             }
             showCustomButton(R.drawable.btn_re) {
                 // TODO: 재추천 받기 버튼 클릭 처리
+                RecommendDialogUtil.showRecommendDialogs(
+                    fragment = this@RecommendContentFragment,
+                    onLeftButtonClicked = {
+                    },
+                    onRightButtonFeedbackProvided = { feedback ->
+                        val diaryDateString = arguments?.getString("diaryDate")
+                        val diaryDate = diaryDateString?.let { LocalDate.parse(it) }
+
+                        diaryDate?.let { date ->
+                            contentRecommendViewModel.getRecommendContents(feedback, date)
+                        } ?: run {
+                            Log.e("RecommendContentFragment", "Invalid or missing diaryDate")
+                        }
+                    }
+                )
             }
         }
     }
@@ -75,6 +91,5 @@ class RecommendContentFragment : BaseFragment<FragmentRecommendContentBinding>(
         contentRecommendViewModel =
             ViewModelProvider(this, factory)[ContentRecommendViewModel::class.java]
     }
-
 
 }

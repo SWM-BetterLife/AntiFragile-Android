@@ -5,6 +5,10 @@ import com.betterlife.antifragile.presentation.customview.EditTextDialog
 import com.betterlife.antifragile.presentation.customview.SelectDialog
 
 object RecommendDialogUtil {
+
+    private var firstDialog: SelectDialog? = null
+    private var secondDialog: EditTextDialog? = null
+
     fun showRecommendDialogs(
         fragment: Fragment,
         onLeftButtonClicked: () -> Unit,
@@ -20,8 +24,10 @@ object RecommendDialogUtil {
             rightButtonText = "추천 받기",
             leftButtonListener = {
                 onLeftButtonClicked()
+                firstDialog?.dismiss()
             },
             rightButtonListener = {
+                firstDialog?.dismiss()
                 val secondDialog = EditTextDialog(
                     context = context,
                     title = "어떤 영상을 추천받고 싶나요?",
@@ -30,9 +36,11 @@ object RecommendDialogUtil {
                     rightButtonText = "입력 완료",
                     leftButtonListener = {
                         onRightButtonFeedbackProvided("")
+                        secondDialog?.dismiss()
                     },
                     rightButtonListener = { feedback ->
                         onRightButtonFeedbackProvided(feedback)
+                        secondDialog?.dismiss()
                     }
                 )
                 secondDialog.show()
