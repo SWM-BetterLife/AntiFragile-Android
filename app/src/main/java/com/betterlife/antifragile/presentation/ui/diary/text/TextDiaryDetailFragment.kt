@@ -6,19 +6,13 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
-import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
-import com.betterlife.antifragile.config.RetrofitInterface
-import com.betterlife.antifragile.data.local.DiaryDatabase
 import com.betterlife.antifragile.data.model.base.Status
 import com.betterlife.antifragile.data.model.common.Emotion
 import com.betterlife.antifragile.data.model.diary.TextDiaryDetail
-import com.betterlife.antifragile.data.repository.DiaryAnalysisRepository
-import com.betterlife.antifragile.data.repository.DiaryRepository
 import com.betterlife.antifragile.databinding.FragmentTextDiaryDetailBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.TextDiaryViewModel
@@ -67,12 +61,7 @@ class TextDiaryDetailFragment: BaseFragment<FragmentTextDiaryDetailBinding>(
     }
 
     private fun setupViewModel() {
-        val diaryDao = DiaryDatabase.getDatabase(requireContext()).diaryDao()
-        val diaryRepository = DiaryRepository(diaryDao)
-        val token = Constants.TOKEN
-        val diaryAnalysisApiService = RetrofitInterface.createDiaryAnalysisApiService(token)
-        val diaryAnalysisRepository = DiaryAnalysisRepository(diaryAnalysisApiService)
-        val factory = TextDiaryViewModelFactory(diaryRepository, diaryAnalysisRepository)
+        val factory = TextDiaryViewModelFactory(requireContext(), Constants.TOKEN)
         textDiaryViewModel = ViewModelProvider(this, factory)[TextDiaryViewModel::class.java]
     }
 
