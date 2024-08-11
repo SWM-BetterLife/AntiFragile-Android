@@ -10,6 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
+import com.betterlife.antifragile.data.model.base.CustomErrorMessage
 import com.betterlife.antifragile.data.model.base.Status
 import com.betterlife.antifragile.data.model.common.Emotion
 import com.betterlife.antifragile.data.model.diary.TextDiaryDetail
@@ -27,32 +28,31 @@ class TextDiaryDetailFragment: BaseFragment<FragmentTextDiaryDetailBinding>(
 ) {
 
     private lateinit var textDiaryViewModel: TextDiaryViewModel
-    private var diaryDate: String? = null
-    private var textDiaryDetail: TextDiaryDetail? = null
+    private lateinit var textDiaryDetail: TextDiaryDetail
+    private lateinit var diaryDate: String
+    private var diaryId: Int = -1
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        diaryDate = getDiaryDateFromArguments()
-        val diaryId = getDiaryIdFromArguments()
-
+        setupVariables()
         setupViewModel()
         setupObservers()
-        loadDiaryData(diaryId, diaryDate!!)
+        loadDiaryData(diaryId, diaryDate)
         setupButton()
     }
 
     override fun configureToolbar(toolbar: CustomToolbar) {
         toolbar.apply {
             reset()
-            setSubTitle(DateUtil.convertDateFormat(diaryDate!!))
+            setSubTitle(DateUtil.convertDateFormat(diaryDate))
             showBackButton() {
                 findNavController().popBackStack()
             }
             showCustomButton(R.drawable.btn_edit) {
                 val action =
                     TextDiaryDetailFragmentDirections.actionNavTextDiaryDetailToNavTextDiaryCreate(
-                    diaryDate!!, textDiaryDetail
+                    diaryDate, textDiaryDetail
                 )
                 findNavController().navigate(action)
             }
@@ -60,13 +60,14 @@ class TextDiaryDetailFragment: BaseFragment<FragmentTextDiaryDetailBinding>(
         }
     }
 
+    private fun setupVariables() {
+        diaryDate = TextDiaryDetailFragmentArgs.fromBundle(requireArguments()).diaryDate
+        diaryId = TextDiaryDetailFragmentArgs.fromBundle(requireArguments()).diaryId
+    }
+
     private fun setupViewModel() {
         val factory = TextDiaryViewModelFactory(requireContext(), Constants.TOKEN)
         textDiaryViewModel = ViewModelProvider(this, factory)[TextDiaryViewModel::class.java]
-    }
-
-    private fun loadDiaryData(id: Int, date: String) {
-        textDiaryViewModel.getTextDiaryDetail(id, date)
     }
 
     @SuppressLint("SetTextI18n")
@@ -79,41 +80,35 @@ class TextDiaryDetailFragment: BaseFragment<FragmentTextDiaryDetailBinding>(
                 Status.SUCCESS -> {
                     dismissLoading()
                     response.data?.let { textDiaryDetail ->
-                        this.textDiaryDetail = textDiaryDetail
-                        binding.apply {
-                            tvDiaryContent.text = textDiaryDetail.content
-                            tvEmotion.text = Emotion.fromString(
-                                textDiaryDetail.emoticonInfo?.emotion
-                            ).toKorean
-                            textDiaryDetail.emoticonInfo?.let { emoticon ->
-                                Glide.with(requireContext())
-                                    .load(emoticon.imgUrl)
-                                    .into(ivEmoticon)
-                            }
-                            setEmotionBackground(
-                                loEmoticon, textDiaryDetail.emoticonInfo?.emotion ?: "오류"
-                            )
-                        }
+                        binding.textDiaryDetail = textDiaryDetail
+                        setEmotionBackground(
+                            binding.loEmoticon, textDiaryDetail.emoticonInfo?.emotion ?: "오류"
+                        )
                     }
                 }
                 Status.FAIL, Status.ERROR -> {
-                    binding.apply {
-                        tvDiaryContent.text = "일기를 불러오는 데 실패했습니다."
-                        ivEmoticon.setImageResource(R.drawable.emoticon_blank)
-                        setEmotionBackground(
-                            loEmoticon, textDiaryDetail?.emoticonInfo?.emotion ?: "오류"
-                        )
+                    dismissLoading()
+                    if (
+                        response.errorMessage == CustomErrorMessage.DIARY_ANALYSIS_NOT_FOUND.message
+                    ) {
+                        // TODO: 감정 분석을 하지 않은 경우 -> 감정분석하러 이동
+                        showCustomToast("감정 분석을 하지 않은 일기입니다.")
+                    } else {
+                        showCustomToast(response.errorMessage ?: "일기를 불러오는 데 실패했습니다.")
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            findNavController().popBackStack()
+                        }, 1000)
                     }
-                    showCustomToast(response.errorMessage ?: "일기를 불러오는 데 실패했습니다.")
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        findNavController().popBackStack()
-                    }, 1000)
                 }
                 else -> {
                     Log.d("TextDiaryDetailFragment", "Unknown status: ${response.status}")
                 }
             }
         }
+    }
+
+    private fun loadDiaryData(id: Int, date: String) {
+        textDiaryViewModel.getTextDiaryDetail(id, date)
     }
 
     private fun setEmotionBackground(layout: ConstraintLayout, emotion: String) {
@@ -124,17 +119,9 @@ class TextDiaryDetailFragment: BaseFragment<FragmentTextDiaryDetailBinding>(
         binding.btnMoveContent.setOnClickListener {
             val action =
                 TextDiaryDetailFragmentDirections.actionNavTextDiaryDetailToNavRecommendContent(
-                diaryDate!!, false
+                diaryDate, false
             )
             findNavController().navigate(action)
         }
-    }
-
-    private fun getDiaryDateFromArguments(): String {
-        return TextDiaryDetailFragmentArgs.fromBundle(requireArguments()).diaryDate
-    }
-
-    private fun getDiaryIdFromArguments(): Int {
-        return TextDiaryDetailFragmentArgs.fromBundle(requireArguments()).diaryId
     }
 }
