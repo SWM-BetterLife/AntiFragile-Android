@@ -2,6 +2,7 @@ package com.betterlife.antifragile.presentation.base
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +13,11 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.betterlife.antifragile.data.model.base.BaseResponse
+import com.betterlife.antifragile.data.model.base.Status
 import com.betterlife.antifragile.presentation.customview.LoadingDialog
 import com.betterlife.antifragile.presentation.customview.SelectDialog
 import com.google.android.material.snackbar.Snackbar
@@ -85,6 +89,29 @@ abstract class BaseFragment<B : ViewDataBinding>(
                 setAction(it) {}
             }
             show()
+        }
+    }
+
+    protected fun <T> setupBaseObserver(
+        liveData: LiveData<BaseResponse<T>>,
+        onSuccess: (T) -> Unit,
+        onError: (String?) -> Unit,
+        onLoading: () -> Unit = { showLoading(requireContext()) },
+        onComplete: () -> Unit = { dismissLoading() }
+    ) {
+        liveData.observe(viewLifecycleOwner) { response ->
+            when (response.status) {
+                Status.LOADING -> onLoading()
+                Status.SUCCESS -> {
+                    onComplete()
+                    response.data?.let { onSuccess(it) }
+                }
+                Status.FAIL, Status.ERROR -> {
+                    onComplete()
+                    onError(response.errorMessage)
+                }
+                else -> Log.d("BaseFragment", "Unknown status: ${response.status}")
+            }
         }
     }
 

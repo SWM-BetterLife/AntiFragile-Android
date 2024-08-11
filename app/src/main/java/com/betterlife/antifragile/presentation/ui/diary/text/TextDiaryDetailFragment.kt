@@ -72,39 +72,28 @@ class TextDiaryDetailFragment: BaseFragment<FragmentTextDiaryDetailBinding>(
 
     @SuppressLint("SetTextI18n")
     private fun setupObservers() {
-        textDiaryViewModel.textDiaryDetail.observe(viewLifecycleOwner) { response ->
-            when (response.status) {
-                Status.LOADING -> {
-                    showLoading(requireContext())
-                }
-                Status.SUCCESS -> {
-                    dismissLoading()
-                    response.data?.let { textDiaryDetail ->
-                        binding.textDiaryDetail = textDiaryDetail
-                        setEmotionBackground(
-                            binding.loEmoticon, textDiaryDetail.emoticonInfo?.emotion ?: "오류"
-                        )
-                    }
-                }
-                Status.FAIL, Status.ERROR -> {
-                    dismissLoading()
-                    if (
-                        response.errorMessage == CustomErrorMessage.DIARY_ANALYSIS_NOT_FOUND.message
-                    ) {
-                        // TODO: 감정 분석을 하지 않은 경우 -> 감정분석하러 이동
-                        showCustomToast("감정 분석을 하지 않은 일기입니다.")
-                    } else {
-                        showCustomToast(response.errorMessage ?: "일기를 불러오는 데 실패했습니다.")
-                        Handler(Looper.getMainLooper()).postDelayed({
-                            findNavController().popBackStack()
-                        }, 1000)
-                    }
-                }
-                else -> {
-                    Log.d("TextDiaryDetailFragment", "Unknown status: ${response.status}")
+        setupBaseObserver(
+            liveData = textDiaryViewModel.textDiaryDetail,
+            onSuccess = { textDiaryDetail ->
+                binding.textDiaryDetail = textDiaryDetail
+                setEmotionBackground(
+                    binding.loEmoticon, textDiaryDetail.emoticonInfo?.emotion ?: "오류"
+                )
+            },
+            onError = { errorMessage ->
+                if (
+                    errorMessage == CustomErrorMessage.DIARY_ANALYSIS_NOT_FOUND.message
+                ) {
+                    // TODO: 감정 분석을 하지 않은 경우 -> 감정분석하러 이동
+                    showCustomToast("감정 분석을 하지 않은 일기입니다.")
+                } else {
+                    showCustomToast(errorMessage ?: "일기를 불러오는 데 실패했습니다.")
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        findNavController().popBackStack()
+                    }, 1000)
                 }
             }
-        }
+        )
     }
 
     private fun loadDiaryData(id: Int, date: String) {
