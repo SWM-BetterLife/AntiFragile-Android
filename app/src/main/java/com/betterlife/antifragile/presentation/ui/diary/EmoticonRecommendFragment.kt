@@ -88,6 +88,28 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
                 showCustomToast(it.errorMessage ?: "감정티콘 조회에 실패했습니다.")
             }
         )
+
+        setupBaseObserver(
+            liveData = recommendEmoticonViewModel.remainRecommendNumber,
+            onSuccess = { response ->
+                RecommendDialogUtil.showRecommendDialogs(
+                    fragment = this,
+                    remainNumber = response.remainNumber,
+                    onLeftButtonClicked = {
+                        navigateToRecommendContent(false, null)
+                    },
+                    onRightButtonFeedbackProvided = { feedback ->
+                        navigateToRecommendContent(false, feedback)
+                    },
+                    onExcessRemainNumber = {
+                        navigateToRecommendContent(false, null)
+                    }
+                )
+            },
+            onError = {
+                showCustomToast(it.errorMessage ?: "남은 추천 횟수 조회에 실패했습니다.")
+            }
+        )
     }
 
     private fun setupViewPager() {
@@ -123,17 +145,7 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
         )
 
         if (getIsUpdate()) {
-            recommendEmoticonViewModel.saveDiaryAnalysis(request, diaryAnalysisData.diaryDate)
-
-            RecommendDialogUtil.showRecommendDialogs(
-                fragment = this,
-                onLeftButtonClicked = {
-                    navigateToRecommendContent(false, null)
-                },
-                onRightButtonFeedbackProvided = { feedback ->
-                    navigateToRecommendContent(false, feedback)
-                }
-            )
+            recommendEmoticonViewModel.getRemainRecommendNumber()
         } else {
             recommendEmoticonViewModel.saveDiaryAnalysis(request, null)
             navigateToRecommendContent(true, null)

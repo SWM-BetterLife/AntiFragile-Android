@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.betterlife.antifragile.config.RetrofitInterface
 import com.betterlife.antifragile.data.repository.DiaryAnalysisRepository
 import com.betterlife.antifragile.data.repository.EmoticonThemeRepository
+import com.betterlife.antifragile.data.repository.MemberRepository
 
 class EmoticonRecommendViewModelFactory(
     private val token: String
@@ -16,10 +17,12 @@ class EmoticonRecommendViewModelFactory(
             val diaryAnalysisRepository = DiaryAnalysisRepository(diaryAnalysisApiService)
             val emoticonThemeApiService = RetrofitInterface.createEmoticonThemeApiService(token)
             val emoticonThemeRepository = EmoticonThemeRepository(emoticonThemeApiService)
+            val memberApiService = RetrofitInterface.createMemberApiService(token)
+            val memberRepository = MemberRepository(memberApiService)
 
             @Suppress("UNCHECKED_CAST")
             return EmoticonRecommendViewModel(
-                diaryAnalysisRepository, emoticonThemeRepository
+                diaryAnalysisRepository, emoticonThemeRepository, memberRepository
             ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
