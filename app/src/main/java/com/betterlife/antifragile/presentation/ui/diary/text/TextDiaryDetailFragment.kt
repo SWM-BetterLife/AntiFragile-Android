@@ -107,7 +107,7 @@ class TextDiaryDetailFragment: BaseFragment<FragmentTextDiaryDetailBinding>(
         binding.btnMoveContent.setOnClickListener {
             val action =
                 TextDiaryDetailFragmentDirections.actionNavTextDiaryDetailToNavRecommendContent(
-                diaryDate, false
+                diaryDate, false, null
             )
             findNavController().navigate(action)
         }

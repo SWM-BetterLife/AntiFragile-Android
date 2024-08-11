@@ -23,6 +23,7 @@ import com.betterlife.antifragile.presentation.ui.main.MainActivity
 import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.DateUtil
+import com.betterlife.antifragile.presentation.util.RecommendDialogUtil
 import kotlin.math.abs
 
 class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>(
@@ -125,18 +126,27 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
 
         if (getIsUpdate()) {
             recommendEmoticonViewModel.saveDiaryAnalysis(request, diaryDate)
-            // TODO: 재추천 횟수 조회 api 호출
-            // TODO: 재추천 횟수가 1회 이상이면 재추천 여부 다이얼로그 띄우기
-            // TODO: 재추천 횟수가 0회이면 추천 콘텐츠 조회로 이동(false, true)
+
+            RecommendDialogUtil.showRecommendDialogs(
+                fragment = this,
+                onLeftButtonClicked = {
+                    navigateToRecommendContent(false, null)
+                },
+                onRightButtonFeedbackProvided = { feedback ->
+                    navigateToRecommendContent(false, feedback)
+                }
+            )
         } else {
             recommendEmoticonViewModel.saveDiaryAnalysis(request, null)
-            findNavController().navigate(
-                EmoticonRecommendFragmentDirections.actionNavEmoticonRecommendToNavRecommendContent(
-                    diaryDate, !getIsUpdate(), null
-                )
-            )
+            navigateToRecommendContent(true, null)
         }
         (activity as MainActivity).showBottomNavigation()
+    }
+
+    private fun navigateToRecommendContent(isNewDiary: Boolean, feedback: String?) {
+        val action = EmoticonRecommendFragmentDirections
+            .actionNavEmoticonRecommendToNavRecommendContent(diaryDate, isNewDiary, feedback)
+        findNavController().navigate(action)
     }
 
     private fun navigateToEmotionSelect() {
