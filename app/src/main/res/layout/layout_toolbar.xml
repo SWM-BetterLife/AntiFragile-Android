@@ -2,7 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="72dp"
+    android:layout_height="wrap_content"
     android:background="@color/white"
     android:id="@+id/lo_toolbar">
 
@@ -11,18 +11,15 @@
         android:layout_height="match_parent"
         android:paddingVertical="21dp"
         android:paddingStart="16dp"
-        android:paddingEnd="24dp">
+        android:paddingEnd="25dp">
 
         <TextView
             android:id="@+id/tv_main_title"
-            android:layout_width="280dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Title"
             android:textSize="24sp"
-            android:textStyle="bold"
             android:textColor="@color/black"
-            android:lineSpacingExtra="10sp"
-            android:visibility="gone"
+            android:visibility="invisible"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -31,8 +28,10 @@
             android:id="@+id/btn_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:importantForAccessibility="no"
             android:src="@drawable/ic_back"
-            android:visibility="gone"
+            android:layout_marginStart="9dp"
+            android:visibility="invisible"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -41,11 +40,11 @@
             android:id="@+id/tv_sub_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Title"
             android:textSize="20sp"
             android:textColor="@color/black"
-            android:layout_marginStart="20dp"
-            android:visibility="gone"
+            android:paddingVertical="5dp"
+            android:layout_marginStart="25dp"
+            android:visibility="invisible"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/btn_back" />
@@ -54,7 +53,8 @@
             android:id="@+id/btn_custom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
+            android:importantForAccessibility="no"
+            android:visibility="invisible"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
