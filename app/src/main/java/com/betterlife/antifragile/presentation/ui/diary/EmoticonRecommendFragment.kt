@@ -96,13 +96,13 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
                     fragment = this,
                     remainNumber = response.remainNumber,
                     onLeftButtonClicked = {
-                        navigateToRecommendContent(false, null)
+                        navigateToContentRecommend(false, null)
                     },
                     onRightButtonFeedbackProvided = { feedback ->
-                        navigateToRecommendContent(false, feedback)
+                        navigateToContentRecommend(false, feedback)
                     },
                     onExcessRemainNumber = {
-                        navigateToRecommendContent(false, null)
+                        navigateToContentRecommend(false, null)
                     }
                 )
             },
@@ -148,12 +148,12 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
             recommendEmoticonViewModel.getRemainRecommendNumber()
         } else {
             recommendEmoticonViewModel.saveDiaryAnalysis(request, null)
-            navigateToRecommendContent(true, null)
+            navigateToContentRecommend(true, null)
         }
         (activity as MainActivity).showBottomNavigation()
     }
 
-    private fun navigateToRecommendContent(isNewDiary: Boolean, feedback: String?) {
+    private fun navigateToContentRecommend(isNewDiary: Boolean, feedback: String?) {
         val action = EmoticonRecommendFragmentDirections
             .actionNavEmoticonRecommendToNavContentRecommend(
                 diaryAnalysisData.diaryDate, isNewDiary, feedback

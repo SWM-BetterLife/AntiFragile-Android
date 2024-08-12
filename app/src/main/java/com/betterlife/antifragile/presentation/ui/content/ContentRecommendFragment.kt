@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.betterlife.antifragile.R
-import com.betterlife.antifragile.databinding.FragmentRecommendContentBinding
+import com.betterlife.antifragile.databinding.FragmentContentRecommendBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentRecommendViewModel
 import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentRecommendViewModelFactory
@@ -17,8 +17,8 @@ import com.betterlife.antifragile.presentation.util.DateUtil
 import com.betterlife.antifragile.presentation.util.RecommendDialogUtil
 import java.time.LocalDate
 
-class ContentRecommendFragment : BaseFragment<FragmentRecommendContentBinding>(
-    R.layout.fragment_recommend_content
+class ContentRecommendFragment : BaseFragment<FragmentContentRecommendBinding>(
+    R.layout.fragment_content_recommend
 ) {
 
     private lateinit var contentRecommendViewModel: ContentRecommendViewModel
