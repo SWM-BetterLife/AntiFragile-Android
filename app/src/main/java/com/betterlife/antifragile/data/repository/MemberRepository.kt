@@ -6,6 +6,7 @@ import com.betterlife.antifragile.data.model.member.response.MemberDetailRespons
 import com.betterlife.antifragile.data.model.member.response.MemberExistenceResponse
 import com.betterlife.antifragile.data.model.member.response.MemberProfileModifyResponse
 import com.betterlife.antifragile.data.model.member.response.MemberRemainNumberResponse
+import com.betterlife.antifragile.data.model.member.response.NicknameDuplicateResponse
 import com.betterlife.antifragile.data.remote.MemberApiService
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -41,7 +42,13 @@ class MemberRepository(
         return safeApiCall {
             memberApiService.checkMemberExistence(email, loginType)
         }
-
     }
 
+    suspend fun checkNicknameExistence(
+        nickname: String
+    ): BaseResponse<NicknameDuplicateResponse> {
+        return safeApiCall {
+            memberApiService.checkNicknameExistence(nickname)
+        }
+    }
 }

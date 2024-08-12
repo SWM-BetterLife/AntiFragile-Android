@@ -6,6 +6,7 @@ import com.betterlife.antifragile.data.model.member.response.MemberDetailRespons
 import com.betterlife.antifragile.data.model.member.response.MemberExistenceResponse
 import com.betterlife.antifragile.data.model.member.response.MemberProfileModifyResponse
 import com.betterlife.antifragile.data.model.member.response.MemberRemainNumberResponse
+import com.betterlife.antifragile.data.model.member.response.NicknameDuplicateResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -37,4 +38,9 @@ interface MemberApiService {
         @Query("email") email: String,
         @Query("loginType") loginType: LoginType
     ): Response<BaseResponse<MemberExistenceResponse>>
+
+    @GET("/members/duplication-check")
+    suspend fun checkNicknameExistence(
+        @Query("nickname") nickname: String
+    ): Response<BaseResponse<NicknameDuplicateResponse>>
 }
