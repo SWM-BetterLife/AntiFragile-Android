@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.betterlife.antifragile.data.model.content.response.Content
 import com.betterlife.antifragile.databinding.ItemContentBinding
-import com.betterlife.antifragile.presentation.util.ImageUtil.loadImage
 import com.betterlife.antifragile.presentation.util.ImageUtil.loadImageCircle
 import com.betterlife.antifragile.presentation.util.ImageUtil.setImage
 
@@ -31,7 +30,7 @@ class ContentAdapter(
                 btnLikeContent.isSelected = content.isLiked
 
                 root.setOnClickListener {
-                    onItemClick(content) // 클릭 시 리스너 호출
+                    onItemClick(content)
                 }
             }
         }

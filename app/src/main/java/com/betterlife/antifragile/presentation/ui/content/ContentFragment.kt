@@ -40,7 +40,6 @@ class ContentFragment : BaseFragment<FragmentContentBinding>(R.layout.fragment_c
 
     private fun setupRecyclerView() {
         contentAdapter = ContentAdapter(emptyList()) { content ->
-            // 콘텐츠 클릭 시 이동하는 코드
             val action = ContentFragmentDirections.
             actionContentFragmentToContentDetailFragment(content.id, today.toString())
             navController.navigate(action)
@@ -60,7 +59,6 @@ class ContentFragment : BaseFragment<FragmentContentBinding>(R.layout.fragment_c
         contentViewModel = ViewModelProvider(
             this, viewModelFactory
         )[ContentViewModel::class.java]
-
     }
 
     private fun setupObserver() {

@@ -36,6 +36,8 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(
     private var isVideoEndedHandled = false
     private var currentVideoPosition = 0
 
+    private var diaryDate: String? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -44,11 +46,10 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(
         setupObservers()
 
         val contentId = arguments?.getString("contentId")
-        val diaryDate = arguments?.getString("diaryDate")
+        diaryDate = arguments?.getString("diaryDate")
         if (contentId != null && diaryDate != null) {
             contentDetailViewModel.getContentDetail(contentId)
         } else {
-            // contentId나 date가 없을 경우 처리할 로직 추가
             Log.e("ContentDetailFragment", "Missing contentId or date")
         }
     }
@@ -209,11 +210,14 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(
             if (!isVideoEndedHandled) {
                 isVideoEndedHandled = true
                 activity?.runOnUiThread {
-                    findNavController().navigate(
-                        // TODO: 전달받은 일기 날짜 넣기
-                        ContentDetailFragmentDirections
-                            .actionNavContentDetailToNavContentViewComplete("2024-08-10")
-                    )
+                    diaryDate?.let {
+                        findNavController().navigate(
+                            ContentDetailFragmentDirections
+                                .actionNavContentDetailToNavContentViewComplete(it)
+                        )
+                    } ?: run {
+                        Log.e("ContentDetailFragment", "Diary date is null")
+                    }
                 }
             }
         }
