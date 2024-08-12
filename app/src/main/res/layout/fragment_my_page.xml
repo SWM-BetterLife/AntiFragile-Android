@@ -52,7 +52,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="프로필 수정"
-                    android:background="@drawable/btn_rectangle_radius_100_transparent"
+                    android:background="@drawable/btn_rectangle_radius_100_transparent_thick"
                     android:paddingLeft="30dp"
                     android:paddingRight="30dp"
                     />

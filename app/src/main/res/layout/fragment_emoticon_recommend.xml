@@ -101,7 +101,7 @@
             android:textSize="16sp"
             android:paddingVertical="19dp"
             android:gravity="center"
-            android:background="@drawable/btn_rectangle_radius_100_transparent"
+            android:background="@drawable/btn_rectangle_radius_100_transparent_thick"
             android:layout_marginTop="10dp"
             android:layout_marginHorizontal="16dp"
             app:layout_constraintEnd_toEndOf="parent"
