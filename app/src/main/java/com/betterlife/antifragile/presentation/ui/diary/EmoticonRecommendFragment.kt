@@ -155,7 +155,7 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
 
     private fun navigateToRecommendContent(isNewDiary: Boolean, feedback: String?) {
         val action = EmoticonRecommendFragmentDirections
-            .actionNavEmoticonRecommendToNavRecommendContent(
+            .actionNavEmoticonRecommendToNavContentRecommend(
                 diaryAnalysisData.diaryDate, isNewDiary, feedback
             )
         findNavController().navigate(action)

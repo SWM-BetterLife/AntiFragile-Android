@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.betterlife.antifragile.R
@@ -18,7 +17,7 @@ import com.betterlife.antifragile.presentation.util.DateUtil
 import com.betterlife.antifragile.presentation.util.RecommendDialogUtil
 import java.time.LocalDate
 
-class RecommendContentFragment : BaseFragment<FragmentRecommendContentBinding>(
+class ContentRecommendFragment : BaseFragment<FragmentRecommendContentBinding>(
     R.layout.fragment_recommend_content
 ) {
 
@@ -65,7 +64,7 @@ class RecommendContentFragment : BaseFragment<FragmentRecommendContentBinding>(
 
     private fun setupRecyclerView() {
         contentAdapter = ContentAdapter(emptyList()) { content ->
-            val action = RecommendContentFragmentDirections.
+            val action = ContentRecommendFragmentDirections.
                 actionContentRecommendFragmentToContentDetailFragment(content.id, diaryDateString)
             findNavController().navigate(action)
         }
@@ -80,7 +79,7 @@ class RecommendContentFragment : BaseFragment<FragmentRecommendContentBinding>(
             liveData = contentRecommendViewModel.contentResponse,
             onSuccess = { contentListResponse ->
                 contentAdapter = ContentAdapter(contentListResponse.contents) { content ->
-                    val action = RecommendContentFragmentDirections.
+                    val action = ContentRecommendFragmentDirections.
                         actionContentRecommendFragmentToContentDetailFragment(content.id, diaryDateString)
                     findNavController().navigate(action)
                 }

@@ -61,7 +61,7 @@ class ContentViewCompleteFragment : BaseFragment<FragmentContentViewCompleteBind
                     onRightButtonFeedbackProvided = { feedback ->
                         findNavController().navigate(
                             ContentViewCompleteFragmentDirections
-                                .actionNavContentViewCompleteToNavRecommendContent(
+                                .actionNavContentViewCompleteToNavContentRecommend(
                                     diaryDate, false ,feedback
                                 )
                         )
@@ -118,7 +118,7 @@ class ContentViewCompleteFragment : BaseFragment<FragmentContentViewCompleteBind
     private fun navigateToContentList() {
         val navController = findNavController()
         if (!navController.popBackStack(R.id.nav_content, false)) {
-            navController.popBackStack(R.id.nav_recommend_content, false)
+            navController.popBackStack(R.id.nav_content_recommend, false)
         }
     }
 }

@@ -14,8 +14,8 @@
             android:id="@+id/action_nav_calendar_to_nav_diary_type_select"
             app:destination="@id/nav_diary_type_select"/>
         <action
-            android:id="@+id/action_nav_calendar_to_nav_recommend_content"
-            app:destination="@id/nav_recommend_content"/>
+            android:id="@+id/action_nav_calendar_to_nav_content_recommend"
+            app:destination="@id/nav_content_recommend"/>
         <action
             android:id="@+id/action_nav_calendar_to_nav_text_diary_detail"
             app:destination="@id/nav_text_diary_detail"/>
@@ -32,8 +32,8 @@
             android:id="@+id/action_nav_text_diary_detail_to_nav_text_diary_create"
             app:destination="@id/nav_text_diary_create"/>
         <action
-            android:id="@+id/action_nav_text_diary_detail_to_nav_recommend_content"
-            app:destination="@id/nav_recommend_content"/>
+            android:id="@+id/action_nav_text_diary_detail_to_nav_content_recommend"
+            app:destination="@id/nav_content_recommend"/>
         <argument
             android:name="diaryId"
             app:argType="integer"
@@ -57,8 +57,8 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_recommend_content"
-        android:name="com.betterlife.antifragile.presentation.ui.content.RecommendContentFragment"
+        android:id="@+id/nav_content_recommend"
+        android:name="com.betterlife.antifragile.presentation.ui.content.ContentRecommendFragment"
         android:label="ContentRecommend"
         tools:layout="@layout/fragment_content">
         <action
@@ -137,8 +137,8 @@
             android:id="@+id/action_nav_emoticon_recommend_to_nav_emotion_select"
             app:destination="@id/nav_emotion_select" />
         <action
-            android:id="@+id/action_nav_emoticon_Recommend_to_nav_recommend_content"
-            app:destination="@id/nav_recommend_content" />
+            android:id="@+id/action_nav_emoticon_Recommend_to_nav_content_recommend"
+            app:destination="@id/nav_content_recommend" />
         <argument
             android:name="diaryAnalysisData"
             app:argType="com.betterlife.antifragile.data.model.diary.llm.DiaryAnalysisData" />
@@ -227,8 +227,8 @@
         tools:layout="@layout/fragment_content_view_complete">
 
         <action
-            android:id="@+id/action_nav_content_view_complete_to_nav_recommend_content"
-            app:destination="@id/nav_recommend_content" />
+            android:id="@+id/action_nav_content_view_complete_to_nav_content_recommend"
+            app:destination="@id/nav_content_recommend" />
 
         <action
             android:id="@+id/action_nav_content_view_complete_to_nav_text_diary_detail"
