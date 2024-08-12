@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_nav_login_fragment_to_nav_terms_fragment"
             app:destination="@id/nav_terms_fragment" />
+        <action
+            android:id="@+id/action_nav_login_fragment_to_nav_main_activity"
+            app:destination="@id/nav_main_activity" />
     </fragment>
 
     <fragment
@@ -23,7 +26,6 @@
         <action
             android:id="@+id/action_nav_terms_fragment_to_nav_profile_edit_fragment"
             app:destination="@id/nav_profile_edit_fragment" />
-
         <argument
             android:name="email"
             app:argType="string" />
@@ -36,12 +38,25 @@
         android:id="@+id/nav_profile_edit_fragment"
         android:name="com.betterlife.antifragile.presentation.ui.auth.ProfileEditFragment"
         android:label="ProfileEditFragment">
+        <action
+            android:id="@+id/action_nav_profile_edit_fragment_to_nav_main_activity"
+            app:destination="@id/nav_main_activity" />
         <argument
             android:name="email"
             app:argType="string" />
         <argument
             android:name="loginType"
             app:argType="com.betterlife.antifragile.data.model.enums.LoginType" />
+        <argument
+            android:name="isNewMember"
+            app:argType="boolean" />
     </fragment>
+
+    <activity
+        android:id="@+id/nav_main_activity"
+        android:name="com.betterlife.antifragile.presentation.ui.main.MainActivity"
+        android:label="activity_main"
+        android:launchMode="singleTask"
+        tools:layout="@layout/activity_main" />
 
 </navigation>

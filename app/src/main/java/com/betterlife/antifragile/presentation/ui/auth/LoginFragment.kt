@@ -3,16 +3,13 @@ package com.betterlife.antifragile.presentation.ui.auth
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.BuildConfig
 import com.betterlife.antifragile.R
-import com.betterlife.antifragile.config.RetrofitInterface
 import com.betterlife.antifragile.data.model.auth.request.AuthLoginRequest
 import com.betterlife.antifragile.data.model.base.CustomErrorMessage
-import com.betterlife.antifragile.data.model.base.Status
 import com.betterlife.antifragile.data.model.enums.LoginType
 import com.betterlife.antifragile.data.model.enums.LoginType.GOOGLE
-import com.betterlife.antifragile.data.repository.AuthRepository
-import com.betterlife.antifragile.data.repository.MemberRepository
 import com.betterlife.antifragile.databinding.FragmentLoginBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.auth.oauth.GoogleLogin
@@ -20,6 +17,7 @@ import com.betterlife.antifragile.presentation.ui.auth.viewmodel.LoginViewModel
 import com.betterlife.antifragile.presentation.ui.auth.viewmodel.LoginViewModelFactory
 import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
+import com.betterlife.antifragile.presentation.util.TokenManager.saveTokens
 import kotlinx.coroutines.runBlocking
 import java.security.MessageDigest
 import java.util.UUID
@@ -36,17 +34,21 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setVariables()
         setupViewModel()
         setupObserver()
         setupButton()
-
-        googleLogin = GoogleLogin(requireContext())
+        autoLoginIfNeeded()
     }
 
     override fun configureToolbar(toolbar: CustomToolbar) {
         toolbar.apply {
             reset()
         }
+    }
+
+    private fun setVariables() {
+        googleLogin = GoogleLogin(requireContext())
     }
 
     private fun setupViewModel() {
@@ -59,42 +61,42 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
         setStatusMemberExistence()
     }
 
-    private fun setStatusAuthLogin() {
-        setupBaseObserver(
-            liveData = loginViewModel.authLoginResponse,
-            onSuccess = {
-                Log.d("AuthFragment", "SUCCESS: ${it.tokenIssue.accessToken}")
-            },
-            onError = {
-                if (it.errorMessage == CustomErrorMessage.AUTH_LOGIN_NOT_AUTHENTICATED.message) {
-                    showCustomToast(it.errorMessage)
-                } else if (it.errorMessage == CustomErrorMessage.MEMBER_NOT_FOUND.message) {
-                    showCustomToast("해당 계정은 회원가입이 필요합니다.")
-                } else {
-                    showCustomToast(it.errorMessage ?: "로그인 실패.")
-                }
-            }
-        )
-    }
-
     private fun setStatusMemberExistence() {
         setupBaseObserver(
             liveData = loginViewModel.memberExistenceResponse,
             onSuccess = {
-                if (it.isExist == true) {
-                    // 이미 회원가입되어 있는 경우 -> 로그인 처리
-                    email?.let { email ->
-                        loginType?.let { loginType ->
-                            login(email, BuildConfig.GOOGLE_LOGIN_PASSWORD, loginType)
-                        }
-                    }
+                if (it.isExist) {
+                    login(email!!, BuildConfig.GOOGLE_LOGIN_PASSWORD, loginType!!)
                 } else {
-                    // 회원가입이 안되어 있는 경우 -> 회원가입 처리
+                    navigateToTermsFragment(email!!, loginType!!)
                 }
             },
             onError = {
                 showCustomToast(it.errorMessage ?: "로그인 타입이 일치하지 않습니다.")
                 Log.d("AuthFragment", "ERROR: ${it.errorMessage}")
+            }
+
+        )
+    }
+
+    private fun setStatusAuthLogin() {
+        setupBaseObserver(
+            liveData = loginViewModel.authLoginResponse,
+            onSuccess = {
+                saveTokens(requireContext(), it.tokenIssue.accessToken, it.tokenIssue.refreshToken)
+                navigateToMainActivity()            },
+            onError = {
+                when (it.errorMessage) {
+                    CustomErrorMessage.AUTH_LOGIN_NOT_AUTHENTICATED.message -> {
+                        showCustomToast(it.errorMessage)
+                    }
+                    CustomErrorMessage.MEMBER_NOT_FOUND.message -> {
+                        showCustomToast("해당 계정은 회원가입이 필요합니다.")
+                    }
+                    else -> {
+                        showCustomToast(it.errorMessage ?: "로그인 실패.")
+                    }
+                }
             }
         )
     }
@@ -108,11 +110,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
     }
 
     private fun startGoogleLogin() {
-        val rawNonce = UUID.randomUUID().toString()
-        val bytes = rawNonce.toByteArray()
-        val md = MessageDigest.getInstance("SHA-256")
-        val digest = md.digest(bytes)
-        val hashedNonce = digest.fold("") { str, it -> str + "%02x".format(it) }
+        val hashedNonce = generateNonce()
 
         email = runBlocking {
             googleLogin.startGoogleLogin(hashedNonce)
@@ -120,14 +118,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
         loginType = GOOGLE
 
         if (email != null) {
-            Log.d("TAG", "Google ID: $email")
-            //todo: 예외 처리
+            checkMemberExistence(email!!, loginType!!)
         } else {
-            Log.d("TAG", "Google Login failed")
-        }
-
-        email?.let {
-            checkMemberExistence(it, loginType!!)
+            Log.d("LoginFragment", "Google Login failed")
         }
     }
 
@@ -148,4 +141,27 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
         return AuthLoginRequest(email, password, loginType)
     }
 
+    private fun navigateToTermsFragment(email: String, loginType: LoginType) {
+        findNavController().navigate(
+            LoginFragmentDirections.actionNavLoginFragmentToNavTermsFragment(email, loginType)
+        )
+    }
+
+    private fun navigateToMainActivity() {
+        findNavController()
+            .navigate(LoginFragmentDirections.actionNavLoginFragmentToNavMainActivity())
+    }
+
+    private fun generateNonce(): String {
+        val rawNonce = UUID.randomUUID().toString()
+        val bytes = rawNonce.toByteArray()
+        val md = MessageDigest.getInstance("SHA-256")
+        return md.digest(bytes).fold("") { str, it -> str + "%02x".format(it) }
+    }
+
+    private fun autoLoginIfNeeded() {
+        // TODO: 자동 로그인은 추후에 구현
+//        val accessToken = getAccessToken(requireContext())
+//        val refreshToken = getRefreshToken(requireContext())
+    }
 }

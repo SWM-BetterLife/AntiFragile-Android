@@ -35,7 +35,6 @@ class LoginViewModel(
             _authLoginResponse.value = BaseResponse(Status.LOADING, null, null)
             val response = authRepository.login(request)
             _authLoginResponse.postValue(response)
-            _authLoginResponse.value = response
         }
     }
 
@@ -44,7 +43,6 @@ class LoginViewModel(
             _memberExistenceResponse.value = BaseResponse(Status.LOADING, null, null)
             val response = memberRepository.checkMemberExistence(email, loginType)
             _memberExistenceResponse.postValue(response)
-            _memberExistenceResponse.value = response
         }
     }
 }
