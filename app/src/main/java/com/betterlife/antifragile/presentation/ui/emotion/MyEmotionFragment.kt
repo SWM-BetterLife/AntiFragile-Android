@@ -3,11 +3,13 @@ package com.betterlife.antifragile.presentation.ui.emotion
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.config.RetrofitInterface
 import com.betterlife.antifragile.data.model.base.CustomErrorMessage
 import com.betterlife.antifragile.data.model.base.Status
+import com.betterlife.antifragile.data.model.common.Emotion
 import com.betterlife.antifragile.data.repository.DiaryAnalysisRepository
 import com.betterlife.antifragile.databinding.FragmentMyEmotionBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
@@ -40,46 +42,32 @@ class MyEmotionFragment : BaseFragment<FragmentMyEmotionBinding>(
     }
 
     private fun setupViewModel() {
-        // TODO: 로그인 구현 후 preference에서 토큰 가져오기
-        val token = Constants.TOKEN
-        val diaryAnalysisApiService = RetrofitInterface.createDiaryAnalysisApiService(token)
-        val diaryAnalysisRepository = DiaryAnalysisRepository(diaryAnalysisApiService)
-        val factory = MyEmotionViewModelFactory(diaryAnalysisRepository)
+        val factory = MyEmotionViewModelFactory(Constants.TOKEN)
         myEmotionViewModel = factory.create(MyEmotionViewModel::class.java)
     }
 
     private fun setupObserver() {
-        myEmotionViewModel.diaryAnalysisResponse.observe(viewLifecycleOwner) { response ->
-            when (response.status) {
-                Status.LOADING -> {
-                    showLoading(requireContext())
-                }
-                Status.SUCCESS -> {
-                    dismissLoading()
-                    setupEmotionVisibility(true)
-                    binding.apply {
-                        ivEmoticon.setImage(response?.data?.emoticon?.imgUrl)
-                        tvEmotion.text = response.data?.emotions?.joinToString(", ")
-                    }
-                }
-                Status.FAIL -> {
-                    dismissLoading()
-                    if (
-                        response.errorMessage == CustomErrorMessage.DIARY_ANALYSIS_NOT_FOUND.message
-                    ) {
-                        setupEmotionVisibility(false)
-                    } else {
-                        showCustomToast(response.errorMessage ?: "감정 분석을 불러오는데 실패했습니다.")
-                    }
-                }
-                Status.ERROR -> {
-                    dismissLoading()
-                    showCustomToast(response.errorMessage ?: "감정 분석을 불러오는데 실패했습니다.")
-                }
-                else -> {
-                    Log.d("MyEmotionFragment", "Unknown status: ${response.status}")
-                }
+        setupBaseObserver(
+            liveData = myEmotionViewModel.diaryAnalysisResponse,
+            onSuccess = {
+                setupEmotionVisibility(true)
+                binding.ivEmoticon.setImage(it.emoticon.imgUrl)
+                binding.tvEmotion.text = it.emoticon.emotion
+                setEmotionBackground(
+                    binding.loEmoticon, it.emoticon.emotion
+                )
+            },
+            onError = {
+                handleSaveError(it.errorMessage)
             }
+        )
+    }
+
+    private fun handleSaveError(errorMessage: String?) {
+        if (errorMessage == CustomErrorMessage.DIARY_ANALYSIS_NOT_FOUND.message) {
+            setupEmotionVisibility(false)
+        } else {
+            showCustomToast(errorMessage ?: "감정 분석을 불러오는데 실패했습니다.")
         }
     }
 
@@ -100,6 +88,10 @@ class MyEmotionFragment : BaseFragment<FragmentMyEmotionBinding>(
 
     private fun loadDiaryAnalysisData() {
         myEmotionViewModel.getDailyDiaryAnalysis(getTodayDate())
+    }
+
+    private fun setEmotionBackground(layout: ConstraintLayout, emotion: String) {
+        layout.setBackgroundResource(Emotion.fromString(emotion).getBackgroundResource())
     }
 
     private fun setupButton() {
