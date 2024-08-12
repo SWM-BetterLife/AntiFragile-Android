@@ -17,6 +17,8 @@ import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentViewM
 import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentViewModelFactory
 import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
+import com.betterlife.antifragile.presentation.util.DateUtil
+import com.betterlife.antifragile.presentation.util.NumberUtil
 import java.time.LocalDate
 
 class ContentFragment : BaseFragment<FragmentContentBinding>(R.layout.fragment_content) {
@@ -32,7 +34,7 @@ class ContentFragment : BaseFragment<FragmentContentBinding>(R.layout.fragment_c
         navController = findNavController()
 
         setupViewModel()
-        setupObserver()
+        setupObservers()
         setupRecyclerView()
 
         contentViewModel.getContentList(today)
@@ -51,42 +53,25 @@ class ContentFragment : BaseFragment<FragmentContentBinding>(R.layout.fragment_c
     }
 
     private fun setupViewModel() {
-        // TODO: 로그인 구현 후 preference에서 토큰 가져오기
-        val token = Constants.TOKEN
-        val contentApiService = RetrofitInterface.createContentApiService(token)
-        val contentRepository = ContentRepository(contentApiService)
-        val viewModelFactory = ContentViewModelFactory(contentRepository)
-        contentViewModel = ViewModelProvider(
-            this, viewModelFactory
-        )[ContentViewModel::class.java]
+        val factory = ContentViewModelFactory(Constants.TOKEN)
+        contentViewModel = ViewModelProvider(this, factory)[ContentViewModel::class.java]
     }
 
-    private fun setupObserver() {
-        contentViewModel.contentListResponse.observe(viewLifecycleOwner) { response ->
-            when (response.status) {
-                Status.LOADING -> {
-                    showLoading(requireContext())
+    private fun setupObservers() {
+        setupBaseObserver(
+            liveData = contentViewModel.contentListResponse,
+            onSuccess = { contentListResponse ->
+                contentAdapter = ContentAdapter(contentListResponse.contents) { content ->
+                    val action = ContentFragmentDirections.
+                    actionContentFragmentToContentDetailFragment(content.id, today.toString())
+                    navController.navigate(action)
                 }
-                Status.SUCCESS -> {
-                    dismissLoading()
-                    response.data?.let { contentListResponse ->
-                        contentAdapter = ContentAdapter(contentListResponse.contents) { content ->
-                            val action = ContentFragmentDirections.
-                                actionContentFragmentToContentDetailFragment(content.id, today.toString())
-                            navController.navigate(action)
-                        }
-                        binding.rvContentList.adapter = contentAdapter
-                    }
-                }
-                Status.FAIL, Status.ERROR -> {
-                    dismissLoading()
-                    Log.e("ContentFragment", "Error: ${response.errorMessage}")
-                }
-                else -> {
-                    Log.d("ContentFragment", "Unknown status: ${response.status}")
-                }
+                binding.rvContentList.adapter = contentAdapter
+            },
+            onError = {
+                Log.e("ContentFragment", "Error: ${it.errorMessage}")
             }
-        }
+        )
     }
 
     override fun configureToolbar(toolbar: CustomToolbar) {

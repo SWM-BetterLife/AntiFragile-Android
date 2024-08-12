@@ -3,6 +3,7 @@ package com.betterlife.antifragile.presentation.ui.content
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.betterlife.antifragile.R
 import com.betterlife.antifragile.data.model.content.response.Content
 import com.betterlife.antifragile.databinding.ItemContentBinding
 import com.betterlife.antifragile.presentation.util.ImageUtil.setCircleImage
@@ -27,7 +28,11 @@ class ContentAdapter(
                 tvChannelName.text = content.channel.name
                 tvSubscribeCount.text = content.channel.subscribeNumber.toString()
 
-                btnLikeContent.isSelected = content.isLiked
+                ivLikeContent.backgroundTintList = if (content.isLiked) {
+                    binding.root.context.getColorStateList(R.color.like_button_color)
+                } else {
+                    binding.root.context.getColorStateList(R.color.unlike_button_color)
+                }
 
                 root.setOnClickListener {
                     onItemClick(content)
