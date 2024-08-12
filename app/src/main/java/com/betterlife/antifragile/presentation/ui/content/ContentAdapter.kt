@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.betterlife.antifragile.data.model.content.response.Content
 import com.betterlife.antifragile.databinding.ItemContentBinding
-import com.betterlife.antifragile.presentation.util.ImageUtil.loadImageCircle
+import com.betterlife.antifragile.presentation.util.ImageUtil.setCircleImage
 import com.betterlife.antifragile.presentation.util.ImageUtil.setImage
 
 class ContentAdapter(
@@ -23,7 +23,7 @@ class ContentAdapter(
                 tvLikeCount.text = content.likeNumber.toString()
                 ivVideoThumbnail.setImage(content.thumbnailImg)
 
-                ivChannelProfile.loadImageCircle(content.channel.img)
+                ivChannelProfile.setCircleImage(content.channel.img)
                 tvChannelName.text = content.channel.name
                 tvSubscribeCount.text = content.channel.subscribeNumber.toString()
 

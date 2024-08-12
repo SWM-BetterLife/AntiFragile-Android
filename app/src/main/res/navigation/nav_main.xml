@@ -192,8 +192,7 @@
         <action
             android:id="@+id/action_contentFragment_to_contentDetailFragment"
             app:destination="@id/nav_content_detail"
-            app:popUpTo="@id/nav_content"
-            app:popUpToInclusive="true" />
+            app:popUpTo="@id/nav_content" />
         <argument
             android:name="contentId"
             app:argType="string" />

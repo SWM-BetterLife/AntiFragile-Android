@@ -47,4 +47,5 @@
     <string name="move_to_select_content">영상 선택 화면으로 돌아가기</string>
     <string name="move_to_diary">감정 일기로 돌아가기</string>
     <string name="share">공유</string>
+    <string name="btn_view_complete">시청 완료</string>
 </resources>

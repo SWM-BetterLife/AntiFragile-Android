@@ -11,16 +11,14 @@ import android.widget.FrameLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
-import com.betterlife.antifragile.config.RetrofitInterface
-import com.betterlife.antifragile.data.model.base.Status
-import com.betterlife.antifragile.data.repository.ContentRepository
 import com.betterlife.antifragile.databinding.FragmentContentDetailBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentDetailViewModel
 import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentDetailViewModelFactory
 import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
-import com.betterlife.antifragile.presentation.util.ImageUtil.loadImageCircle
+import com.betterlife.antifragile.presentation.util.DateUtil
+import com.betterlife.antifragile.presentation.util.NumberUtil
 import java.util.regex.Pattern
 
 class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(
@@ -28,6 +26,8 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(
 ) {
 
     private lateinit var contentDetailViewModel: ContentDetailViewModel
+    private lateinit var diaryDate: String
+    private lateinit var contentId: String
 
     private var customView: View? = null
     private var customViewCallback: WebChromeClient.CustomViewCallback? = null
@@ -36,68 +36,70 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(
     private var isVideoEndedHandled = false
     private var currentVideoPosition = 0
 
-    private var diaryDate: String? = null
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setVariables()
         setupViewModel()
         setupWebView()
         setupObservers()
+        loadContentData()
+        setupButtons()
+    }
 
-        val contentId = arguments?.getString("contentId")
-        diaryDate = arguments?.getString("diaryDate")
-        if (contentId != null && diaryDate != null) {
-            contentDetailViewModel.getContentDetail(contentId)
-        } else {
-            Log.e("ContentDetailFragment", "Missing contentId or date")
-        }
+    private fun setVariables() {
+        diaryDate = ContentDetailFragmentArgs.fromBundle(requireArguments()).diaryDate
+        contentId = ContentDetailFragmentArgs.fromBundle(requireArguments()).contentId
     }
 
     private fun setupViewModel() {
-        // TODO: 로그인 구현 후, preference나 다른 방법으로 token을 받아와야 함
-        val token = Constants.TOKEN
-        val contentApiService = RetrofitInterface.createContentApiService(token)
-        val contentRepository = ContentRepository(contentApiService)
-        val viewModelFactory = ContentDetailViewModelFactory(contentRepository)
-        contentDetailViewModel = ViewModelProvider(
-            this, viewModelFactory
-        )[ContentDetailViewModel::class.java]
+        val factory = ContentDetailViewModelFactory(Constants.TOKEN)
+        contentDetailViewModel =
+            ViewModelProvider(this, factory)[ContentDetailViewModel::class.java]
     }
 
     private fun setupObservers() {
-        contentDetailViewModel.contentDetailResponse.observe(viewLifecycleOwner) { response ->
-            when (response.status) {
-                Status.LOADING -> {
-                    showLoading(requireContext())
-                }
-                Status.SUCCESS -> {
-                    dismissLoading()
-                    response.data?.let { contentDetailResponse ->
-                        val videoId = extractVideoIdFromUrl(contentDetailResponse.url)
-                        if (videoId != null) {
-                            loadYouTubeVideo(videoId)
-                            binding.apply {
-                                tvTitle.text = contentDetailResponse.title
-                                tvContentDescription.text = contentDetailResponse.description
-                                tvLikeCount.text = contentDetailResponse.likeNumber.toString()
-                                tvChannelName.text = contentDetailResponse.channel.name
-                                tvSubscribeCount.text = contentDetailResponse.channel.subscribeNumber.toString()
-                                ivChannelProfile.loadImageCircle(contentDetailResponse.channel.img)
-                            }
-                        } else {
-                            showErrorMessage()
-                        }
+        setupBaseObserver(
+            liveData = contentDetailViewModel.contentDetailResponse,
+            onSuccess = {
+                binding.apply {
+                    val videoId = extractVideoIdFromUrl(it.url)
+                    if (videoId != null) {
+                        loadYouTubeVideo(videoId)
+                        dateInfo = DateUtil.convertDateToFullFormat(diaryDate)
+                        contentData = it
+                        tvSubscribeCount.text = NumberUtil.formatSubscriberCountKoreanStyle(
+                            it.channel.subscribeNumber
+                        )
+                    } else {
+                        showErrorMessage()
                     }
                 }
-                Status.FAIL, Status.ERROR -> {
-                    dismissLoading()
-                    Log.e("ContentDetailFragment", "Error: ${response.errorMessage}")
-                }
-                else -> {
-                    Log.d("ContentDetailFragment", "Unknown status: ${response.status}")
-                }
+            },
+            onError = {
+                Log.e("ContentDetailFragment", "Error: ${it.errorMessage}")
             }
+        )
+    }
+
+    private fun loadContentData() {
+        contentDetailViewModel.getContentDetail(contentId)
+    }
+
+    private fun setupButtons() {
+        binding.btnLikeContent.setOnClickListener {
+            // TODO: Implement like button
+        }
+
+        binding.btnSaveContent.setOnClickListener {
+            // TODO: Implement save button
+        }
+
+        binding.btnViewComplete.setOnClickListener {
+            findNavController().navigate(
+                ContentDetailFragmentDirections
+                    .actionNavContentDetailToNavContentViewComplete(diaryDate)
+            )
         }
     }
 

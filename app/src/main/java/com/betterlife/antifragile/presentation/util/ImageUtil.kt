@@ -14,7 +14,7 @@ object ImageUtil {
             .into(this)
     }
 
-    fun ImageView.loadImageCircle(url: String?) {
+    fun ImageView.setCircleImage(url: String?) {
         Glide.with(this.context)
             .load(url)
             .transform(CircleCrop())
@@ -27,6 +27,19 @@ object ImageUtil {
         if (!imageUrl.isNullOrEmpty()) {
             Glide.with(view.context)
                 .load(imageUrl)
+                .into(view)
+        } else {
+            view.setImageResource(R.drawable.emoticon_blank)
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("circleImageUrl")
+    fun loadCircleImage(view: ImageView, imageUrl: String?) {
+        if (!imageUrl.isNullOrEmpty()) {
+            Glide.with(view.context)
+                .load(imageUrl)
+                .transform(CircleCrop())
                 .into(view)
         } else {
             view.setImageResource(R.drawable.emoticon_blank)
