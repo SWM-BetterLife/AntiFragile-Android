@@ -4,6 +4,7 @@ import com.betterlife.antifragile.data.model.base.BaseResponse
 import com.betterlife.antifragile.data.model.content.response.ContentDetailResponse
 import com.betterlife.antifragile.data.model.content.response.ContentListResponse
 import retrofit2.Response
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -25,6 +26,16 @@ interface ContentApiService {
         @Query("date") date: LocalDate,
         @Query("feedback") feedback: String
     ): Response<BaseResponse<ContentListResponse>>
+
+    @POST("/contents/{contentId}/like")
+    suspend fun likeContent(
+        @Path("contentId") contentId: String
+    ): Response<BaseResponse<Any?>>
+
+    @DELETE("/contents/{contentId}/unlike")
+    suspend fun unlikeContent(
+        @Path("contentId") contentId: String
+    ): Response<BaseResponse<Any?>>
 
     @GET("contents")
     suspend fun getContents(

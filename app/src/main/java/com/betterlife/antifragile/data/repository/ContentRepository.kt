@@ -27,6 +27,22 @@ class ContentRepository(
         }
     }
 
+    suspend fun likeContent(
+        contentId: String
+    ): BaseResponse<Any?> {
+        return safeApiCall {
+            contentApiService.likeContent(contentId)
+        }
+    }
+
+    suspend fun unlikeContent(
+        contentId: String
+    ): BaseResponse<Any?> {
+        return safeApiCall {
+            contentApiService.unlikeContent(contentId)
+        }
+    }
+
     suspend fun getContents(
         date: LocalDate
     ): BaseResponse<ContentListResponse> {

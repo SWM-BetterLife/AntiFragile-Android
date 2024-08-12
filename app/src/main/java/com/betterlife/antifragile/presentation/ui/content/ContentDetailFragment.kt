@@ -71,6 +71,7 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(
                         tvSubscribeCount.text = NumberUtil.formatSubscriberCountKoreanStyle(
                             it.channel.subscribeNumber
                         )
+                        btnLikeContent
                     } else {
                         showErrorMessage()
                     }
@@ -80,6 +81,26 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(
                 Log.e("ContentDetailFragment", "Error: ${it.errorMessage}")
             }
         )
+
+        setupBaseObserver(
+            liveData = contentDetailViewModel.contentLikeResponse,
+            onSuccess = { },
+            onError = {
+                Log.e("ContentDetailFragment", "Error: ${it.errorMessage}")
+            }
+        )
+
+        contentDetailViewModel.isLiked.observe(viewLifecycleOwner) { isLiked ->
+            binding.btnLikeContent.backgroundTintList = if (isLiked) {
+                resources.getColorStateList(R.color.like_button_color, null)
+            } else {
+                resources.getColorStateList(R.color.unlike_button_color, null)
+            }
+        }
+
+        contentDetailViewModel.likeNumber.observe(viewLifecycleOwner) { likeNumber ->
+            binding.tvLikeCount.text = likeNumber.toString()
+        }
     }
 
     private fun loadContentData() {
@@ -88,9 +109,10 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(
 
     private fun setupButtons() {
         binding.btnLikeContent.setOnClickListener {
-            // TODO: Implement like button
+            contentDetailViewModel.changeLikeState(contentId)
         }
 
+        binding.btnSaveContent.visibility = View.GONE
         binding.btnSaveContent.setOnClickListener {
             // TODO: Implement save button
         }

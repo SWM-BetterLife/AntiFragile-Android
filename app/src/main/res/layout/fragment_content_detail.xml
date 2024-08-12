@@ -133,14 +133,14 @@
 
                 <ImageView
                     android:id="@+id/btn_like_content"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:background="@drawable/btn_like_content"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
                     android:layout_marginEnd="5dp"
+                    android:background="@drawable/btn_like_content"
                     android:importantForAccessibility="no"
-                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/tv_like_count" />
+                    app:layout_constraintEnd_toStartOf="@id/tv_like_count"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/tv_like_count"
