@@ -1,8 +1,10 @@
 package com.betterlife.antifragile.data.remote
 
 import com.betterlife.antifragile.data.model.auth.request.AuthLoginRequest
+import com.betterlife.antifragile.data.model.auth.request.AuthReIssueTokenRequest
 import com.betterlife.antifragile.data.model.auth.request.AuthSignUpRequest
 import com.betterlife.antifragile.data.model.auth.response.AuthLoginResponse
+import com.betterlife.antifragile.data.model.auth.response.AuthReIssueTokenResponse
 import com.betterlife.antifragile.data.model.auth.response.AuthSignUpResponse
 import com.betterlife.antifragile.data.model.base.BaseResponse
 import retrofit2.Response
@@ -23,4 +25,9 @@ interface AuthApiService {
     suspend fun login(
         @Body request: AuthLoginRequest
     ): Response<BaseResponse<AuthLoginResponse>>
+
+    @POST("/token/re-issuance")
+    suspend fun reIssueToken(
+        @Body request: AuthReIssueTokenRequest
+    ): Response<BaseResponse<AuthReIssueTokenResponse>>
 }
