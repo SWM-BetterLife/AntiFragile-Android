@@ -18,12 +18,15 @@ import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.auth.oauth.GoogleLogin
 import com.betterlife.antifragile.presentation.ui.auth.viewmodel.LoginViewModel
 import com.betterlife.antifragile.presentation.ui.auth.viewmodel.LoginViewModelFactory
+import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import kotlinx.coroutines.runBlocking
 import java.security.MessageDigest
 import java.util.UUID
 
-class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login) {
+class LoginFragment : BaseFragment<FragmentLoginBinding>(
+    R.layout.fragment_login
+) {
 
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var googleLogin: GoogleLogin
@@ -47,11 +50,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
     }
 
     private fun setupViewModel() {
-        val authApiService = RetrofitInterface.createAuthApiService()
-        val memberApiService = RetrofitInterface.createMemberApiService()
-        val authRepository = AuthRepository(authApiService)
-        val memberRepository = MemberRepository(memberApiService)
-        val factory = LoginViewModelFactory(authRepository, memberRepository)
+        val factory = LoginViewModelFactory(Constants.TOKEN)
         loginViewModel = factory.create(LoginViewModel::class.java)
     }
 
@@ -61,76 +60,43 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
     }
 
     private fun setStatusAuthLogin() {
-        loginViewModel.authLoginResponse.observe(viewLifecycleOwner) { response ->
-            when (response.status) {
-                Status.LOADING -> {
-                    showLoading(requireContext())
-                }
-                Status.SUCCESS -> {
-                    dismissLoading()
-                    Log.d("AuthFragment", "SUCCESS: ${response.data?.tokenIssue?.accessToken}")
-                }
-                Status.FAIL -> {
-                    dismissLoading()
-                    if (
-                        response.errorMessage == CustomErrorMessage.AUTH_LOGIN_NOT_AUTHENTICATED.message
-                    ) {
-                        showCustomToast(response.errorMessage)
-                    } else if (
-                        response.errorMessage == CustomErrorMessage.MEMBER_NOT_FOUND.message
-                    ) {
-                        showCustomToast("해당 계정은 회원가입이 필요합니다.")
-                    }
-                    Log.d("AuthFragment", "FAIL: ${response.errorMessage}")
-
-                }
-                Status.ERROR -> {
-                    dismissLoading()
-                    showCustomToast(response.errorMessage ?: "로그인 실패.")
-                    Log.d("AuthFragment", "ERROR: ${response.errorMessage}")
-                }
-                else -> {
-                    Log.d("AuthFragment", "Unknown status: ${response.status}")
+        setupBaseObserver(
+            liveData = loginViewModel.authLoginResponse,
+            onSuccess = {
+                Log.d("AuthFragment", "SUCCESS: ${it.tokenIssue.accessToken}")
+            },
+            onError = {
+                if (it.errorMessage == CustomErrorMessage.AUTH_LOGIN_NOT_AUTHENTICATED.message) {
+                    showCustomToast(it.errorMessage)
+                } else if (it.errorMessage == CustomErrorMessage.MEMBER_NOT_FOUND.message) {
+                    showCustomToast("해당 계정은 회원가입이 필요합니다.")
+                } else {
+                    showCustomToast(it.errorMessage ?: "로그인 실패.")
                 }
             }
-        }
+        )
     }
 
     private fun setStatusMemberExistence() {
-        loginViewModel.memberExistenceResponse.observe(viewLifecycleOwner) { response ->
-            when (response.status) {
-                Status.LOADING -> {
-                    showLoading(requireContext())
-                }
-                Status.SUCCESS -> {
-                    dismissLoading()
-                    Log.d("AuthFragment", "SUCCESS: ${response.data?.isExist}")
-                    if (response.data?.isExist == true) {
-                        /* 이미 회원가입 되어 있는 경우 */
-                        email?.let { email ->
-                            loginType?.let { loginType ->
-                                login(email, BuildConfig.GOOGLE_LOGIN_PASSWORD, loginType)
-                            }
+        setupBaseObserver(
+            liveData = loginViewModel.memberExistenceResponse,
+            onSuccess = {
+                if (it.isExist == true) {
+                    // 이미 회원가입되어 있는 경우 -> 로그인 처리
+                    email?.let { email ->
+                        loginType?.let { loginType ->
+                            login(email, BuildConfig.GOOGLE_LOGIN_PASSWORD, loginType)
                         }
-                    } else {
-                        /* 회원 가입이 안되어 있는 경우 */
-
                     }
+                } else {
+                    // 회원가입이 안되어 있는 경우 -> 회원가입 처리
                 }
-                Status.FAIL -> {
-                    dismissLoading()
-                    Log.d("AuthFragment", "FAIL: ${response.errorMessage}")
-                }
-                Status.ERROR -> {
-                    dismissLoading()
-                    showCustomToast(response.errorMessage ?: "로그인 타입이 일치하지 않습니다.")
-                    Log.d("AuthFragment", "ERROR: ${response.errorMessage}")
-                }
-                else -> {
-                    Log.d("AuthFragment", "Unknown status: ${response.status}")
-                }
+            },
+            onError = {
+                showCustomToast(it.errorMessage ?: "로그인 타입이 일치하지 않습니다.")
+                Log.d("AuthFragment", "ERROR: ${it.errorMessage}")
             }
-        }
+        )
     }
 
     private fun setupButton() {

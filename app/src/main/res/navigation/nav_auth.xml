@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_auth"
+    app:startDestination="@id/nav_login_fragment">
+
+
+    <fragment
+        android:id="@+id/nav_login_fragment"
+        android:name="com.betterlife.antifragile.presentation.ui.auth.LoginFragment"
+        android:label="LoginFragment">
+        <action
+            android:id="@+id/action_nav_login_fragment_to_nav_terms_fragment"
+            app:destination="@id/nav_terms_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_terms_fragment"
+        android:name="com.betterlife.antifragile.presentation.ui.auth.TermsFragment"
+        android:label="fragment_terms"
+        tools:layout="@layout/fragment_terms">
+        <action
+            android:id="@+id/action_nav_terms_fragment_to_nav_profile_edit_fragment"
+            app:destination="@id/nav_profile_edit_fragment" />
+
+        <argument
+            android:name="email"
+            app:argType="string" />
+        <argument
+            android:name="loginType"
+            app:argType="com.betterlife.antifragile.data.model.enums.LoginType" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_profile_edit_fragment"
+        android:name="com.betterlife.antifragile.presentation.ui.auth.ProfileEditFragment"
+        android:label="ProfileEditFragment">
+        <argument
+            android:name="email"
+            app:argType="string" />
+        <argument
+            android:name="loginType"
+            app:argType="com.betterlife.antifragile.data.model.enums.LoginType" />
+    </fragment>
+
+</navigation>
