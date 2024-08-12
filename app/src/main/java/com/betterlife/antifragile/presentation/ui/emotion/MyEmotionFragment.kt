@@ -1,16 +1,12 @@
 package com.betterlife.antifragile.presentation.ui.emotion
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
-import com.betterlife.antifragile.config.RetrofitInterface
 import com.betterlife.antifragile.data.model.base.CustomErrorMessage
-import com.betterlife.antifragile.data.model.base.Status
 import com.betterlife.antifragile.data.model.common.Emotion
-import com.betterlife.antifragile.data.repository.DiaryAnalysisRepository
 import com.betterlife.antifragile.databinding.FragmentMyEmotionBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.util.Constants
