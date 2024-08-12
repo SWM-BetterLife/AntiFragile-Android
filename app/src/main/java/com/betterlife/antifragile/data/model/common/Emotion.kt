@@ -26,6 +26,7 @@ enum class Emotion(val toKorean: String, val bgRes: Int) {
     }
 
     companion object {
+        @JvmStatic
         fun fromString(value: String?): Emotion {
             return if (value == null) {
                 ERROR

@@ -51,11 +51,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     }
 
     private fun setupViewModel() {
-        val diaryDao = DiaryDatabase.getDatabase(applicationContext).diaryDao()
-        val token = Constants.TOKEN
-        val diaryAnalysisApiService = RetrofitInterface.createDiaryAnalysisApiService(token)
-        val calendarRepository = CalendarRepository(diaryDao, diaryAnalysisApiService)
-        val factory = DiaryCalendarViewModelFactory(calendarRepository)
+        val factory = DiaryCalendarViewModelFactory(this, Constants.TOKEN)
         diaryCalendarViewModel = ViewModelProvider(this, factory)[DiaryCalendarViewModel::class.java]
     }
 

@@ -40,7 +40,9 @@ class EmotionSelectAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EmotionViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_emotion, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(
+            R.layout.item_emotion, parent, false
+        )
         return EmotionViewHolder(view)
     }
 

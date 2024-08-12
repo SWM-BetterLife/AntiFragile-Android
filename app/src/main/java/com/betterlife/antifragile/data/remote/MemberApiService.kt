@@ -5,6 +5,7 @@ import com.betterlife.antifragile.data.model.enums.LoginType
 import com.betterlife.antifragile.data.model.member.response.MemberDetailResponse
 import com.betterlife.antifragile.data.model.member.response.MemberExistenceResponse
 import com.betterlife.antifragile.data.model.member.response.MemberProfileModifyResponse
+import com.betterlife.antifragile.data.model.member.response.MemberRemainNumberResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -27,6 +28,9 @@ interface MemberApiService {
         @Part profileImgFile: MultipartBody.Part? = null,
         @Part("profileModifyRequest") profileModifyRequest: RequestBody
     ): Response<BaseResponse<MemberProfileModifyResponse>>
+
+    @GET("/members/remain-recommend-number")
+    suspend fun getRemainRecommendNumber(): Response<BaseResponse<MemberRemainNumberResponse>>
 
     @GET("/members/existence")
     suspend fun checkMemberExistence(
