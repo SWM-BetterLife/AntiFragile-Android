@@ -20,7 +20,6 @@ android {
         dataBinding = true
         viewBinding = true
         buildConfig = true
-        buildConfig = true
     }
 
     defaultConfig {
@@ -96,6 +95,7 @@ dependencies {
     implementation("androidx.room:room-ktx:$roomVersion")
 
     // Coroutine
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
     // lifecycle
@@ -111,4 +111,8 @@ dependencies {
     implementation("androidx.credentials:credentials:1.3.0-alpha01")
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0-alpha01")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.0")
+
+    // llm-mediapipe
+    implementation("com.google.mediapipe:tasks-genai:0.10.14")
+
 }

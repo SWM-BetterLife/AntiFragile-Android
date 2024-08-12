@@ -13,6 +13,7 @@ import kotlinx.coroutines.withContext
 
 class DiaryViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: DiaryRepository
+    //todo: LLMRepository 추가
     init {
         val diaryDao = DiaryDatabase.getDatabase(application).diaryDao()
         repository = DiaryRepository(diaryDao)

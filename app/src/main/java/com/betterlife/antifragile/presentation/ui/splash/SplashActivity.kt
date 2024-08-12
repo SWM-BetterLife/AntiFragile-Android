@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import com.betterlife.antifragile.R
+import com.betterlife.antifragile.config.LLMTask
 import com.betterlife.antifragile.presentation.ui.auth.AuthActivity
 
 @SuppressLint("CustomSplashScreen")
@@ -15,6 +16,9 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
+
+        /* Create LLM Task Instance */
+        LLMTask.getInstance(applicationContext)
 
         Handler(Looper.getMainLooper()).postDelayed({
 
