@@ -223,6 +223,18 @@
         android:label="ContentViewComplete"
         tools:layout="@layout/fragment_content_view_complete">
 
+        <action
+            android:id="@+id/action_nav_content_view_complete_to_nav_recommend_content"
+            app:destination="@id/nav_recommend_content" />
+
+        <action
+            android:id="@+id/action_nav_content_view_complete_to_nav_text_diary_detail"
+            app:destination="@id/nav_text_diary_detail" />
+
+        <action
+            android:id="@+id/action_nav_content_view_complete_to_nav_question_diary_detail"
+            app:destination="@id/nav_question_diary_detail" />
+
         <argument
             android:name="diaryDate"
             app:argType="string" />
