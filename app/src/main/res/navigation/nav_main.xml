@@ -59,7 +59,11 @@
     <fragment
         android:id="@+id/nav_recommend_content"
         android:name="com.betterlife.antifragile.presentation.ui.content.RecommendContentFragment"
-        android:label="RecommendContent">
+        android:label="ContentRecommend"
+        tools:layout="@layout/fragment_content">
+        <action
+            android:id="@+id/action_contentRecommendFragment_to_contentDetailFragment"
+            app:destination="@id/nav_content_detail"/>
         <argument
             android:name="diaryDate"
             app:argType="string" />
@@ -191,8 +195,7 @@
         tools:layout="@layout/fragment_content">
         <action
             android:id="@+id/action_contentFragment_to_contentDetailFragment"
-            app:destination="@id/nav_content_detail"
-            app:popUpTo="@id/nav_content" />
+            app:destination="@id/nav_content_detail"/>
         <argument
             android:name="contentId"
             app:argType="string" />

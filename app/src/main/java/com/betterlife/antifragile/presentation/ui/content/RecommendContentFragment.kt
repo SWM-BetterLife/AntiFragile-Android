@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.databinding.FragmentRecommendContentBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
@@ -12,6 +14,7 @@ import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentRecom
 import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentRecommendViewModelFactory
 import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
+import com.betterlife.antifragile.presentation.util.DateUtil
 import com.betterlife.antifragile.presentation.util.RecommendDialogUtil
 import java.time.LocalDate
 
@@ -20,18 +23,21 @@ class RecommendContentFragment : BaseFragment<FragmentRecommendContentBinding>(
 ) {
 
     private lateinit var contentRecommendViewModel: ContentRecommendViewModel
+    private lateinit var contentAdapter: ContentAdapter
+    private lateinit var diaryDateString: String
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setupViewModel()
         setupObservers()
+        setupRecyclerView()
 
-        val diaryDateString = arguments?.getString("diaryDate")
+        diaryDateString = arguments?.getString("diaryDate").toString()
         val isNewDiary = arguments?.getBoolean("isNewDiary") ?: false
         val feedback = arguments?.getString("feedback")
 
-        val diaryDate = diaryDateString?.let { LocalDate.parse(it) }
+        val diaryDate = diaryDateString.let { LocalDate.parse(it) }
 
         // 로직 구성
         diaryDate?.let { date ->
@@ -57,8 +63,34 @@ class RecommendContentFragment : BaseFragment<FragmentRecommendContentBinding>(
         }
     }
 
+    private fun setupRecyclerView() {
+        contentAdapter = ContentAdapter(emptyList()) { content ->
+            val action = RecommendContentFragmentDirections.
+                actionContentRecommendFragmentToContentDetailFragment(content.id, diaryDateString)
+            findNavController().navigate(action)
+        }
+        binding.rvContentList.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = contentAdapter
+        }
+    }
+
     private fun setupObservers() {
-        // TODO: 추천 & 재추천 & 조회 API 호출 결과 처리
+        setupBaseObserver(
+            liveData = contentRecommendViewModel.contentResponse,
+            onSuccess = { contentListResponse ->
+                contentAdapter = ContentAdapter(contentListResponse.contents) { content ->
+                    val action = RecommendContentFragmentDirections.
+                        actionContentRecommendFragmentToContentDetailFragment(content.id, diaryDateString)
+                    findNavController().navigate(action)
+                }
+                binding.rvContentList.adapter = contentAdapter
+                binding.tvDate.text = DateUtil.convertDateToFullFormat(diaryDateString)
+            },
+            onError = {
+                Log.e("ContentFragment", "Error: ${it.errorMessage}")
+            }
+        )
         setupBaseObserver(
             liveData = contentRecommendViewModel.remainRecommendNumber,
             onSuccess = { response ->
