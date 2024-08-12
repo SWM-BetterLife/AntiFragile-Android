@@ -35,10 +35,6 @@ class MyEmotionFragment : BaseFragment<FragmentMyEmotionBinding>(
         toolbar.apply {
             reset()
             setMainTitle("나의 감정")
-            showCustomButton(R.drawable.btn_alarm) {
-                // TODO: 알림 버튼 클릭 처리
-                showCustomToast("알림 버튼 클릭")
-            }
             showLine()
         }
     }
