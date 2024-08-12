@@ -107,8 +107,10 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                     Log.d("AuthFragment", "SUCCESS: ${response.data?.isExist}")
                     if (response.data?.isExist == true) {
                         /* 이미 회원가입 되어 있는 경우 */
-                        email?.let {
-                            loginType?.let { it2 -> login(it, BuildConfig.GOOGLE_LOGIN_PASSWORD, it2) }
+                        email?.let { email ->
+                            loginType?.let { loginType ->
+                                login(email, BuildConfig.GOOGLE_LOGIN_PASSWORD, loginType)
+                            }
                         }
                     } else {
                         /* 회원 가입이 안되어 있는 경우 */
