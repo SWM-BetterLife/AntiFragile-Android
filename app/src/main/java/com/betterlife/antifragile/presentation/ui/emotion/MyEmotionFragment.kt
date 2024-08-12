@@ -14,7 +14,7 @@ import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.DateUtil.getTodayDate
-import com.betterlife.antifragile.presentation.util.ImageUtil.loadImage
+import com.betterlife.antifragile.presentation.util.ImageUtil.setImage
 
 class MyEmotionFragment : BaseFragment<FragmentMyEmotionBinding>(
     R.layout.fragment_my_emotion
@@ -62,7 +62,7 @@ class MyEmotionFragment : BaseFragment<FragmentMyEmotionBinding>(
                     dismissLoading()
                     setupEmotionVisibility(true)
                     binding.apply {
-                        ivEmoticon.loadImage(response?.data?.emoticon?.imgUrl)
+                        ivEmoticon.setImage(response?.data?.emoticon?.imgUrl)
                         tvEmotion.text = response.data?.emotions?.joinToString(", ")
                     }
                 }

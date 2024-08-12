@@ -7,15 +7,11 @@ import androidx.lifecycle.viewModelScope
 import com.betterlife.antifragile.data.model.base.BaseResponse
 import com.betterlife.antifragile.data.model.base.Status
 import com.betterlife.antifragile.data.model.diary.TextDiaryDetail
-import com.betterlife.antifragile.data.repository.DiaryAnalysisRepository
-import com.betterlife.antifragile.data.repository.DiaryRepository
-import kotlinx.coroutines.Dispatchers
+import com.betterlife.antifragile.data.repository.TextDiaryRepository
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class TextDiaryViewModel(
-    private val diaryRepository: DiaryRepository,
-    private val diaryAnalysisRepository: DiaryAnalysisRepository
+    private val textDiaryRepository: TextDiaryRepository
 ) : ViewModel() {
 
     private val _textDiaryDetail = MutableLiveData<BaseResponse<TextDiaryDetail>>()
@@ -29,48 +25,8 @@ class TextDiaryViewModel(
     fun getTextDiaryDetail(id: Int, date: String) {
         viewModelScope.launch {
             _textDiaryDetail.value = BaseResponse(Status.LOADING, null, null)
-            _textDiaryDetail.value = getTextDiaryDetailData(id, date)
-        }
-    }
-
-    private suspend fun getTextDiaryDetailData(
-        id: Int, date: String
-    ): BaseResponse<TextDiaryDetail> = withContext(Dispatchers.IO) {
-        return@withContext try {
-            val textDiary = diaryRepository.getTextDiaryById(id)
-            val diaryAnalysisResponse = diaryAnalysisRepository.getDailyDiaryAnalysis(date)
-
-            if (textDiary == null) {
-                BaseResponse(Status.ERROR, "Not Existed diaryId", null)
-            } else {
-                val combinedData = TextDiaryDetail(
-                    id = textDiary.id,
-                    date = textDiary.date,
-                    content = textDiary.content,
-                    emotions = diaryAnalysisResponse.data?.emotions,
-                    emoticonInfo = diaryAnalysisResponse.data?.emoticon
-                )
-
-                if (diaryAnalysisResponse.status == Status.SUCCESS) {
-                    BaseResponse(
-                        Status.SUCCESS,
-                        null,
-                        combinedData
-                    )
-                } else {
-                    BaseResponse(
-                        diaryAnalysisResponse.status,
-                        diaryAnalysisResponse.errorMessage,
-                        combinedData
-                    )
-                }
-            }
-        } catch (e: Exception) {
-            BaseResponse(
-                Status.ERROR,
-                e.message ?: "Unknown error occurred",
-                null
-            )
+            val response = textDiaryRepository.getTextDiaryDetailData(id, date)
+            _textDiaryDetail.postValue(response)
         }
     }
 }
