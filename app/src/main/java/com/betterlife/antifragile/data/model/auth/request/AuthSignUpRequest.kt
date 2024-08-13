@@ -7,7 +7,7 @@ data class AuthSignUpRequest(
     val email: String,
     val loginType: LoginType,
     val nickname: String,
-    val age: Int,
+    val birthDate: String,
     val gender: Gender,
     val job: String
 )

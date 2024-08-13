@@ -288,24 +288,20 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
     }
 
     private fun convertToSignUpRequest(): AuthSignUpRequest {
-        val birthday = binding.etBirthday.text.toString()
-        val age = calculateKoreanAge(birthday)
         return AuthSignUpRequest(
             email = email,
             loginType = loginType,
             nickname = binding.etNickname.text.toString(),
-            age = age,
+            birthDate = binding.etBirthday.text.toString(),
             gender = gender,
             job = binding.etJob.text.toString()
         )
     }
 
     private fun convertToProfileModifyRequest(): MemberProfileModifyRequest {
-        val birthday = binding.etBirthday.text.toString()
-        val age = calculateKoreanAge(birthday)
         return MemberProfileModifyRequest(
             nickname = binding.etNickname.text.toString(),
-            age = age,
+            birthDate = binding.etBirthday.text.toString(),
             gender = gender,
             job = binding.etJob.text.toString()
         )
