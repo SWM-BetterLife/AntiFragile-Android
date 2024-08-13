@@ -3,22 +3,16 @@ package com.betterlife.antifragile.presentation.ui.content
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.betterlife.antifragile.R
-import com.betterlife.antifragile.config.RetrofitInterface
-import com.betterlife.antifragile.data.model.base.Status
-import com.betterlife.antifragile.data.repository.ContentRepository
 import com.betterlife.antifragile.databinding.FragmentContentBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentViewModel
 import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentViewModelFactory
-import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
-import com.betterlife.antifragile.presentation.util.DateUtil
-import com.betterlife.antifragile.presentation.util.NumberUtil
+import com.betterlife.antifragile.presentation.util.TokenManager.getAccessToken
 import java.time.LocalDate
 
 class ContentFragment : BaseFragment<FragmentContentBinding>(R.layout.fragment_content) {
@@ -53,8 +47,8 @@ class ContentFragment : BaseFragment<FragmentContentBinding>(R.layout.fragment_c
     }
 
     private fun setupViewModel() {
-        val factory = ContentViewModelFactory(Constants.TOKEN)
-        contentViewModel = ViewModelProvider(this, factory)[ContentViewModel::class.java]
+        val factory = ContentViewModelFactory(getAccessToken(requireContext())!!)
+        contentViewModel = factory.create(ContentViewModel::class.java)
     }
 
     private fun setupObservers() {

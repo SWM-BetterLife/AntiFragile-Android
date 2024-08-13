@@ -2,7 +2,6 @@ package com.betterlife.antifragile.presentation.ui.content
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.data.model.diary.DiaryType
@@ -10,9 +9,9 @@ import com.betterlife.antifragile.databinding.FragmentContentViewCompleteBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentViewCompleteViewModel
 import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentViewCompleteViewModelFactory
-import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.RecommendDialogUtil
+import com.betterlife.antifragile.presentation.util.TokenManager.getAccessToken
 
 class ContentViewCompleteFragment : BaseFragment<FragmentContentViewCompleteBinding>(
     R.layout.fragment_content_view_complete
@@ -45,9 +44,8 @@ class ContentViewCompleteFragment : BaseFragment<FragmentContentViewCompleteBind
     }
 
     private fun setupViewModel() {
-        val factory = ContentViewCompleteViewModelFactory(requireContext(), Constants.TOKEN)
-        contentViewCompleteViewModel =
-            ViewModelProvider(this, factory)[ContentViewCompleteViewModel::class.java]
+        val factory = ContentViewCompleteViewModelFactory(requireContext(), getAccessToken(requireContext())!!)
+        contentViewCompleteViewModel = factory.create(ContentViewCompleteViewModel::class.java)
     }
 
     private fun setupObservers() {

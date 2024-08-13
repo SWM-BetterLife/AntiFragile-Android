@@ -3,7 +3,6 @@ package com.betterlife.antifragile.presentation.ui.content
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.betterlife.antifragile.R
@@ -12,10 +11,10 @@ import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentRecommendViewModel
 import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentRecommendViewModelFactory
 import com.betterlife.antifragile.presentation.ui.main.MainActivity
-import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.DateUtil
 import com.betterlife.antifragile.presentation.util.RecommendDialogUtil
+import com.betterlife.antifragile.presentation.util.TokenManager.getAccessToken
 import java.time.LocalDate
 
 class ContentRecommendFragment : BaseFragment<FragmentContentRecommendBinding>(
@@ -137,8 +136,7 @@ class ContentRecommendFragment : BaseFragment<FragmentContentRecommendBinding>(
     }
 
     private fun setupViewModel() {
-        val factory = ContentRecommendViewModelFactory(Constants.TOKEN)
-        contentRecommendViewModel =
-            ViewModelProvider(this, factory)[ContentRecommendViewModel::class.java]
+        val factory = ContentRecommendViewModelFactory(getAccessToken(requireContext())!!)
+        contentRecommendViewModel = factory.create(ContentRecommendViewModel::class.java)
     }
 }

@@ -4,20 +4,16 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.betterlife.antifragile.NavMainDirections
 import com.betterlife.antifragile.R
-import com.betterlife.antifragile.config.RetrofitInterface
-import com.betterlife.antifragile.data.local.DiaryDatabase
-import com.betterlife.antifragile.data.repository.CalendarRepository
 import com.betterlife.antifragile.databinding.ActivityMainBinding
 import com.betterlife.antifragile.presentation.base.BaseActivity
 import com.betterlife.antifragile.presentation.ui.calendar.viewmodel.DiaryCalendarViewModel
 import com.betterlife.antifragile.presentation.ui.calendar.viewmodel.DiaryCalendarViewModelFactory
-import com.betterlife.antifragile.presentation.util.Constants
+import com.betterlife.antifragile.presentation.util.TokenManager.getAccessToken
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -51,8 +47,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     }
 
     private fun setupViewModel() {
-        val factory = DiaryCalendarViewModelFactory(this, Constants.TOKEN)
-        diaryCalendarViewModel = ViewModelProvider(this, factory)[DiaryCalendarViewModel::class.java]
+        val factory = DiaryCalendarViewModelFactory(this, getAccessToken(this)!!)
+        diaryCalendarViewModel = factory.create(DiaryCalendarViewModel::class.java)
     }
 
     private fun setupBottomNavigation() {

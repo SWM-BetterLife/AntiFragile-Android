@@ -2,7 +2,6 @@ package com.betterlife.antifragile.presentation.ui.diary
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.betterlife.antifragile.R
@@ -13,8 +12,8 @@ import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.diary.adapter.EmotionSelectAdapter
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.EmotionSelectViewModel
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.EmotionSelectViewModelFactory
-import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
+import com.betterlife.antifragile.presentation.util.TokenManager.getAccessToken
 
 class EmotionSelectFragment : BaseFragment<FragmentEmotionSelectBinding>(
     R.layout.fragment_emotion_select
@@ -55,9 +54,8 @@ class EmotionSelectFragment : BaseFragment<FragmentEmotionSelectBinding>(
     }
 
     private fun setupViewModel() {
-        val factory = EmotionSelectViewModelFactory(Constants.TOKEN)
-        emotionSelectViewModel =
-            ViewModelProvider(this, factory)[EmotionSelectViewModel::class.java]
+        val factory = EmotionSelectViewModelFactory(getAccessToken(requireContext())!!)
+        emotionSelectViewModel = factory.create(EmotionSelectViewModel::class.java)
     }
 
     private fun setupRecyclerView() {
