@@ -54,7 +54,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
     }
 
     private fun setupViewModel() {
-        val factory = LoginViewModelFactory(Constants.TOKEN)
+        val factory = LoginViewModelFactory()
         loginViewModel = factory.create(LoginViewModel::class.java)
     }
 
