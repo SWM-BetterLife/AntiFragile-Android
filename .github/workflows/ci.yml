@@ -49,7 +49,7 @@ jobs:
 
     - name: Create gradle.properties with API key
       run: |
-        echo "${{ secrets.GOOGLE_API_KEY }}" >> ~/.gradle/gradle.properties
+        echo "${{ secrets.GOOGLE_API_KEY }}" >> ~/gradle/local.properties
 
 
     # Gradle을 사용하여 프로젝트 빌드
