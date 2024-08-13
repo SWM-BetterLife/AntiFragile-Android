@@ -14,8 +14,8 @@
             android:id="@+id/action_nav_calendar_to_nav_diary_type_select"
             app:destination="@id/nav_diary_type_select"/>
         <action
-            android:id="@+id/action_nav_calendar_to_nav_recommend_content"
-            app:destination="@id/nav_recommend_content"/>
+            android:id="@+id/action_nav_calendar_to_nav_content_recommend"
+            app:destination="@id/nav_content_recommend"/>
         <action
             android:id="@+id/action_nav_calendar_to_nav_text_diary_detail"
             app:destination="@id/nav_text_diary_detail"/>
@@ -32,8 +32,9 @@
             android:id="@+id/action_nav_text_diary_detail_to_nav_text_diary_create"
             app:destination="@id/nav_text_diary_create"/>
         <action
-            android:id="@+id/action_nav_text_diary_detail_to_nav_recommend_content"
-            app:destination="@id/nav_recommend_content"/>
+            android:id="@+id/action_nav_text_diary_detail_to_nav_content_recommend"
+            app:destination="@id/nav_content_recommend">
+   </action>
         <argument
             android:name="diaryId"
             app:argType="integer"
@@ -57,9 +58,13 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_recommend_content"
-        android:name="com.betterlife.antifragile.presentation.ui.content.RecommendContentFragment"
-        android:label="RecommendContent">
+        android:id="@+id/nav_content_recommend"
+        android:name="com.betterlife.antifragile.presentation.ui.content.ContentRecommendFragment"
+        android:label="ContentRecommend"
+        tools:layout="@layout/fragment_content">
+        <action
+            android:id="@+id/action_content_recommend_fragment_to_content_detail_fragment"
+            app:destination="@id/nav_content_detail"/>
         <argument
             android:name="diaryDate"
             app:argType="string" />
@@ -70,6 +75,9 @@
             android:name="feedback"
             app:argType="string"
             app:nullable="true" />
+        <argument
+            android:name="isBackActive"
+            app:argType="boolean" />
     </fragment>
 
     <fragment
@@ -133,8 +141,8 @@
             android:id="@+id/action_nav_emoticon_recommend_to_nav_emotion_select"
             app:destination="@id/nav_emotion_select" />
         <action
-            android:id="@+id/action_nav_emoticon_Recommend_to_nav_recommend_content"
-            app:destination="@id/nav_recommend_content" />
+            android:id="@+id/action_nav_emoticon_Recommend_to_nav_content_recommend"
+            app:destination="@id/nav_content_recommend" />
         <argument
             android:name="diaryAnalysisData"
             app:argType="com.betterlife.antifragile.data.model.diary.llm.DiaryAnalysisData" />
@@ -188,7 +196,56 @@
         android:id="@+id/nav_content"
         android:name="com.betterlife.antifragile.presentation.ui.content.ContentFragment"
         android:label="Content"
-        tools:layout="@layout/fragment_content"/>
+        tools:layout="@layout/fragment_content">
+        <action
+            android:id="@+id/action_content_fragment_to_content_detail_fragment"
+            app:destination="@id/nav_content_detail"/>
+        <argument
+            android:name="contentId"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_content_detail"
+        android:name="com.betterlife.antifragile.presentation.ui.content.ContentDetailFragment"
+        android:label="ContentDetail"
+        tools:layout="@layout/fragment_content_detail">
+
+        <action
+            android:id="@+id/action_nav_content_detail_to_nav_content_view_complete"
+            app:destination="@id/nav_content_view_complete"/>
+
+        <argument
+            android:name="contentId"
+            app:argType="string" />
+        <argument
+            android:name="diaryDate"
+            app:argType="string" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_content_view_complete"
+        android:name="com.betterlife.antifragile.presentation.ui.content.ContentViewCompleteFragment"
+        android:label="ContentViewComplete"
+        tools:layout="@layout/fragment_content_view_complete">
+
+        <action
+            android:id="@+id/action_nav_content_view_complete_to_nav_content_recommend"
+            app:destination="@id/nav_content_recommend" />
+
+        <action
+            android:id="@+id/action_nav_content_view_complete_to_nav_text_diary_detail"
+            app:destination="@id/nav_text_diary_detail" />
+
+        <action
+            android:id="@+id/action_nav_content_view_complete_to_nav_question_diary_detail"
+            app:destination="@id/nav_question_diary_detail" />
+
+        <argument
+            android:name="diaryDate"
+            app:argType="string" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_my_page"
