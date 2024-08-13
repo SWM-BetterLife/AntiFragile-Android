@@ -62,7 +62,7 @@
         android:label="ContentRecommend"
         tools:layout="@layout/fragment_content">
         <action
-            android:id="@+id/action_contentRecommendFragment_to_contentDetailFragment"
+            android:id="@+id/action_content_recommend_fragment_to_content_detail_fragment"
             app:destination="@id/nav_content_detail"/>
         <argument
             android:name="diaryDate"
@@ -194,7 +194,7 @@
         android:label="Content"
         tools:layout="@layout/fragment_content">
         <action
-            android:id="@+id/action_contentFragment_to_contentDetailFragment"
+            android:id="@+id/action_content_fragment_to_content_detail_fragment"
             app:destination="@id/nav_content_detail"/>
         <argument
             android:name="contentId"

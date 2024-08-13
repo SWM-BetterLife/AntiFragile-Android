@@ -29,6 +29,8 @@ class ContentRecommendFragment : BaseFragment<FragmentContentRecommendBinding>(
     private var isNewDiary: Boolean = false
     private var feedback: String? = null
 
+    private var hasShownRecommendDialog = false
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -97,15 +99,18 @@ class ContentRecommendFragment : BaseFragment<FragmentContentRecommendBinding>(
         setupBaseObserver(
             liveData = contentRecommendViewModel.remainRecommendNumber,
             onSuccess = { response ->
-                RecommendDialogUtil.showRecommendDialogs(
-                    fragment = this,
-                    remainNumber = response.remainNumber,
-                    onLeftButtonClicked = { },
-                    onRightButtonFeedbackProvided = { feedback ->
-                        contentRecommendViewModel.getRecommendContents(feedback, diaryDate)
-                    },
-                    onExcessRemainNumber = { }
-                )
+                if (!hasShownRecommendDialog) {
+                    RecommendDialogUtil.showRecommendDialogs(
+                        fragment = this,
+                        remainNumber = response.remainNumber,
+                        onLeftButtonClicked = { },
+                        onRightButtonFeedbackProvided = { feedback ->
+                            contentRecommendViewModel.getRecommendContents(feedback, diaryDate)
+                        },
+                        onExcessRemainNumber = { }
+                    )
+                    hasShownRecommendDialog = true // 다이얼로그를 띄운 후 상태 저장
+                }
             },
             onError = {
                 showCustomToast(it.errorMessage ?: "남은 추천 횟수 조회에 실패했습니다.")
@@ -121,6 +126,7 @@ class ContentRecommendFragment : BaseFragment<FragmentContentRecommendBinding>(
                 findNavController().popBackStack()
             }
             showCustomButton(R.drawable.btn_re) {
+                hasShownRecommendDialog = false
                 contentRecommendViewModel.getRemainRecommendNumber()
             }
         }
