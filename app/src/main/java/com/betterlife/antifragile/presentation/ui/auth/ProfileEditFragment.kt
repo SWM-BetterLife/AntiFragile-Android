@@ -5,6 +5,8 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
@@ -109,12 +111,12 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
         setupBaseObserver(
             liveData = profileEditViewModel.authSignUpResponse,
             onSuccess = {
-                // TODO: 회원가입 성공 뷰 띄우기
                 saveTokens(requireContext(), it.tokenIssue.accessToken, it.tokenIssue.refreshToken)
-                val intent = Intent(requireContext(), MainActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-                startActivity(intent)
-                requireActivity().finish()
+                binding.tvSuccessMessage.visibility = View.VISIBLE
+                binding.tvSuccessMessage.text = "회원가입이 완료되었습니다"
+                Handler(Looper.getMainLooper()).postDelayed({
+                    navigateMainActivity()
+                }, 500)
             },
             onError = {
                 Log.d("ProfileEditFragment", "authSignUpResponse error: $it")
@@ -124,13 +126,23 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
         setupBaseObserver(
             liveData = profileEditViewModel.profileModifyResponse,
             onSuccess = {
-                // TODO: 프로필 수정 성공 뷰 띄우기
-                findNavController().popBackStack()
+                binding.tvSuccessMessage.visibility = View.VISIBLE
+                binding.tvSuccessMessage.text = "프로필 수정이 완료되었습니다"
+                Handler(Looper.getMainLooper()).postDelayed({
+                    findNavController().popBackStack()
+                }, 500)
             },
             onError = {
                 Log.d("ProfileEditFragment", "profileModifyResponse error: $it")
             }
         )
+    }
+
+    private fun navigateMainActivity() {
+        val intent = Intent(requireContext(), MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+        requireActivity().finish()
     }
 
     private fun setupTextWatchers() {
