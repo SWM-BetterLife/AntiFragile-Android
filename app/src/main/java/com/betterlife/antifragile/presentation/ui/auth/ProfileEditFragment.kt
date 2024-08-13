@@ -24,6 +24,7 @@ import com.betterlife.antifragile.presentation.ui.auth.viewmodel.ProfileEditView
 import com.betterlife.antifragile.presentation.ui.auth.viewmodel.ProfileEditViewModelFactory
 import com.betterlife.antifragile.presentation.ui.main.MainActivity
 import com.betterlife.antifragile.presentation.util.CustomToolbar
+import com.betterlife.antifragile.presentation.util.DateUtil
 import com.betterlife.antifragile.presentation.util.PermissionUtil
 import com.betterlife.antifragile.presentation.util.TokenManager.getAccessToken
 import com.betterlife.antifragile.presentation.util.TokenManager.saveTokens
@@ -174,7 +175,7 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
                     return@setOnClickListener
                 }
                 val birthday = etBirthday.text.toString()
-                if (!isValidBirthdayFormat(birthday)) {
+                if (!DateUtil.isValidBirthday(birthday)) {
                     showCustomToast("생년월일을 정확히 입력해주세요(ex. 2000.01.01)")
                     return@setOnClickListener
                 }
@@ -241,11 +242,6 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
                 }
             }
         }
-    }
-
-    private fun isValidBirthdayFormat(birthday: String): Boolean {
-        val regex = Regex("""\d{4}\.\d{2}\.\d{2}""")
-        return regex.matches(birthday)
     }
 
     private fun convertToSignUpRequest(): AuthSignUpRequest {
