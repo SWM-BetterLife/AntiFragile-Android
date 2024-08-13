@@ -46,6 +46,8 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
     private var isNewMember: Boolean = false
     private var isCheckedNickname = false
     private var gender = Gender.MALE
+    // TODO: 중복 체크 api 수정되면 제거
+    private var originNickname = ""
 
     private val permissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -65,7 +67,7 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
         setupObservers()
         setupButtons()
         setupTextWatchers()
-        setupExistedDat()
+        setupExistedDate()
     }
 
     private fun setVariables() {
@@ -125,6 +127,7 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
                     gender = member.gender
                     updateGenderButton()
                     ivProfileImg.setImage(member.profileImgUrl)
+                    originNickname = member.nickname
                 }
             },
             onError = {
@@ -206,7 +209,7 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
     private fun setupButtons() {
         binding.apply {
             btnSave.setOnClickListener {
-                if (!isCheckedNickname) {
+                if (!isCheckedNickname && binding.etNickname.text.toString() != originNickname) {
                     showCustomToast("닉네임 중복 확인을 해주세요")
                     return@setOnClickListener
                 }
@@ -259,10 +262,12 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
             }
 
             btnMan.setOnClickListener {
+                gender = Gender.MALE
                 updateGenderButton()
             }
 
             btnWoman.setOnClickListener {
+                gender = Gender.FEMALE
                 updateGenderButton()
             }
         }
@@ -270,18 +275,16 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
 
     private fun updateGenderButton() {
         binding.apply {
-            if (gender == Gender.MALE) {
+            if (gender == Gender.FEMALE) {
                 btnMan.setBackgroundResource(R.drawable.btn_gender_left_inactive)
                 btnMan.setTextColor(resources.getColor(R.color.main_color))
                 btnWoman.setBackgroundResource(R.drawable.btn_gender_right_active)
                 btnWoman.setTextColor(resources.getColor(R.color.white))
-                gender = Gender.FEMALE
             } else {
                 btnMan.setBackgroundResource(R.drawable.btn_gender_left_active)
                 btnMan.setTextColor(resources.getColor(R.color.white))
                 btnWoman.setBackgroundResource(R.drawable.btn_gender_right_inactive)
                 btnWoman.setTextColor(resources.getColor(R.color.main_color))
-                gender = Gender.MALE
             }
         }
 
@@ -307,14 +310,7 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
         )
     }
 
-    private fun calculateKoreanAge(birthday: String): Int {
-        val currentYear = Calendar.getInstance().get(Calendar.YEAR)
-        val birthYear = birthday.substring(0, 4).toInt()
-
-        return currentYear - birthYear + 1
-    }
-
-    private fun setupExistedDat() {
+    private fun setupExistedDate() {
         if (!isNewMember) {
             profileEditViewModel.getMemberDetail()
         }
