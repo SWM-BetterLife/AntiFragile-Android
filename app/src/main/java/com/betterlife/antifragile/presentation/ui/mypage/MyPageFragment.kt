@@ -11,7 +11,6 @@ import com.betterlife.antifragile.data.model.enums.LoginType
 import com.betterlife.antifragile.databinding.FragmentMyPageBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.auth.AuthActivity
-import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.ImageUtil.setImage
 
@@ -37,7 +36,7 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
     }
 
     private fun setupViewModel() {
-        val factory = MyPageViewModelFactory(Constants.TOKEN)
+        val factory = MyPageViewModelFactory(requireContext())
         myPageViewModel =
             ViewModelProvider(this, factory)[MyPageViewModel::class.java]
     }
