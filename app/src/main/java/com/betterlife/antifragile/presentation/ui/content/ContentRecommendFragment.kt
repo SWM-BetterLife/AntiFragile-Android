@@ -11,6 +11,7 @@ import com.betterlife.antifragile.databinding.FragmentContentRecommendBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentRecommendViewModel
 import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentRecommendViewModelFactory
+import com.betterlife.antifragile.presentation.ui.main.MainActivity
 import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.DateUtil
@@ -61,6 +62,8 @@ class ContentRecommendFragment : BaseFragment<FragmentContentRecommendBinding>(
                 }
             }
         }
+
+        (activity as MainActivity).showBottomNavigation()
     }
 
     private fun setupRecyclerView() {
