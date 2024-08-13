@@ -39,6 +39,7 @@ class LLMTask(context: Context) {
     companion object {
         private const val MODEL_PATH = "/data/local/tmp/llm/gemma2b-cpu.bin"
 //        private const val MODEL_PATH = "/data/local/tmp/llm/gemma2b-finetuned-gpu.bin"
+//        private const val MODEL_PATH = "/data/local/tmp/llm/gemma-1.1-2b-it-cpu-int4.bin"
         private var instance: LLMTask? = null
         fun getInstance(context: Context): LLMTask {
             return if (instance != null) {
