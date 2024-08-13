@@ -4,12 +4,12 @@ import com.betterlife.antifragile.data.model.base.BaseResponse
 import com.betterlife.antifragile.data.model.enums.LoginType
 import com.betterlife.antifragile.data.model.member.request.MemberProfileModifyRequest
 import com.betterlife.antifragile.data.model.member.response.MemberDetailResponse
+import com.betterlife.antifragile.data.model.member.response.MemberMyPageResponse
 import com.betterlife.antifragile.data.model.member.response.MemberExistenceResponse
 import com.betterlife.antifragile.data.model.member.response.MemberProfileModifyResponse
 import com.betterlife.antifragile.data.model.member.response.MemberRemainNumberResponse
 import com.betterlife.antifragile.data.model.member.response.NicknameDuplicateResponse
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Multipart
@@ -22,6 +22,9 @@ import retrofit2.http.Query
  */
 interface MemberApiService {
     @GET("/members")
+    suspend fun getMemberMyPage(): Response<BaseResponse<MemberMyPageResponse>>
+
+    @GET("/members/detail")
     suspend fun getMemberDetail(): Response<BaseResponse<MemberDetailResponse>>
 
     @Multipart

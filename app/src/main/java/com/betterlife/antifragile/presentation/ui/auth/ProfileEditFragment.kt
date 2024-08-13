@@ -27,6 +27,7 @@ import com.betterlife.antifragile.presentation.ui.auth.viewmodel.ProfileEditView
 import com.betterlife.antifragile.presentation.ui.main.MainActivity
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.DateUtil
+import com.betterlife.antifragile.presentation.util.ImageUtil.setImage
 import com.betterlife.antifragile.presentation.util.PermissionUtil
 import com.betterlife.antifragile.presentation.util.TokenManager.getAccessToken
 import com.betterlife.antifragile.presentation.util.TokenManager.saveTokens
@@ -58,13 +59,13 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // TODO: 프로필 수정 시 기존 정보를 불러와서 화면에 표시
         setVariables()
         setupViewModel()
         setupHandler()
         setupObservers()
         setupButtons()
         setupTextWatchers()
+        setupExistedDat()
     }
 
     private fun setVariables() {
@@ -111,6 +112,23 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
             },
             onError = {
                 Log.d("ProfileEditFragment", "checkNicknameResponse error: $it")
+            }
+        )
+
+        setupBaseObserver(
+            liveData = profileEditViewModel.memberDetailResponse,
+            onSuccess = { member ->
+                binding.apply {
+                    etNickname.setText(member.nickname)
+                    etBirthday.setText(member.birthDate)
+                    etJob.setText(member.job)
+                    gender = member.gender
+                    updateGenderButton()
+                    ivProfileImg.setImage(member.profileImgUrl)
+                }
+            },
+            onError = {
+                Log.d("ProfileEditFragment", "memberDetailResponse error: $it")
             }
         )
 
@@ -241,25 +259,32 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
             }
 
             btnMan.setOnClickListener {
-                if (gender == Gender.FEMALE) {
-                    btnMan.setBackgroundResource(R.drawable.btn_gender_left_active)
-                    btnMan.setTextColor(resources.getColor(R.color.white))
-                    btnWoman.setBackgroundResource(R.drawable.btn_gender_right_inactive)
-                    btnWoman.setTextColor(resources.getColor(R.color.main_color))
-                    gender = Gender.MALE
-                }
+                updateGenderButton()
             }
 
             btnWoman.setOnClickListener {
-                if (gender == Gender.MALE) {
-                    btnMan.setBackgroundResource(R.drawable.btn_gender_left_inactive)
-                    btnMan.setTextColor(resources.getColor(R.color.main_color))
-                    btnWoman.setBackgroundResource(R.drawable.btn_gender_right_active)
-                    btnWoman.setTextColor(resources.getColor(R.color.white))
-                    gender = Gender.FEMALE
-                }
+                updateGenderButton()
             }
         }
+    }
+
+    private fun updateGenderButton() {
+        binding.apply {
+            if (gender == Gender.MALE) {
+                btnMan.setBackgroundResource(R.drawable.btn_gender_left_inactive)
+                btnMan.setTextColor(resources.getColor(R.color.main_color))
+                btnWoman.setBackgroundResource(R.drawable.btn_gender_right_active)
+                btnWoman.setTextColor(resources.getColor(R.color.white))
+                gender = Gender.FEMALE
+            } else {
+                btnMan.setBackgroundResource(R.drawable.btn_gender_left_active)
+                btnMan.setTextColor(resources.getColor(R.color.white))
+                btnWoman.setBackgroundResource(R.drawable.btn_gender_right_inactive)
+                btnWoman.setTextColor(resources.getColor(R.color.main_color))
+                gender = Gender.MALE
+            }
+        }
+
     }
 
     private fun convertToSignUpRequest(): AuthSignUpRequest {
@@ -291,6 +316,12 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
         val birthYear = birthday.substring(0, 4).toInt()
 
         return currentYear - birthYear + 1
+    }
+
+    private fun setupExistedDat() {
+        if (!isNewMember) {
+            profileEditViewModel.getMemberDetail()
+        }
     }
 
     override fun configureToolbar(toolbar: CustomToolbar) {
