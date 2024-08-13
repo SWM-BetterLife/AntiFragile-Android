@@ -47,6 +47,11 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
+    - name: Create gradle.properties with API key
+      run: |
+        echo "${{ secrets.GOOGLE_API_KEY }}" >> ~/.gradle/gradle.properties
+
+
     # Gradle을 사용하여 프로젝트 빌드
     - name: Build with Gradle 
       run: ./gradlew build
