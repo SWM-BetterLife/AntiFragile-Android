@@ -101,6 +101,13 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
             onSuccess = {
                 binding.apply {
                     if (it.isDuplicated) {
+                        // TODO: 중복 체크 api 수정되면 제거
+                        if (etNickname.text.toString() == originNickname) {
+                            tvNicknameDuplicateResult.visibility = View.VISIBLE
+                            tvNicknameDuplicateResult.text = "사용 가능한 닉네임입니다"
+                            tvNicknameDuplicateResult.setTextColor(resources.getColor(R.color.green))
+                            return@apply
+                        }
                         tvNicknameDuplicateResult.visibility = View.VISIBLE
                         tvNicknameDuplicateResult.text = "이미 사용중인 닉네임입니다"
                         tvNicknameDuplicateResult.setTextColor(resources.getColor(R.color.red))
