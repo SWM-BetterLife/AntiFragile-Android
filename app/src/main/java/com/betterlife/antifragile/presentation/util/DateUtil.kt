@@ -23,4 +23,11 @@ object DateUtil {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         return dateFormat.format(calendar.time)
     }
+
+    fun convertDateToFullFormat(date: String): String {
+        val inputDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val outputDateFormat = SimpleDateFormat("yyyy.MM.dd.EEEE", Locale.KOREA)
+        val parsedDate = inputDateFormat.parse(date)
+        return outputDateFormat.format(parsedDate as Date)
+    }
 }

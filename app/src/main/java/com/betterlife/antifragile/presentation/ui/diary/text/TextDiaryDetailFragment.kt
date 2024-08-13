@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
@@ -106,8 +107,8 @@ class TextDiaryDetailFragment: BaseFragment<FragmentTextDiaryDetailBinding>(
     private fun setupButton() {
         binding.btnMoveContent.setOnClickListener {
             val action =
-                TextDiaryDetailFragmentDirections.actionNavTextDiaryDetailToNavRecommendContent(
-                diaryDate, false, null
+                TextDiaryDetailFragmentDirections.actionNavTextDiaryDetailToNavContentRecommend(
+                diaryDate, false, null, true
             )
             findNavController().navigate(action)
         }
