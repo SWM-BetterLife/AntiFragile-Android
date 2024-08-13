@@ -69,4 +69,5 @@
     <string name="share">공유</string>
     <string name="btn_view_complete">시청 완료</string>
     <string name="video_thumbnail_desc">video Thumbnail</string>
+    <string name="diary_total_num_format">%1$d 일</string>
 </resources>

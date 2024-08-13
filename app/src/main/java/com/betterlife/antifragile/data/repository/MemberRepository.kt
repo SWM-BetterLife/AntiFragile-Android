@@ -4,7 +4,6 @@ import com.betterlife.antifragile.data.model.base.BaseResponse
 import com.betterlife.antifragile.data.model.enums.LoginType
 import com.betterlife.antifragile.data.model.member.request.MemberProfileModifyRequest
 import com.betterlife.antifragile.data.model.member.response.MemberDetailResponse
-import com.betterlife.antifragile.data.model.member.response.MemberMyPageResponse
 import com.betterlife.antifragile.data.model.member.response.MemberExistenceResponse
 import com.betterlife.antifragile.data.model.member.response.MemberProfileModifyResponse
 import com.betterlife.antifragile.data.model.member.response.MemberRemainNumberResponse
@@ -15,12 +14,6 @@ import okhttp3.MultipartBody
 class MemberRepository(
     private val memberApiService: MemberApiService
 ) : BaseRepository() {
-
-    suspend fun getMemberMyPage(): BaseResponse<MemberMyPageResponse> {
-        return safeApiCall {
-            memberApiService.getMemberMyPage()
-        }
-    }
 
     suspend fun getMemberDetail(): BaseResponse<MemberDetailResponse> {
         return safeApiCall {
