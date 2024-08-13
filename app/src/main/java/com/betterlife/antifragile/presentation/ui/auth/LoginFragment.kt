@@ -39,7 +39,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
         setupViewModel()
         setupObserver()
         setupButton()
-        autoLoginIfNeeded()
     }
 
     override fun configureToolbar(toolbar: CustomToolbar) {
@@ -160,11 +159,5 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
         val bytes = rawNonce.toByteArray()
         val md = MessageDigest.getInstance("SHA-256")
         return md.digest(bytes).fold("") { str, it -> str + "%02x".format(it) }
-    }
-
-    private fun autoLoginIfNeeded() {
-        // TODO: 자동 로그인은 추후에 구현
-//        val accessToken = getAccessToken(requireContext())
-//        val refreshToken = getRefreshToken(requireContext())
     }
 }
