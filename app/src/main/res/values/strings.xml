@@ -57,5 +57,7 @@
     <string name="service_term"><u>(필수) 서비스 이용약관 동의</u></string>
     <string name="camera_term"><u>(필수) 사진 및 파일 접근 동의</u></string>
     <string name="privacy_term"><u>(필수) 개인정보 수집 및 이용 동의</u></string>
-    <string name="diary_term"><u>(선택) 감정 분석 및 콘텐츠 제공을 위한 정보 수집 동의</u></string>
+    <string name="diary_term"><u>(선택) 감정 일기 정보 수집 동의</u></string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

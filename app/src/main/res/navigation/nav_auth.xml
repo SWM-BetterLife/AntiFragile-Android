@@ -22,12 +22,25 @@
         <action
             android:id="@+id/action_nav_terms_fragment_to_nav_profile_edit_fragment"
             app:destination="@id/nav_profile_edit_fragment" />
+        <action
+            android:id="@+id/action_nav_terms_fragment_to_nav_term_detail_fragment"
+            app:destination="@id/nav_term_detail_fragment" />
         <argument
             android:name="email"
             app:argType="string" />
         <argument
             android:name="loginType"
             app:argType="com.betterlife.antifragile.data.model.enums.LoginType" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_term_detail_fragment"
+        android:name="com.betterlife.antifragile.presentation.ui.auth.TermDetailFragment"
+        android:label="fragment_term_detail"
+        tools:layout="@layout/fragment_term_detail">
+        <argument
+            android:name="termType"
+            app:argType="com.betterlife.antifragile.data.model.enums.TermType" />
     </fragment>
 
     <fragment
