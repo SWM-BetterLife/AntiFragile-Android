@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.betterlife.antifragile.data.model.base.BaseResponse
 import com.betterlife.antifragile.data.model.base.Status
-import com.betterlife.antifragile.data.model.member.response.MemberDetailResponse
+import com.betterlife.antifragile.data.model.member.response.MemberMyPageResponse
 import com.betterlife.antifragile.data.repository.MemberRepository
 import kotlinx.coroutines.launch
 
@@ -13,7 +13,7 @@ class MyPageViewModel(
     private val memberRepository: MemberRepository
 ) : ViewModel(){
 
-    private val _memberDetailResponse = MutableLiveData<BaseResponse<MemberDetailResponse>>()
+    private val _memberDetailResponse = MutableLiveData<BaseResponse<MemberMyPageResponse>>()
     val memberDetailResponse = _memberDetailResponse
 
     init {
@@ -23,7 +23,7 @@ class MyPageViewModel(
     fun getMemberDetail() {
         viewModelScope.launch {
             _memberDetailResponse.value = BaseResponse(Status.LOADING, null, null)
-            val response = memberRepository.getMemberDetail()
+            val response = memberRepository.getMemberMyPage()
             _memberDetailResponse.postValue(response)
         }
     }

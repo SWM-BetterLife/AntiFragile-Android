@@ -138,7 +138,7 @@ class TextDiaryCreateFragment : BaseFragment<FragmentTextDiaryCreateBinding>(
         binding.tvGetPoint.visibility = View.VISIBLE
         Handler(Looper.getMainLooper()).postDelayed({
             navigateToEmotionAnalysis(diaryId.toInt(), false)
-        }, 1000)
+        }, 500)
     }
 
     private fun promptEmotionAnalysis(diaryDetail: TextDiaryDetail) {

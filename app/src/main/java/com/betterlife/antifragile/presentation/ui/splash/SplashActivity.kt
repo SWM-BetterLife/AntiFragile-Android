@@ -7,7 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import com.betterlife.antifragile.R
-import com.betterlife.antifragile.presentation.ui.login.LoginActivity
+import com.betterlife.antifragile.presentation.ui.auth.AuthActivity
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
@@ -19,7 +19,7 @@ class SplashActivity : AppCompatActivity() {
         Handler(Looper.getMainLooper()).postDelayed({
 
             // TODO: 로그인 상태 여부에 따라 login 화면 또는 main 화면으로 이동
-            val intent = Intent(this, LoginActivity::class.java)
+            val intent = Intent(this, AuthActivity::class.java)
 
             startActivity(intent)
             finish()
