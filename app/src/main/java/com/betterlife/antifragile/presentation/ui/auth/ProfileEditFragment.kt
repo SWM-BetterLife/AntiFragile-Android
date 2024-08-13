@@ -1,13 +1,21 @@
 package com.betterlife.antifragile.presentation.ui.auth
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
+import android.provider.Settings
 import android.util.Log
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.widget.addTextChangedListener
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -22,11 +30,16 @@ import com.betterlife.antifragile.presentation.ui.auth.viewmodel.ProfileEditView
 import com.betterlife.antifragile.presentation.ui.auth.viewmodel.ProfileEditViewModelFactory
 import com.betterlife.antifragile.presentation.ui.main.MainActivity
 import com.betterlife.antifragile.presentation.util.CustomToolbar
-import com.betterlife.antifragile.presentation.util.ImagePickerUtil
-import com.betterlife.antifragile.presentation.util.PermissionUtil
 import com.betterlife.antifragile.presentation.util.TokenManager.getAccessToken
 import com.betterlife.antifragile.presentation.util.TokenManager.saveTokens
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
     R.layout.fragment_profile_edit
@@ -34,10 +47,46 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
     private lateinit var profileEditViewModel: ProfileEditViewModel
     private lateinit var email: String
     private lateinit var loginType: LoginType
-    private var isNewMember: Boolean = false
+    private lateinit var photoFile: File
     private var selectedImageUri: Uri? = null
+    private var selectedImageFile: File? = null
+    private var isNewMember: Boolean = false
     private var isCheckedNickname = false
     private var gender = Gender.MALE
+
+    private val multiplePermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            val cameraPermissionGranted = permissions[Manifest.permission.CAMERA] ?: false
+
+            if (cameraPermissionGranted) {
+                showImageSourceDialog()
+            } else {
+                showPermissionsDeniedDialog()
+            }
+        }
+
+    private val cameraLauncher =
+        registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+            if (success) {
+                selectedImageUri?.let { uri ->
+                    binding.ivProfileImg.setImageURI(uri)
+                    selectedImageFile = photoFile
+                }
+            }
+        }
+
+    private val galleryLauncher =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            uri?.let {
+                selectedImageUri = it
+                binding.ivProfileImg.setImageURI(uri)
+                selectedImageFile = getRealPathFromURI(uri)?.let { path -> File(path) }
+
+                if (selectedImageFile == null) {
+                    Log.e("ProfileEditFragment", "Failed to get file from URI: $uri")
+                }
+            }
+        }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -159,8 +208,10 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
                     return@setOnClickListener
                 }
 
-                // TODO: 이미지 파일을 multipart로 변환
-                val imageMultipart = null
+                val imageMultipart: MultipartBody.Part? = selectedImageFile?.let { file ->
+                    val requestFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
+                    MultipartBody.Part.createFormData("profileImgFile", file.name, requestFile)
+                }
 
                 if (isNewMember) {
                     profileEditViewModel.signUp(
@@ -176,7 +227,7 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
             }
 
             btnProfileImg.setOnClickListener {
-                // TODO: 이미지 선택 다이얼로그 띄우기
+                checkPermissionsAndProceed()
             }
 
             btnDuplicateCheck.setOnClickListener {
@@ -243,6 +294,115 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
         val birthYear = birthday.substring(0, 4).toInt()
 
         return currentYear - birthYear + 1
+    }
+
+    private fun getRealPathFromURI(uri: Uri): String? {
+        val contentResolver = requireContext().contentResolver
+        val projection = arrayOf(MediaStore.Images.Media.DATA)
+
+        // 시도 1: MediaStore.Images.Media.DATA로 파일 경로 얻기
+        contentResolver.query(uri, projection, null, null, null)?.use { cursor ->
+            if (cursor.moveToFirst()) {
+                val columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+                val path = cursor.getString(columnIndex)
+                if (path != null) return path
+            }
+        }
+
+        // 시도 2: Content URI 직접 처리 (파일 경로 없이 파일을 바로 사용)
+        return try {
+            val inputStream = contentResolver.openInputStream(uri) ?: return null
+            val tempFile = createTempFile("image", ".jpg", requireContext().cacheDir)
+            tempFile.outputStream().use { outputStream ->
+                inputStream.copyTo(outputStream)
+            }
+            tempFile.absolutePath
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private fun checkPermissionsAndProceed() {
+        val cameraPermission = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
+
+        if (cameraPermission == PackageManager.PERMISSION_GRANTED) {
+            showImageSourceDialog()
+        } else {
+            if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+                showPermissionRationaleDialog()
+            } else {
+                multiplePermissionLauncher.launch(
+                    arrayOf(Manifest.permission.CAMERA)
+                )
+            }
+        }
+    }
+
+
+    private fun showPermissionRationaleDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("권한 필요")
+            .setMessage("이 기능을 사용하려면 카메라 및 갤러리 권한이 필요합니다. 계속하시겠습니까?")
+            .setPositiveButton("권한 요청") { dialog, _ ->
+                dialog.dismiss()
+                multiplePermissionLauncher.launch(
+                    arrayOf(Manifest.permission.CAMERA)
+                )
+            }
+            .setNegativeButton("취소") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun showPermissionsDeniedDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("권한이 거부되었습니다")
+            .setMessage("앱의 원활한 사용을 위해 카메라 및 갤러리 권한이 필요합니다. 앱 설정에서 권한을 허용해 주세요.")
+            .setPositiveButton("설정으로 이동") { dialog, _ ->
+                dialog.dismiss()
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                val uri = Uri.fromParts("package", requireContext().packageName, null)
+                intent.data = uri
+                startActivity(intent)
+            }
+            .setNegativeButton("취소") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun showImageSourceDialog() {
+        val options = arrayOf("카메라로 촬영", "갤러리에서 선택")
+        AlertDialog.Builder(requireContext())
+            .setItems(options) { dialog, which ->
+                when (which) {
+                    0 -> openCamera()
+                    1 -> openGallery()
+                }
+            }
+            .show()
+    }
+
+    private fun openCamera() {
+        photoFile = createImageFile()
+        selectedImageUri = FileProvider.getUriForFile(
+            requireContext(),
+            "${requireContext().packageName}.provider",
+            photoFile
+        )
+        cameraLauncher.launch(selectedImageUri)
+    }
+
+    private fun openGallery() {
+        galleryLauncher.launch("image/*")
+    }
+
+    private fun createImageFile(): File {
+        val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile("JPEG_${timestamp}_", ".jpg", storageDir)
     }
 
     override fun configureToolbar(toolbar: CustomToolbar) {
