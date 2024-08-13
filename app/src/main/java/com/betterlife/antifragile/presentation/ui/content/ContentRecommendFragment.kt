@@ -24,6 +24,9 @@ class ContentRecommendFragment : BaseFragment<FragmentContentRecommendBinding>(
     private lateinit var contentRecommendViewModel: ContentRecommendViewModel
     private lateinit var contentAdapter: ContentAdapter
     private lateinit var diaryDateString: String
+    private lateinit var diaryDate: LocalDate
+    private var isNewDiary: Boolean = false
+    private var feedback: String? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -33,13 +36,13 @@ class ContentRecommendFragment : BaseFragment<FragmentContentRecommendBinding>(
         setupRecyclerView()
 
         diaryDateString = arguments?.getString("diaryDate").toString()
-        val isNewDiary = arguments?.getBoolean("isNewDiary") ?: false
-        val feedback = arguments?.getString("feedback")
+        isNewDiary = arguments?.getBoolean("isNewDiary") ?: false
+        feedback = arguments?.getString("feedback")
 
-        val diaryDate = diaryDateString.let { LocalDate.parse(it) }
+        diaryDate = diaryDateString.let { LocalDate.parse(it) }
 
         // 로직 구성
-        diaryDate?.let { date ->
+        diaryDate.let { date ->
             when {
                 isNewDiary -> {
                     // 신규 일기 생성 -> 추천 API 호출
@@ -57,8 +60,6 @@ class ContentRecommendFragment : BaseFragment<FragmentContentRecommendBinding>(
                     Log.e("RecommendContentFragment", "Unhandled case for isNewDiary and feedback")
                 }
             }
-        } ?: run {
-            Log.e("RecommendContentFragment", "Invalid or missing diaryDate")
         }
     }
 
@@ -98,7 +99,7 @@ class ContentRecommendFragment : BaseFragment<FragmentContentRecommendBinding>(
                     remainNumber = response.remainNumber,
                     onLeftButtonClicked = { },
                     onRightButtonFeedbackProvided = { feedback ->
-                        // TODO: 콘텐츠 재추천 받기 API 호출
+                        contentRecommendViewModel.getRecommendContents(feedback, diaryDate)
                     },
                     onExcessRemainNumber = { }
                 )
@@ -108,7 +109,6 @@ class ContentRecommendFragment : BaseFragment<FragmentContentRecommendBinding>(
             }
         )
     }
-
 
     override fun configureToolbar(toolbar: CustomToolbar) {
         toolbar.apply {
@@ -128,5 +128,4 @@ class ContentRecommendFragment : BaseFragment<FragmentContentRecommendBinding>(
         contentRecommendViewModel =
             ViewModelProvider(this, factory)[ContentRecommendViewModel::class.java]
     }
-
 }
