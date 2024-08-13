@@ -44,7 +44,7 @@ class ContentViewCompleteFragment : BaseFragment<FragmentContentViewCompleteBind
     }
 
     private fun setupViewModel() {
-        val factory = ContentViewCompleteViewModelFactory(requireContext(), getAccessToken(requireContext())!!)
+        val factory = ContentViewCompleteViewModelFactory(requireContext())
         contentViewCompleteViewModel = factory.create(ContentViewCompleteViewModel::class.java)
     }
 

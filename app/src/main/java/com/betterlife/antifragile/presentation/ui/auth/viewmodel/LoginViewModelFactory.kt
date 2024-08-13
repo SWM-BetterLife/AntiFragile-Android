@@ -9,7 +9,7 @@ class LoginViewModelFactory : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
-            val authApiService = RetrofitInterface.createAuthApiService()
+            val authApiService = RetrofitInterface.getAuthApiService()
             val authRepository = AuthRepository(authApiService)
 
             @Suppress("UNCHECKED_CAST")

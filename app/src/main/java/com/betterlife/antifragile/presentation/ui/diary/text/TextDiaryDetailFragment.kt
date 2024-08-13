@@ -63,7 +63,7 @@ class TextDiaryDetailFragment: BaseFragment<FragmentTextDiaryDetailBinding>(
     }
 
     private fun setupViewModel() {
-        val factory = TextDiaryViewModelFactory(requireContext(), getAccessToken(requireContext())!!)
+        val factory = TextDiaryViewModelFactory(requireContext())
         textDiaryViewModel = factory.create(TextDiaryViewModel::class.java)
     }
 

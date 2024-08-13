@@ -61,7 +61,7 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
     }
 
     private fun setupViewModels() {
-        val factory = EmoticonRecommendViewModelFactory(getAccessToken(requireContext())!!)
+        val factory = EmoticonRecommendViewModelFactory(requireContext())
         recommendEmoticonViewModel = factory.create(EmoticonRecommendViewModel::class.java)
     }
 

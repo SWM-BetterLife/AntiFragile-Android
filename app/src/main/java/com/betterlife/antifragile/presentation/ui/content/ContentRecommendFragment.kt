@@ -136,7 +136,7 @@ class ContentRecommendFragment : BaseFragment<FragmentContentRecommendBinding>(
     }
 
     private fun setupViewModel() {
-        val factory = ContentRecommendViewModelFactory(getAccessToken(requireContext())!!)
+        val factory = ContentRecommendViewModelFactory(requireContext())
         contentRecommendViewModel = factory.create(ContentRecommendViewModel::class.java)
     }
 }

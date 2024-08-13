@@ -38,7 +38,7 @@ class MyEmotionFragment : BaseFragment<FragmentMyEmotionBinding>(
     }
 
     private fun setupViewModel() {
-        val factory = MyEmotionViewModelFactory(getAccessToken(requireContext())!!)
+        val factory = MyEmotionViewModelFactory(requireContext())
         myEmotionViewModel = factory.create(MyEmotionViewModel::class.java)
     }
 

@@ -47,7 +47,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     }
 
     private fun setupViewModel() {
-        val factory = DiaryCalendarViewModelFactory(this, getAccessToken(this)!!)
+        val factory = DiaryCalendarViewModelFactory(this)
         diaryCalendarViewModel = factory.create(DiaryCalendarViewModel::class.java)
     }
 

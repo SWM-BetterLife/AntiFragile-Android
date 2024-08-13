@@ -47,7 +47,7 @@ class ContentFragment : BaseFragment<FragmentContentBinding>(R.layout.fragment_c
     }
 
     private fun setupViewModel() {
-        val factory = ContentViewModelFactory(getAccessToken(requireContext())!!)
+        val factory = ContentViewModelFactory(requireContext())
         contentViewModel = factory.create(ContentViewModel::class.java)
     }
 
