@@ -35,6 +35,9 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
         setupListeners()
         loadCurrentMonth()
         observeTodayDiaryId()
+
+        Log.d("accessToken", getAccessToken(requireContext()).toString())
+        Log.d("refreshToken", getAccessToken(requireContext()).toString())
     }
 
     override fun configureToolbar(toolbar: CustomToolbar) {
@@ -45,9 +48,8 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
     }
 
     private fun setupViewModel() {
-        val factory = DiaryCalendarViewModelFactory(requireContext(), getAccessToken(requireContext())!!)
-        diaryCalendarViewModel =
-            ViewModelProvider(this, factory)[DiaryCalendarViewModel::class.java]
+        val factory = DiaryCalendarViewModelFactory(requireContext())
+        diaryCalendarViewModel = factory.create(DiaryCalendarViewModel::class.java)
     }
 
     private fun setupRecyclerView() {

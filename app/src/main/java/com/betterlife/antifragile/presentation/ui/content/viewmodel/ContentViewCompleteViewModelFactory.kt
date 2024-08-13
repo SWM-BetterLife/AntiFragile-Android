@@ -9,15 +9,14 @@ import com.betterlife.antifragile.data.repository.DiaryRepository
 import com.betterlife.antifragile.data.repository.MemberRepository
 
 class ContentViewCompleteViewModelFactory(
-    private val context: Context,
-    private val token: String
+    private val context: Context
 ) : ViewModelProvider.Factory {
 
     override fun <T: ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ContentViewCompleteViewModel::class.java)) {
             val diaryDao = DiaryDatabase.getDatabase(context).diaryDao()
             val diaryRepository = DiaryRepository(diaryDao)
-            val memberApiService = RetrofitInterface.createMemberApiService(token)
+            val memberApiService = RetrofitInterface.createMemberApiService(context)
             val memberRepository = MemberRepository(memberApiService)
 
             @Suppress("UNCHECKED_CAST")

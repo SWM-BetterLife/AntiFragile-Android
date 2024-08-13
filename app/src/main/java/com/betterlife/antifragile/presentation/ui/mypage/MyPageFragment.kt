@@ -42,7 +42,7 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
 
     private fun setupViewModel() {
         val memberApiService =
-            RetrofitInterface.createMemberApiService(getAccessToken(requireContext())!!)
+            RetrofitInterface.createMemberApiService(requireContext())
         val memberRepository = MemberRepository(memberApiService)
         val factory = MyPageViewModelFactory(memberRepository)
         myPageViewModel = factory.create(MyPageViewModel::class.java)

@@ -54,7 +54,7 @@ class EmotionSelectFragment : BaseFragment<FragmentEmotionSelectBinding>(
     }
 
     private fun setupViewModel() {
-        val factory = EmotionSelectViewModelFactory(getAccessToken(requireContext())!!)
+        val factory = EmotionSelectViewModelFactory(requireContext())
         emotionSelectViewModel = factory.create(EmotionSelectViewModel::class.java)
     }
 

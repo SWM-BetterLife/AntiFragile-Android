@@ -52,7 +52,7 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(
     }
 
     private fun setupViewModel() {
-        val factory = ContentDetailViewModelFactory(getAccessToken(requireContext())!!)
+        val factory = ContentDetailViewModelFactory(requireContext())
         contentDetailViewModel = factory.create(ContentDetailViewModel::class.java)
     }
 
