@@ -50,7 +50,7 @@
                     android:paddingVertical="9dp"
                     android:paddingHorizontal="14dp"
                     android:layout_marginTop="20dp"
-                    android:background="@drawable/btn_rectangle_radius_100_transparent_thick"
+                    android:background="@drawable/btn_rectangle_radius_100_transparent"
                     />
             </LinearLayout>
 
