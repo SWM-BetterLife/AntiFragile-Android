@@ -62,7 +62,7 @@ class ContentViewCompleteFragment : BaseFragment<FragmentContentViewCompleteBind
                         findNavController().navigate(
                             ContentViewCompleteFragmentDirections
                                 .actionNavContentViewCompleteToNavContentRecommend(
-                                    diaryDate, false ,feedback
+                                    diaryDate, false ,feedback, false
                                 )
                         )
                     },

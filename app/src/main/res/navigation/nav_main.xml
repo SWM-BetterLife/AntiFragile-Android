@@ -33,7 +33,8 @@
             app:destination="@id/nav_text_diary_create"/>
         <action
             android:id="@+id/action_nav_text_diary_detail_to_nav_content_recommend"
-            app:destination="@id/nav_content_recommend"/>
+            app:destination="@id/nav_content_recommend">
+   </action>
         <argument
             android:name="diaryId"
             app:argType="integer"
@@ -74,6 +75,9 @@
             android:name="feedback"
             app:argType="string"
             app:nullable="true" />
+        <argument
+            android:name="isBackActive"
+            app:argType="boolean" />
     </fragment>
 
     <fragment

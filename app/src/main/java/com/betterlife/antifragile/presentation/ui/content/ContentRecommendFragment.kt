@@ -122,9 +122,13 @@ class ContentRecommendFragment : BaseFragment<FragmentContentRecommendBinding>(
         toolbar.apply {
             reset()
             setSubTitle("맞춤형 콘텐츠")
-            showBackButton {
-                findNavController().popBackStack()
+
+            if (arguments?.getBoolean("isBackActive") ?: false) {
+                showBackButton {
+                    findNavController().popBackStack()
+                }
             }
+
             showCustomButton(R.drawable.btn_re) {
                 hasShownRecommendDialog = false
                 contentRecommendViewModel.getRemainRecommendNumber()
