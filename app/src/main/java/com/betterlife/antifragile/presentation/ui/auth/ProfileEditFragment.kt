@@ -34,7 +34,6 @@ import com.betterlife.antifragile.presentation.util.TokenManager.saveTokens
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import java.util.Calendar
 
 class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
     R.layout.fragment_profile_edit

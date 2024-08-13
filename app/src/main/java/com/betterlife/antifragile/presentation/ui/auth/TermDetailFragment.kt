@@ -1,7 +1,6 @@
 package com.betterlife.antifragile.presentation.ui.auth
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.navigation.findNavController
 import com.betterlife.antifragile.R

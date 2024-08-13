@@ -4,14 +4,12 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.data.model.calendar.CalendarDateModel
 import com.betterlife.antifragile.databinding.ItemCalendarBinding
 import com.bumptech.glide.Glide
-import java.time.LocalDate
 import java.util.Calendar
 
 class DiaryCalendarAdapter(private val onDateClick: (CalendarDateModel) -> Unit) :

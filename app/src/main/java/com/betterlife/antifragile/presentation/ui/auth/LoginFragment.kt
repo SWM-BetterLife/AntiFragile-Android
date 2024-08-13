@@ -17,7 +17,6 @@ import com.betterlife.antifragile.presentation.ui.auth.oauth.GoogleLogin
 import com.betterlife.antifragile.presentation.ui.auth.viewmodel.LoginViewModel
 import com.betterlife.antifragile.presentation.ui.auth.viewmodel.LoginViewModelFactory
 import com.betterlife.antifragile.presentation.ui.main.MainActivity
-import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.TokenManager.saveTokens
 import kotlinx.coroutines.runBlocking

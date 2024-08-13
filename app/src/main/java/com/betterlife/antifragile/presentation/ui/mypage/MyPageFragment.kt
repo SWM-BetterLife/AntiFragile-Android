@@ -2,11 +2,8 @@ package com.betterlife.antifragile.presentation.ui.mypage
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.style.UnderlineSpan
 import android.util.Log
 import android.view.View
-import android.widget.Button
 import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.config.RetrofitInterface
@@ -17,7 +14,6 @@ import com.betterlife.antifragile.data.repository.MemberRepository
 import com.betterlife.antifragile.databinding.FragmentMyPageBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.auth.AuthActivity
-import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.ImageUtil.setImage
 import com.betterlife.antifragile.presentation.util.TokenManager.getAccessToken
