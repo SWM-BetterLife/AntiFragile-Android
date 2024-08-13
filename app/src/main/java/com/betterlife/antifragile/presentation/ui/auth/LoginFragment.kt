@@ -17,7 +17,6 @@ import com.betterlife.antifragile.presentation.ui.auth.oauth.GoogleLogin
 import com.betterlife.antifragile.presentation.ui.auth.viewmodel.LoginViewModel
 import com.betterlife.antifragile.presentation.ui.auth.viewmodel.LoginViewModelFactory
 import com.betterlife.antifragile.presentation.ui.main.MainActivity
-import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.TokenManager.saveTokens
 import kotlinx.coroutines.runBlocking
@@ -40,7 +39,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
         setupViewModel()
         setupObserver()
         setupButton()
-        autoLoginIfNeeded()
     }
 
     override fun configureToolbar(toolbar: CustomToolbar) {
@@ -54,7 +52,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
     }
 
     private fun setupViewModel() {
-        val factory = LoginViewModelFactory(Constants.TOKEN)
+        val factory = LoginViewModelFactory()
         loginViewModel = factory.create(LoginViewModel::class.java)
     }
 
@@ -161,11 +159,5 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
         val bytes = rawNonce.toByteArray()
         val md = MessageDigest.getInstance("SHA-256")
         return md.digest(bytes).fold("") { str, it -> str + "%02x".format(it) }
-    }
-
-    private fun autoLoginIfNeeded() {
-        // TODO: 자동 로그인은 추후에 구현
-//        val accessToken = getAccessToken(requireContext())
-//        val refreshToken = getRefreshToken(requireContext())
     }
 }

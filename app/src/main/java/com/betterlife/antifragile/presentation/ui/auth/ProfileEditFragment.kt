@@ -34,7 +34,6 @@ import com.betterlife.antifragile.presentation.util.TokenManager.saveTokens
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import java.util.Calendar
 
 class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
     R.layout.fragment_profile_edit
@@ -83,8 +82,7 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
     }
 
     private fun setupViewModel() {
-        // TODO: 모든 fragment에서 accestoken이 만료된 경우 재발급 로직 추가
-        val factory = ProfileEditViewModelFactory(getAccessToken(requireContext()))
+        val factory = ProfileEditViewModelFactory(requireContext())
         profileEditViewModel = factory.create(ProfileEditViewModel::class.java)
     }
 

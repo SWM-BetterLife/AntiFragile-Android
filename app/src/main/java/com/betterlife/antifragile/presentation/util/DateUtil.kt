@@ -24,6 +24,13 @@ object DateUtil {
         return dateFormat.format(calendar.time)
     }
 
+    fun convertDateToFullFormat(date: String): String {
+        val inputDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val outputDateFormat = SimpleDateFormat("yyyy.MM.dd.EEEE", Locale.KOREA)
+        val parsedDate = inputDateFormat.parse(date)
+        return outputDateFormat.format(parsedDate as Date)
+    }
+
     fun isValidBirthday(birthday: String, format: String = "yyyy.MM.dd"): Boolean {
         val dateFormat = SimpleDateFormat(format, Locale.getDefault())
         dateFormat.isLenient = false
@@ -34,12 +41,5 @@ object DateUtil {
         } catch (e: Exception) {
             false
         }
-    }
-
-    fun convertDateToFullFormat(date: String): String {
-        val inputDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val outputDateFormat = SimpleDateFormat("yyyy.MM.dd.EEEE", Locale.KOREA)
-        val parsedDate = inputDateFormat.parse(date)
-        return outputDateFormat.format(parsedDate as Date)
     }
 }
