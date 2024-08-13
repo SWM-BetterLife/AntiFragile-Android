@@ -11,12 +11,10 @@ import com.betterlife.antifragile.data.model.base.Status
 import com.betterlife.antifragile.data.model.enums.LoginType
 import com.betterlife.antifragile.data.model.member.response.MemberExistenceResponse
 import com.betterlife.antifragile.data.repository.AuthRepository
-import com.betterlife.antifragile.data.repository.MemberRepository
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
-    private val authRepository: AuthRepository,
-    private val memberRepository: MemberRepository
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _memberExistenceResponse = MutableLiveData<BaseResponse<MemberExistenceResponse>>()
@@ -41,7 +39,7 @@ class LoginViewModel(
     fun checkMemberExistence(email: String, loginType: LoginType) {
         viewModelScope.launch {
             _memberExistenceResponse.value = BaseResponse(Status.LOADING, null, null)
-            val response = memberRepository.checkMemberExistence(email, loginType)
+            val response = authRepository.checkMemberExistence(email, loginType)
             _memberExistenceResponse.postValue(response)
         }
     }

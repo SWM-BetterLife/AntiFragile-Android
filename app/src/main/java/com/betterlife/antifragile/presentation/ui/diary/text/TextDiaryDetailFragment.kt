@@ -6,7 +6,6 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.data.model.base.CustomErrorMessage
@@ -16,9 +15,9 @@ import com.betterlife.antifragile.databinding.FragmentTextDiaryDetailBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.TextDiaryViewModel
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.TextDiaryViewModelFactory
-import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.DateUtil
+import com.betterlife.antifragile.presentation.util.TokenManager.getAccessToken
 
 class TextDiaryDetailFragment: BaseFragment<FragmentTextDiaryDetailBinding>(
     R.layout.fragment_text_diary_detail
@@ -64,8 +63,8 @@ class TextDiaryDetailFragment: BaseFragment<FragmentTextDiaryDetailBinding>(
     }
 
     private fun setupViewModel() {
-        val factory = TextDiaryViewModelFactory(requireContext(), Constants.TOKEN)
-        textDiaryViewModel = ViewModelProvider(this, factory)[TextDiaryViewModel::class.java]
+        val factory = TextDiaryViewModelFactory(requireContext())
+        textDiaryViewModel = factory.create(TextDiaryViewModel::class.java)
     }
 
     @SuppressLint("SetTextI18n")
@@ -106,8 +105,8 @@ class TextDiaryDetailFragment: BaseFragment<FragmentTextDiaryDetailBinding>(
     private fun setupButton() {
         binding.btnMoveContent.setOnClickListener {
             val action =
-                TextDiaryDetailFragmentDirections.actionNavTextDiaryDetailToNavRecommendContent(
-                diaryDate, false, null
+                TextDiaryDetailFragmentDirections.actionNavTextDiaryDetailToNavContentRecommend(
+                diaryDate, false, null, true
             )
             findNavController().navigate(action)
         }

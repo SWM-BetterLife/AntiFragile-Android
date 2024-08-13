@@ -6,5 +6,6 @@ data class AuthSignUpResponse(
     val id: String,
     val email: String,
     val nickname: String,
-    val loginType: LoginType
+    val loginType: LoginType,
+    val tokenIssue: TokenIssue
 )

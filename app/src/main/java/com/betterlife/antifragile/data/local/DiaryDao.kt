@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.betterlife.antifragile.data.model.diary.DiaryInfo
 import com.betterlife.antifragile.data.model.diary.DiarySummary
 import com.betterlife.antifragile.data.model.diary.QuestionDiary
 import com.betterlife.antifragile.data.model.diary.TextDiary
@@ -29,6 +30,14 @@ interface DiaryDao {
         ORDER BY date
     """)
     fun getMonthlyDiaries(month: String): List<DiarySummary>
+
+    @Query("""
+        SELECT id, 'TEXT' AS diaryType FROM text_diary WHERE date = :date
+        UNION ALL
+        SELECT id, 'QUESTION' AS diaryType FROM question_diary WHERE date = :date
+        LIMIT 1
+    """)
+    fun getDiaryIdAndTypeByDate(date: String): DiaryInfo?
 
     @Query("SELECT * FROM text_diary WHERE id = :id")
     fun getTextDiaryById(id: Int): TextDiary?

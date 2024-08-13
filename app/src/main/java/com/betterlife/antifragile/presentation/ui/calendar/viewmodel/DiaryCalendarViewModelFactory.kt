@@ -10,15 +10,14 @@ import com.betterlife.antifragile.data.repository.DiaryAnalysisRepository
 import com.betterlife.antifragile.data.repository.DiaryRepository
 
 class DiaryCalendarViewModelFactory(
-    private val context: Context,
-    private val token: String
+    private val context: Context
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(DiaryCalendarViewModel::class.java)) {
             val diaryDao = DiaryDatabase.getDatabase(context).diaryDao()
             val diaryRepository = DiaryRepository(diaryDao)
-            val diaryAnalysisApiService = RetrofitInterface.createDiaryAnalysisApiService(token)
+            val diaryAnalysisApiService = RetrofitInterface.createDiaryAnalysisApiService(context)
             val diaryAnalysisRepository = DiaryAnalysisRepository(diaryAnalysisApiService)
             val calendarRepository = CalendarRepository(diaryRepository, diaryAnalysisRepository)
 

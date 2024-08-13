@@ -8,8 +8,3 @@ data class AuthLoginResponse(
     val loginType: LoginType,
     val tokenIssue: TokenIssue
 )
-
-data class TokenIssue(
-    val accessToken: String,
-    val refreshToken: String
-)

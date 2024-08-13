@@ -2,10 +2,12 @@ package com.betterlife.antifragile.data.repository
 
 import android.annotation.SuppressLint
 import com.betterlife.antifragile.data.local.DiaryDao
+import com.betterlife.antifragile.data.model.diary.DiaryInfo
 import com.betterlife.antifragile.data.model.diary.DiarySummary
 import com.betterlife.antifragile.data.model.diary.QuestionDiary
 import com.betterlife.antifragile.data.model.diary.TextDiary
-import java.util.Calendar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class DiaryRepository(private val diaryDao: DiaryDao) {
 
@@ -47,6 +49,9 @@ class DiaryRepository(private val diaryDao: DiaryDao) {
     fun getMonthlyDiaries(year: Int, month: Int): List<DiarySummary> {
         val monthString = String.format("%04d-%02d", year, month)
         return diaryDao.getMonthlyDiaries(monthString)
+    }
 
+    suspend fun getDiaryInfoByDate(date: String): DiaryInfo? = withContext(Dispatchers.IO) {
+        diaryDao.getDiaryIdAndTypeByDate(date)
     }
 }

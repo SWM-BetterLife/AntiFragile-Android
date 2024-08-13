@@ -2,7 +2,6 @@ package com.betterlife.antifragile.presentation.ui.diary
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.data.model.base.CustomErrorMessage
@@ -17,11 +16,10 @@ import com.betterlife.antifragile.presentation.ui.diary.adapter.EmoticonByEmotio
 import com.betterlife.antifragile.presentation.ui.diary.handler.EmoticonRecommendViewPagerHandler
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.EmoticonRecommendViewModel
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.EmoticonRecommendViewModelFactory
-import com.betterlife.antifragile.presentation.ui.main.MainActivity
-import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.DateUtil
 import com.betterlife.antifragile.presentation.util.RecommendDialogUtil
+import com.betterlife.antifragile.presentation.util.TokenManager.getAccessToken
 
 class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>(
     R.layout.fragment_emoticon_recommend
@@ -63,9 +61,8 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
     }
 
     private fun setupViewModels() {
-        val factory = EmoticonRecommendViewModelFactory(Constants.TOKEN)
-        recommendEmoticonViewModel =
-            ViewModelProvider(this, factory)[EmoticonRecommendViewModel::class.java]
+        val factory = EmoticonRecommendViewModelFactory(requireContext())
+        recommendEmoticonViewModel = factory.create(EmoticonRecommendViewModel::class.java)
     }
 
     private fun setupObservers() {
@@ -96,13 +93,13 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
                     fragment = this,
                     remainNumber = response.remainNumber,
                     onLeftButtonClicked = {
-                        navigateToRecommendContent(false, null)
+                        navigateToContentRecommend(false, null)
                     },
                     onRightButtonFeedbackProvided = { feedback ->
-                        navigateToRecommendContent(false, feedback)
+                        navigateToContentRecommend(false, feedback)
                     },
                     onExcessRemainNumber = {
-                        navigateToRecommendContent(false, null)
+                        navigateToContentRecommend(false, null)
                     }
                 )
             },
@@ -148,15 +145,14 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
             recommendEmoticonViewModel.getRemainRecommendNumber()
         } else {
             recommendEmoticonViewModel.saveDiaryAnalysis(request, null)
-            navigateToRecommendContent(true, null)
+            navigateToContentRecommend(true, null)
         }
-        (activity as MainActivity).showBottomNavigation()
     }
 
-    private fun navigateToRecommendContent(isNewDiary: Boolean, feedback: String?) {
+    private fun navigateToContentRecommend(isNewDiary: Boolean, feedback: String?) {
         val action = EmoticonRecommendFragmentDirections
-            .actionNavEmoticonRecommendToNavRecommendContent(
-                diaryAnalysisData.diaryDate, isNewDiary, feedback
+            .actionNavEmoticonRecommendToNavContentRecommend(
+                diaryAnalysisData.diaryDate, isNewDiary, feedback, false
             )
         findNavController().navigate(action)
     }

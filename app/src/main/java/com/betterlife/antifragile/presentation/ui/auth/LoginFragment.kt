@@ -1,5 +1,6 @@
 package com.betterlife.antifragile.presentation.ui.auth
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -15,7 +16,7 @@ import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.auth.oauth.GoogleLogin
 import com.betterlife.antifragile.presentation.ui.auth.viewmodel.LoginViewModel
 import com.betterlife.antifragile.presentation.ui.auth.viewmodel.LoginViewModelFactory
-import com.betterlife.antifragile.presentation.util.Constants
+import com.betterlife.antifragile.presentation.ui.main.MainActivity
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.TokenManager.saveTokens
 import kotlinx.coroutines.runBlocking
@@ -38,7 +39,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
         setupViewModel()
         setupObserver()
         setupButton()
-        autoLoginIfNeeded()
     }
 
     override fun configureToolbar(toolbar: CustomToolbar) {
@@ -52,7 +52,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
     }
 
     private fun setupViewModel() {
-        val factory = LoginViewModelFactory(Constants.TOKEN)
+        val factory = LoginViewModelFactory()
         loginViewModel = factory.create(LoginViewModel::class.java)
     }
 
@@ -148,8 +148,10 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
     }
 
     private fun navigateToMainActivity() {
-        findNavController()
-            .navigate(LoginFragmentDirections.actionNavLoginFragmentToNavMainActivity())
+        val intent = Intent(requireContext(), MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+        requireActivity().finish()
     }
 
     private fun generateNonce(): String {
@@ -157,11 +159,5 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
         val bytes = rawNonce.toByteArray()
         val md = MessageDigest.getInstance("SHA-256")
         return md.digest(bytes).fold("") { str, it -> str + "%02x".format(it) }
-    }
-
-    private fun autoLoginIfNeeded() {
-        // TODO: 자동 로그인은 추후에 구현
-//        val accessToken = getAccessToken(requireContext())
-//        val refreshToken = getRefreshToken(requireContext())
     }
 }
