@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.data.model.common.Emotion
+import com.betterlife.antifragile.data.model.common.LLMInferenceType
+import com.betterlife.antifragile.data.model.common.LLMInferenceType.EMOTION
 import com.betterlife.antifragile.data.model.diary.QuestionDiary
 import com.betterlife.antifragile.data.model.diary.TextDiary
 import com.betterlife.antifragile.data.model.diary.llm.DiaryAnalysisData
@@ -56,10 +58,8 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
                     findNavController().popBackStack()
                     return@getTextDiary
                 }
-                Log.d("EmotionAnalysisFragment", "$textDiary")
 
-                // TODO: LLM 붙이면 postDelayed 제거
-                llmViewModel.getResponseFromLLM(textDiary?.content ?: "")
+                llmViewModel.getResponseFromLLM(textDiary?.content ?: "", EMOTION)
             }
         } else if (diaryType == "QUESTION"){
             getQuestionDiary(diaryId) { retrievedQuestionDiary ->
@@ -94,7 +94,9 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
             onSuccess = {
                 if (it != null) {
                     Log.d("LLMViewModel", "LLM Response: $it")
-                    val diaryAnalysisData = createDiaryAnalysisData(textDiary?.date ?: "", it)
+                    val responseEmotion = Emotion.parseEmotionFromStr(it)
+                    val diaryAnalysisData
+                    = createDiaryAnalysisData(textDiary?.date ?: "", responseEmotion.toKorean)
                     findNavController().navigate(
                         EmotionAnalysisFragmentDirections
                             .actionNavEmotionAnalysisToNavEmoticonRecommend(

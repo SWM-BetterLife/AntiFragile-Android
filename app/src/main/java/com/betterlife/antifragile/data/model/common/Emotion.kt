@@ -36,5 +36,12 @@ enum class Emotion(val toKorean: String, val bgRes: Int) {
                 } ?: ERROR
             }
         }
+
+        @JvmStatic
+        fun parseEmotionFromStr(s: String): Emotion {
+            return entries.find { emotion ->
+                s.contains(emotion.name)
+            } ?: ERROR
+        }
     }
 }
