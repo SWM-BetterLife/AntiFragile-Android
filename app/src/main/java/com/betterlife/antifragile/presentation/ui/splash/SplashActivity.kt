@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.config.RetrofitInterface
@@ -18,11 +19,41 @@ import kotlinx.coroutines.runBlocking
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
 
+    private lateinit var progressBar: ProgressBar
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        autoLoginIfNeeded()
+        progressBar = findViewById(R.id.progressBar)
+
+        simulateInstallation()
+    }
+
+    private fun simulateInstallation() {
+        // ProgressBar를 100%로 업데이트하기 위한 타이머 설정
+        val handler = Handler(Looper.getMainLooper())
+        var progressStatus = 0
+
+        Thread {
+            while (progressStatus < 100) {
+                progressStatus += 1
+                handler.post {
+                    progressBar.progress = progressStatus
+                }
+                try {
+                    // ProgressBar가 100%에 도달할 때까지 약간의 지연
+                    Thread.sleep(40)
+                } catch (e: InterruptedException) {
+                    e.printStackTrace()
+                }
+            }
+
+            // 설치가 완료되면 자동 로그인 체크를 시작
+            handler.post {
+                autoLoginIfNeeded()
+            }
+        }.start()
     }
 
     private fun autoLoginIfNeeded() {
