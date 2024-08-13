@@ -15,4 +15,6 @@
     <color name="hint_text_color">#999999</color>
     <color name="semi_transparent_black">#BF000000</color>
     <color name="google_btn_stroke">#CACACA</color>
+    <color name="red">#FF6262</color>
+    <color name="green">#00C86F</color>
 </resources>

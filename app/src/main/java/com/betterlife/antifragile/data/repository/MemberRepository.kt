@@ -2,6 +2,7 @@ package com.betterlife.antifragile.data.repository
 
 import com.betterlife.antifragile.data.model.base.BaseResponse
 import com.betterlife.antifragile.data.model.enums.LoginType
+import com.betterlife.antifragile.data.model.member.request.MemberProfileModifyRequest
 import com.betterlife.antifragile.data.model.member.response.MemberDetailResponse
 import com.betterlife.antifragile.data.model.member.response.MemberExistenceResponse
 import com.betterlife.antifragile.data.model.member.response.MemberProfileModifyResponse
@@ -23,10 +24,10 @@ class MemberRepository(
 
     suspend fun modifyProfile(
         profileImgFile: MultipartBody.Part?,
-        profileModifyRequest: RequestBody
+        request: MemberProfileModifyRequest
     ): BaseResponse<MemberProfileModifyResponse> {
         return safeApiCall {
-            memberApiService.modifyProfile(profileImgFile, profileModifyRequest)
+            memberApiService.modifyProfile(profileImgFile, request)
         }
     }
 

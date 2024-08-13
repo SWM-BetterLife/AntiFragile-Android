@@ -2,6 +2,7 @@ package com.betterlife.antifragile.data.remote
 
 import com.betterlife.antifragile.data.model.base.BaseResponse
 import com.betterlife.antifragile.data.model.enums.LoginType
+import com.betterlife.antifragile.data.model.member.request.MemberProfileModifyRequest
 import com.betterlife.antifragile.data.model.member.response.MemberDetailResponse
 import com.betterlife.antifragile.data.model.member.response.MemberExistenceResponse
 import com.betterlife.antifragile.data.model.member.response.MemberProfileModifyResponse
@@ -26,8 +27,8 @@ interface MemberApiService {
     @Multipart
     @POST("/members/profile")
     suspend fun modifyProfile(
-        @Part profileImgFile: MultipartBody.Part? = null,
-        @Part("profileModifyRequest") profileModifyRequest: RequestBody
+        @Part profileImgFile: MultipartBody.Part?,
+        @Part("profileModifyRequest") request: MemberProfileModifyRequest
     ): Response<BaseResponse<MemberProfileModifyResponse>>
 
     @GET("/members/remain-recommend-number")
