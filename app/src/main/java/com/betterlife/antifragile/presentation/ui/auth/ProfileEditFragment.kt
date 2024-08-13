@@ -71,6 +71,12 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
         email = ProfileEditFragmentArgs.fromBundle(requireArguments()).email
         loginType = ProfileEditFragmentArgs.fromBundle(requireArguments()).loginType
         isNewMember = ProfileEditFragmentArgs.fromBundle(requireArguments()).isNewMember
+
+        if (isNewMember) {
+            binding.btnSave.text = "회원가입"
+        } else {
+            binding.btnSave.text = "수정완료"
+        }
     }
 
     private fun setupViewModel() {

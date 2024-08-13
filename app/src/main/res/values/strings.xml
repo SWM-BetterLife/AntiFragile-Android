@@ -52,4 +52,6 @@
     <string name="male">남성</string>
     <string name="female">여성</string>
     <string name="sign_up">회원가입</string>
+    <string name="logout"><u>로그아웃</u></string>
+    <string name="withdraw"><u>계정탈퇴</u></string>
 </resources>

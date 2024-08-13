@@ -5,7 +5,6 @@
     android:id="@+id/nav_auth"
     app:startDestination="@id/nav_login_fragment">
 
-
     <fragment
         android:id="@+id/nav_login_fragment"
         android:name="com.betterlife.antifragile.presentation.ui.auth.LoginFragment"
