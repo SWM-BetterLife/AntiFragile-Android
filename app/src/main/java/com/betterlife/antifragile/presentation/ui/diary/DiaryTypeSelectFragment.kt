@@ -1,6 +1,8 @@
 package com.betterlife.antifragile.presentation.ui.diary
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
@@ -20,6 +22,7 @@ class DiaryTypeSelectFragment : BaseFragment<FragmentDiaryTypeSelectBinding>(
 
         setupVariables()
         setupButtons()
+        setupButtonTouchListeners()
     }
 
     override fun configureToolbar(toolbar: CustomToolbar) {
@@ -47,6 +50,33 @@ class DiaryTypeSelectFragment : BaseFragment<FragmentDiaryTypeSelectBinding>(
 
         binding.btnQuestionType.setOnClickListener {
             // TODO: 질문형 일기 작성 화면으로 이동
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupButtonTouchListeners() {
+        binding.btnTextType.setOnTouchListener { _, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    binding.btnTextType.setImageResource(R.drawable.btn_type_text_active)
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    binding.btnTextType.setImageResource(R.drawable.btn_type_text_inactive)
+                }
+            }
+            return@setOnTouchListener true
+        }
+
+        binding.btnQuestionType.setOnTouchListener { _, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    binding.btnQuestionType.setImageResource(R.drawable.btn_type_question_active)
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    binding.btnQuestionType.setImageResource(R.drawable.btn_type_question_inactive)
+                }
+            }
+            return@setOnTouchListener true
         }
     }
 }
