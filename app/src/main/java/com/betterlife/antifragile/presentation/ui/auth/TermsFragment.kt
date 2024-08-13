@@ -58,7 +58,7 @@ class TermsFragment : BaseFragment<FragmentTermsBinding>(
             setTermClickListener(loServiceTerm, TermType.SERVICE_TERM)
             setTermClickListener(loCameraTerm, TermType.CAMERA_TERM)
             setTermClickListener(loPrivacyTerm, TermType.PRIVACY_TERM)
-            setTermClickListener(loDiaryTerm, TermType.DIARY_TERM)
+            setDiaryTermClickListener(loDiaryTerm)
 
             btnStart.setOnClickListener {
                 if (validateAgreements()) {
@@ -124,6 +124,18 @@ class TermsFragment : BaseFragment<FragmentTermsBinding>(
             }
         } else {
             layout.setOnClickListener(null)
+        }
+    }
+
+    private fun setDiaryTermClickListener(layout: View) {
+        val termType = TermType.DIARY_TERM
+        layout.setOnClickListener {
+            termType.isAgreed = !termType.isAgreed
+            if (!termType.isAgreed) {
+                updateAgreementStatus()
+            } else {
+                navigateToTermDetail(termType)
+            }
         }
     }
 
