@@ -1,15 +1,12 @@
 package com.betterlife.antifragile.presentation.ui.diary
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.data.model.common.Emotion
-import com.betterlife.antifragile.data.model.common.LLMInferenceType
 import com.betterlife.antifragile.data.model.common.LLMInferenceType.EMOTION
 import com.betterlife.antifragile.data.model.diary.QuestionDiary
 import com.betterlife.antifragile.data.model.diary.TextDiary
