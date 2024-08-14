@@ -66,7 +66,7 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
     }
 
     private fun setupObservers() {
-        setupBaseObserver(
+        setupNullObserver(
             liveData = recommendEmoticonViewModel.saveDiaryResponse,
             onSuccess = {
                 if (getIsUpdate()) {

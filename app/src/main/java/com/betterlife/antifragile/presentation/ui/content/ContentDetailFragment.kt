@@ -80,7 +80,7 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(
             }
         )
 
-        setupBaseObserver(
+        setupNullObserver(
             liveData = contentDetailViewModel.contentLikeResponse,
             onSuccess = { },
             onError = {
