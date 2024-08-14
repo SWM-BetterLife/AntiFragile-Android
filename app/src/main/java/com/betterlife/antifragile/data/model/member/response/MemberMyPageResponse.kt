@@ -6,7 +6,7 @@ data class MemberMyPageResponse(
     val id: String,
     val email: String,
     val nickname: String,
-    val profileImgUrl: String,
+    val profileImgUrl: String?,
     val point: Int,
     val diaryTotalNum: Int,
     val loginType: LoginType
