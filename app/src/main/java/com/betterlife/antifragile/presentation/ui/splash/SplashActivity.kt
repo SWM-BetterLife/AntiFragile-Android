@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.config.LLMTask
@@ -19,29 +20,56 @@ import kotlinx.coroutines.runBlocking
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
 
+    private lateinit var progressBar: ProgressBar
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        /* Create LLM Task Instance */
-        LLMTask.getInstance(applicationContext)
+        progressBar = findViewById(R.id.progressBar)
 
-        autoLoginIfNeeded()
+        simulateInstallation()
+    }
+
+    private fun simulateInstallation() {
+        // ProgressBar를 100%로 업데이트하기 위한 타이머 설정
+        val handler = Handler(Looper.getMainLooper())
+        var progressStatus = 0
+
+        Thread {
+            /* Create LLM Task Instance */
+            LLMTask.getInstance(applicationContext)
+            while (progressStatus < 100) {
+                progressStatus += 1
+                handler.post {
+                    progressBar.progress = progressStatus
+                }
+                try {
+                    // ProgressBar가 100%에 도달할 때까지 약간의 지연
+                    Thread.sleep(40)
+                } catch (e: InterruptedException) {
+                    e.printStackTrace()
+                }
+            }
+
+            // 설치가 완료되면 자동 로그인 체크를 시작
+            handler.post {
+                autoLoginIfNeeded()
+            }
+        }.start()
     }
 
     private fun autoLoginIfNeeded() {
         val accessToken = TokenManager.getAccessToken(this)
         val refreshToken = TokenManager.getRefreshToken(this)
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            if (!accessToken.isNullOrEmpty() && !refreshToken.isNullOrEmpty()) {
-                // 토큰 유효성 확인
-                checkTokenValidity(accessToken, refreshToken)
-            } else {
-                // 토큰이 없으면 로그인 화면으로 이동
-                navigateToLogin()
-            }
-        }, 2000)
+        if (!accessToken.isNullOrEmpty() && !refreshToken.isNullOrEmpty()) {
+            // 토큰 유효성 확인
+            checkTokenValidity(accessToken, refreshToken)
+        } else {
+            // 토큰이 없으면 로그인 화면으로 이동
+            navigateToLogin()
+        }
     }
 
     private fun checkTokenValidity(accessToken: String, refreshToken: String) {
