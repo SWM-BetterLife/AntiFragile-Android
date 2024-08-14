@@ -13,6 +13,7 @@ import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.auth.AuthActivity
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.ImageUtil.setImage
+import com.betterlife.antifragile.presentation.util.TokenManager
 
 class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_page) {
 
@@ -63,6 +64,28 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
                 Log.e("MyPageFragment", "Error: ${it.errorMessage}")
             }
         )
+
+        setupBaseObserver(
+            liveData = myPageViewModel.memberLogoutResponse,
+            onSuccess = {
+                handleLogout()
+            },
+            onError = {
+                Log.e("MyPageFragment", "Logout Error: ${it.errorMessage ?: "로그아웃에 실패했습니다."}")
+                showCustomToast("로그아웃에 실패했습니다.")
+            }
+        )
+
+        setupBaseObserver(
+            liveData = myPageViewModel.memberDeleteResponse,
+            onSuccess = {
+                handleWithdraw()
+            },
+            onError = {
+                Log.e("MyPageFragment", "Withdraw Error: ${it.errorMessage ?: "회원탈퇴에 실패했습니다."}")
+                showCustomToast("회원탈퇴에 실패했습니다.")
+            }
+        )
     }
 
     private fun setupMemberVisibility() {
@@ -90,27 +113,17 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
             }
 
             btnLogout.setOnClickListener {
-                myPageViewModel.logout(
-                    onSuccess = {
-                        handleLogout()
-                    },
-                    onError = { errorMessage ->
-                        Log.e("MyPageFragment", "Logout Error: $errorMessage")
-                        showCustomToast(errorMessage)
-                    }
-                )
+                val refreshToken = TokenManager.getRefreshToken(requireContext())
+                if (refreshToken == null) {
+                    handleLogout()
+                    return@setOnClickListener
+                } else {
+                    myPageViewModel.logout(refreshToken)
+                }
             }
 
             btnWithdraw.setOnClickListener {
-                myPageViewModel.delete(
-                    onSuccess = {
-                        handleWithdraw()
-                    },
-                    onError = { errorMessage ->
-                        Log.e("MyPageFragment", "Withdraw Error: $errorMessage")
-                        showCustomToast(errorMessage)
-                    }
-                )
+                myPageViewModel.delete()
             }
         }
     }
@@ -134,6 +147,6 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
     }
 
     private fun deleteToken() {
-        // TODO: 토큰 삭제 등의 로그아웃 후처리 작업 수행
+        TokenManager.clearTokens(requireContext())
     }
 }

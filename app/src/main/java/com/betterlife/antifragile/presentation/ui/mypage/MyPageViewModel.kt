@@ -1,5 +1,6 @@
 package com.betterlife.antifragile.presentation.ui.mypage
 
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,7 @@ import com.betterlife.antifragile.data.model.base.BaseResponse
 import com.betterlife.antifragile.data.model.base.Status
 import com.betterlife.antifragile.data.model.member.response.MemberMyPageResponse
 import com.betterlife.antifragile.data.repository.MyPageRepository
+import com.betterlife.antifragile.presentation.util.TokenManager
 import kotlinx.coroutines.launch
 
 class MyPageViewModel(
@@ -17,8 +19,16 @@ class MyPageViewModel(
     private val _memberDetailResponse = MutableLiveData<BaseResponse<MemberMyPageResponse>>()
     val memberDetailResponse = _memberDetailResponse
 
+    private val _memberLogoutResponse = MutableLiveData<BaseResponse<Any?>>()
+    val memberLogoutResponse = _memberLogoutResponse
+
+    private val _memberDeleteResponse = MutableLiveData<BaseResponse<Any?>>()
+    val memberDeleteResponse = _memberDeleteResponse
+
     init {
         _memberDetailResponse.value = BaseResponse(Status.INIT, null, null)
+        _memberLogoutResponse.value = BaseResponse(Status.INIT, null, null)
+        _memberDeleteResponse.value = BaseResponse(Status.INIT, null, null)
     }
 
     fun getMemberDetail() {
@@ -29,25 +39,20 @@ class MyPageViewModel(
         }
     }
 
-    fun logout(onSuccess: () -> Unit, onError: (String) -> Unit) {
+    fun logout(refreshToken: String) {
         viewModelScope.launch {
-            try {
-                myPageRepository.logout(AuthLogoutRequest())
-                onSuccess()
-            } catch (e: Exception) {
-                onError(e.message ?: "로그아웃 실패")
-            }
+            _memberLogoutResponse.value = BaseResponse(Status.LOADING, null, null)
+            val response = myPageRepository.logout(AuthLogoutRequest(refreshToken))
+            _memberLogoutResponse.postValue(response)
         }
     }
 
-    fun delete(onSuccess: () -> Unit, onError: (String) -> Unit) {
+    fun delete() {
         viewModelScope.launch {
-            try {
-                myPageRepository.delete()
-                onSuccess()
-            } catch (e: Exception) {
-                onError(e.message ?: "회원 탈퇴 실패")
-            }
+            _memberDeleteResponse.value = BaseResponse(Status.LOADING, null, null)
+            val response = myPageRepository.delete()
+            _memberDeleteResponse.postValue(response)
         }
+
     }
 }

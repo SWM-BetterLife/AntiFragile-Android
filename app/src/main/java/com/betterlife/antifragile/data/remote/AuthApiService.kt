@@ -52,7 +52,4 @@ interface AuthApiService {
     suspend fun logout(
         @Body request: AuthLogoutRequest
     ): Response<BaseResponse<Any?>>
-
-    @DELETE("/auth")
-    suspend fun delete(): Response<BaseResponse<Any?>>
 }

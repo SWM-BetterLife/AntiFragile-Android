@@ -1,4 +1,5 @@
 package com.betterlife.antifragile.data.model.auth.request
 
-class AuthLogoutRequest {
-}
+data class AuthLogoutRequest(
+    val refreshToken: String
+)

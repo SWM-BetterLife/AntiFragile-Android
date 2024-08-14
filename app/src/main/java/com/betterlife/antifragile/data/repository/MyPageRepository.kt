@@ -25,7 +25,7 @@ class MyPageRepository(
 
     suspend fun delete(): BaseResponse<Any?> {
         return safeApiCall {
-            authApiService.delete()
+            memberApiService.delete()
         }
     }
 }
