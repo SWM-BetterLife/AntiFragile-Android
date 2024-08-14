@@ -55,25 +55,27 @@ class DiaryTypeSelectFragment : BaseFragment<FragmentDiaryTypeSelectBinding>(
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupButtonTouchListeners() {
-        binding.btnTextType.setOnTouchListener { _, event ->
+        binding.btnTextType.setOnTouchListener { v, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     binding.btnTextType.setImageResource(R.drawable.btn_type_text_active)
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                     binding.btnTextType.setImageResource(R.drawable.btn_type_text_inactive)
+                    v.performClick()
                 }
             }
             return@setOnTouchListener true
         }
 
-        binding.btnQuestionType.setOnTouchListener { _, event ->
+        binding.btnQuestionType.setOnTouchListener { v, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     binding.btnQuestionType.setImageResource(R.drawable.btn_type_question_active)
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                     binding.btnQuestionType.setImageResource(R.drawable.btn_type_question_inactive)
+                    v.performClick()
                 }
             }
             return@setOnTouchListener true
