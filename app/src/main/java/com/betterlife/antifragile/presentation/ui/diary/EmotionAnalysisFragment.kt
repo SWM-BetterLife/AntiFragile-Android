@@ -1,14 +1,13 @@
 package com.betterlife.antifragile.presentation.ui.diary
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.data.model.common.Emotion
+import com.betterlife.antifragile.data.model.common.LLMInferenceType.EMOTION
 import com.betterlife.antifragile.data.model.diary.QuestionDiary
 import com.betterlife.antifragile.data.model.diary.TextDiary
 import com.betterlife.antifragile.data.model.diary.llm.DiaryAnalysisData
@@ -17,6 +16,8 @@ import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.customview.CustomLoadingDialog
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.DiaryViewModel
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.DiaryViewModelFactory
+import com.betterlife.antifragile.presentation.ui.diary.viewmodel.LLMViewModel
+import com.betterlife.antifragile.presentation.ui.diary.viewmodel.LLMViewModelFactory
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 
 class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
@@ -24,6 +25,7 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
 ){
 
     private lateinit var diaryViewModel: DiaryViewModel
+    private lateinit var llmViewModel: LLMViewModel
     private var textDiary: TextDiary? = null
     private var questionDiary: QuestionDiary? = null
     private var customLoadingDialog: CustomLoadingDialog? = null
@@ -42,6 +44,7 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
 
         setupViewModels()
         showLoading()
+        setStatusLLMResponse()
 
         // 로컬 DB에 저장된 텍스트 일기 또는 질문 일기 조회
         if (diaryType == "TEXT") {
@@ -52,13 +55,8 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
                     findNavController().popBackStack()
                     return@getTextDiary
                 }
-                Log.d("EmotionAnalysisFragment", "$textDiary")
-                val diaryAnalysisData = createDiaryAnalysisData(textDiary?.date ?: "")
 
-                // TODO: LLM 붙이면 postDelayed 제거
-                Handler(Looper.getMainLooper()).postDelayed({
-                    moveToEmoticonRecommend(diaryAnalysisData)
-                }, 4000)
+                llmViewModel.getResponseFromLLM(textDiary?.content ?: "", EMOTION)
             }
         } else if (diaryType == "QUESTION"){
             getQuestionDiary(diaryId) { retrievedQuestionDiary ->
@@ -87,6 +85,30 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
 
     }
 
+    private fun setStatusLLMResponse() {
+        setUpLLMObserver(
+            liveData = llmViewModel.llmResponse,
+            onSuccess = {
+                if (it != null) {
+                    Log.d("LLMViewModel", "LLM Response: $it")
+                    val responseEmotion = Emotion.parseEmotionFromStr(it)
+                    val diaryAnalysisData
+                    = createDiaryAnalysisData(textDiary?.date ?: "", responseEmotion.toKorean)
+                    findNavController().navigate(
+                        EmotionAnalysisFragmentDirections
+                            .actionNavEmotionAnalysisToNavEmoticonRecommend(
+                                diaryAnalysisData,
+                                responseEmotion,
+                                null,
+                                getIsUpdateFromArguments()
+                            )
+                    )
+                } else {
+                    Log.e("LLMViewModel", "LLM Response is null")
+                }
+            }
+        )
+    }
     override fun configureToolbar(toolbar: CustomToolbar) {
         toolbar.apply {
             reset()
@@ -108,6 +130,8 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
             this,
             DiaryViewModelFactory(requireActivity().application)
         ).get(DiaryViewModel::class.java)
+        val llmViewModelFactory = LLMViewModelFactory(requireContext())
+        llmViewModel = llmViewModelFactory.create(LLMViewModel::class.java)
     }
     // 로컬 db에 저장된 텍스트 일기 조회
     private fun getTextDiary(diaryId: Int, callback: (TextDiary?) -> Unit) {
@@ -133,9 +157,11 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
         customLoadingDialog?.show()
     }
 
-    private fun createDiaryAnalysisData(date: String): DiaryAnalysisData {
+    private fun createDiaryAnalysisData(date: String, emotion: String): DiaryAnalysisData {
+        //TODO: LLM
+
         return DiaryAnalysisData(
-            emotions = listOf("wwwww", "감정2"),
+            emotions = listOf(emotion),
             event = "사건",
             thought = "생각",
             action = "행동",

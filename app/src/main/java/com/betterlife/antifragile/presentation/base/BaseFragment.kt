@@ -115,6 +115,15 @@ abstract class BaseFragment<B : ViewDataBinding>(
         }
     }
 
+    protected fun <T> setUpLLMObserver(
+        liveData: LiveData<T>,
+        onSuccess: (T) -> Unit
+    ) {
+        liveData.observe(viewLifecycleOwner) { response ->
+            onSuccess(response)
+        }
+    }
+
     protected fun setupNullObserver(
         liveData: LiveData<BaseResponse<Any?>>,
         onSuccess: () -> Unit,

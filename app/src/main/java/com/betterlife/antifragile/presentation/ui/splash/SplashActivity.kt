@@ -8,6 +8,7 @@ import android.os.Looper
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import com.betterlife.antifragile.R
+import com.betterlife.antifragile.config.LLMTask
 import com.betterlife.antifragile.config.RetrofitInterface
 import com.betterlife.antifragile.data.model.auth.request.AuthReIssueTokenRequest
 import com.betterlife.antifragile.data.model.base.Status
@@ -36,6 +37,8 @@ class SplashActivity : AppCompatActivity() {
         var progressStatus = 0
 
         Thread {
+            /* Create LLM Task Instance */
+            LLMTask.getInstance(applicationContext)
             while (progressStatus < 100) {
                 progressStatus += 1
                 handler.post {
@@ -60,15 +63,13 @@ class SplashActivity : AppCompatActivity() {
         val accessToken = TokenManager.getAccessToken(this)
         val refreshToken = TokenManager.getRefreshToken(this)
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            if (!accessToken.isNullOrEmpty() && !refreshToken.isNullOrEmpty()) {
-                // 토큰 유효성 확인
-                checkTokenValidity(accessToken, refreshToken)
-            } else {
-                // 토큰이 없으면 로그인 화면으로 이동
-                navigateToLogin()
-            }
-        }, 2000)
+        if (!accessToken.isNullOrEmpty() && !refreshToken.isNullOrEmpty()) {
+            // 토큰 유효성 확인
+            checkTokenValidity(accessToken, refreshToken)
+        } else {
+            // 토큰이 없으면 로그인 화면으로 이동
+            navigateToLogin()
+        }
     }
 
     private fun checkTokenValidity(accessToken: String, refreshToken: String) {
