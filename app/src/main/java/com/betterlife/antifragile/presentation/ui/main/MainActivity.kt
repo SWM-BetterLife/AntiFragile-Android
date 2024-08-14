@@ -13,7 +13,6 @@ import com.betterlife.antifragile.databinding.ActivityMainBinding
 import com.betterlife.antifragile.presentation.base.BaseActivity
 import com.betterlife.antifragile.presentation.ui.calendar.viewmodel.DiaryCalendarViewModel
 import com.betterlife.antifragile.presentation.ui.calendar.viewmodel.DiaryCalendarViewModelFactory
-import com.betterlife.antifragile.presentation.util.TokenManager.getAccessToken
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

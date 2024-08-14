@@ -3,7 +3,6 @@ package com.betterlife.antifragile.data.repository
 import com.betterlife.antifragile.data.model.base.BaseResponse
 import com.betterlife.antifragile.data.model.member.request.MemberProfileModifyRequest
 import com.betterlife.antifragile.data.model.member.response.MemberDetailResponse
-import com.betterlife.antifragile.data.model.member.response.MemberMyPageResponse
 import com.betterlife.antifragile.data.model.member.response.MemberProfileModifyResponse
 import com.betterlife.antifragile.data.model.member.response.MemberRemainNumberResponse
 import com.betterlife.antifragile.data.model.member.response.NicknameDuplicateResponse
@@ -13,12 +12,6 @@ import okhttp3.MultipartBody
 class MemberRepository(
     private val memberApiService: MemberApiService
 ) : BaseRepository() {
-
-    suspend fun getMemberMyPage(): BaseResponse<MemberMyPageResponse> {
-        return safeApiCall {
-            memberApiService.getMemberMyPage()
-        }
-    }
 
     suspend fun getMemberDetail(): BaseResponse<MemberDetailResponse> {
         return safeApiCall {

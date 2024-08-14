@@ -13,7 +13,6 @@ import com.betterlife.antifragile.presentation.ui.diary.adapter.EmotionSelectAda
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.EmotionSelectViewModel
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.EmotionSelectViewModelFactory
 import com.betterlife.antifragile.presentation.util.CustomToolbar
-import com.betterlife.antifragile.presentation.util.TokenManager.getAccessToken
 
 class EmotionSelectFragment : BaseFragment<FragmentEmotionSelectBinding>(
     R.layout.fragment_emotion_select

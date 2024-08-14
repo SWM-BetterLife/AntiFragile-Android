@@ -124,6 +124,29 @@ abstract class BaseFragment<B : ViewDataBinding>(
         }
     }
 
+    protected fun setupNullObserver(
+        liveData: LiveData<BaseResponse<Any?>>,
+        onSuccess: () -> Unit,
+        onError: (BaseResponse<Any?>) -> Unit,
+        onLoading: () -> Unit = { showLoading(requireContext()) },
+        onComplete: () -> Unit = { dismissLoading() }
+    ) {
+        liveData.observe(viewLifecycleOwner) { response ->
+            when (response.status) {
+                Status.LOADING -> onLoading()
+                Status.SUCCESS -> {
+                    onComplete()
+                    onSuccess()
+                }
+                Status.FAIL, Status.ERROR -> {
+                    onComplete()
+                    onError(response)
+                }
+                else -> Log.d("BaseFragment", "Unknown status: ${response.status}")
+            }
+        }
+    }
+
     fun showSelectDialog(
         context: Context,
         title: String,

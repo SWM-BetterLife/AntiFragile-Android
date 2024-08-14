@@ -19,7 +19,6 @@ import com.betterlife.antifragile.presentation.ui.diary.viewmodel.EmoticonRecomm
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.DateUtil
 import com.betterlife.antifragile.presentation.util.RecommendDialogUtil
-import com.betterlife.antifragile.presentation.util.TokenManager.getAccessToken
 
 class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>(
     R.layout.fragment_emoticon_recommend
@@ -66,9 +65,16 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
     }
 
     private fun setupObservers() {
-        setupBaseObserver(
+        setupNullObserver(
             liveData = recommendEmoticonViewModel.saveDiaryResponse,
-            onSuccess = { },
+            onSuccess = {
+                if (getIsUpdate()) {
+                    // 수정 시
+                    recommendEmoticonViewModel.getRemainRecommendNumber()
+                } else {
+                    recommendEmoticonViewModel.getRecommendContents(diaryAnalysisData.diaryDate)
+                }
+            },
             onError = { handleSaveError(it.errorMessage) }
         )
 
@@ -93,18 +99,31 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
                     fragment = this,
                     remainNumber = response.remainNumber,
                     onLeftButtonClicked = {
-                        navigateToContentRecommend(false, null)
+                        navigateToContentRecommend()
                     },
                     onRightButtonFeedbackProvided = { feedback ->
-                        navigateToContentRecommend(false, feedback)
+                        recommendEmoticonViewModel.getReRecommendContents(
+                            diaryAnalysisData.diaryDate,
+                            feedback
+                        )
                     },
                     onExcessRemainNumber = {
-                        navigateToContentRecommend(false, null)
+                        navigateToContentRecommend()
                     }
                 )
             },
             onError = {
                 showCustomToast(it.errorMessage ?: "남은 추천 횟수 조회에 실패했습니다.")
+            }
+        )
+
+        setupBaseObserver(
+            liveData = recommendEmoticonViewModel.contentResponse,
+            onSuccess = {
+                navigateToContentRecommend()
+            },
+            onError = {
+                showCustomToast(it.errorMessage ?: "추천 콘텐츠 조회에 실패했습니다.")
             }
         )
     }
@@ -142,18 +161,17 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
         )
 
         if (getIsUpdate()) {
-            recommendEmoticonViewModel.getRemainRecommendNumber()
+            // 수정 시
+            recommendEmoticonViewModel.updateDiaryAnalysis(diaryAnalysisData.diaryDate, request)
         } else {
-            recommendEmoticonViewModel.saveDiaryAnalysis(request, null)
-            navigateToContentRecommend(true, null)
+            // 생성 시
+            recommendEmoticonViewModel.saveDiaryAnalysis(request)
         }
     }
 
-    private fun navigateToContentRecommend(isNewDiary: Boolean, feedback: String?) {
+    private fun navigateToContentRecommend() {
         val action = EmoticonRecommendFragmentDirections
-            .actionNavEmoticonRecommendToNavContentRecommend(
-                diaryAnalysisData.diaryDate, isNewDiary, feedback, false
-            )
+            .actionNavEmoticonRecommendToNavContentRecommend(diaryAnalysisData.diaryDate, false)
         findNavController().navigate(action)
     }
 

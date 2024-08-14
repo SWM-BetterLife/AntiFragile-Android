@@ -12,15 +12,14 @@ import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentViewModel
 import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentViewModelFactory
 import com.betterlife.antifragile.presentation.util.CustomToolbar
-import com.betterlife.antifragile.presentation.util.TokenManager.getAccessToken
-import java.time.LocalDate
+import com.betterlife.antifragile.presentation.util.DateUtil
 
 class ContentFragment : BaseFragment<FragmentContentBinding>(R.layout.fragment_content) {
 
     private lateinit var contentViewModel: ContentViewModel
     private lateinit var contentAdapter: ContentAdapter
     private lateinit var navController: NavController
-    private var today = LocalDate.now()
+    private var today = DateUtil.getTodayDate()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -37,7 +36,7 @@ class ContentFragment : BaseFragment<FragmentContentBinding>(R.layout.fragment_c
     private fun setupRecyclerView() {
         contentAdapter = ContentAdapter(emptyList()) { content ->
             val action = ContentFragmentDirections.
-            actionContentFragmentToContentDetailFragment(content.id, today.toString())
+            actionContentFragmentToContentDetailFragment(content.id, today)
             navController.navigate(action)
         }
         binding.rvContentList.apply {
@@ -57,7 +56,7 @@ class ContentFragment : BaseFragment<FragmentContentBinding>(R.layout.fragment_c
             onSuccess = { contentListResponse ->
                 contentAdapter = ContentAdapter(contentListResponse.contents) { content ->
                     val action = ContentFragmentDirections.
-                    actionContentFragmentToContentDetailFragment(content.id, today.toString())
+                    actionContentFragmentToContentDetailFragment(content.id, today)
                     navController.navigate(action)
                 }
                 binding.rvContentList.adapter = contentAdapter
