@@ -18,12 +18,12 @@ interface ContentApiService {
 
     @POST("/contents")
     suspend fun recommendContents(
-        @Query("date") date: LocalDate
+        @Query("date") date: String
     ): Response<BaseResponse<ContentListResponse>>
 
     @POST("/contents/re")
     suspend fun reRecommendContents(
-        @Query("date") date: LocalDate,
+        @Query("date") date: String,
         @Query("feedback") feedback: String
     ): Response<BaseResponse<ContentListResponse>>
 
@@ -39,7 +39,7 @@ interface ContentApiService {
 
     @GET("contents")
     suspend fun getContents(
-        @Query("date") date: LocalDate
+        @Query("date") date: String
     ): Response<BaseResponse<ContentListResponse>>
 
     @GET("/contents/{contentId}")

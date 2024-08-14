@@ -57,12 +57,7 @@ class ContentViewCompleteFragment : BaseFragment<FragmentContentViewCompleteBind
                     remainNumber = response.remainNumber,
                     onLeftButtonClicked = { },
                     onRightButtonFeedbackProvided = { feedback ->
-                        findNavController().navigate(
-                            ContentViewCompleteFragmentDirections
-                                .actionNavContentViewCompleteToNavContentRecommend(
-                                    diaryDate, false ,feedback, false
-                                )
-                        )
+                        contentViewCompleteViewModel.getReRecommendContents(diaryDate, feedback)
                     },
                     onExcessRemainNumber = {
                         navigateToContentList()
@@ -95,6 +90,19 @@ class ContentViewCompleteFragment : BaseFragment<FragmentContentViewCompleteBind
             },
             onError = {
                 showCustomToast("일기 정보를 불러오는데 실패했습니다.")
+            }
+        )
+
+        setupBaseObserver(
+            liveData = contentViewCompleteViewModel.contentResponse,
+            onSuccess = {
+                findNavController().navigate(
+                    ContentViewCompleteFragmentDirections
+                        .actionNavContentViewCompleteToNavContentRecommend(diaryDate, true)
+                )
+            },
+            onError = {
+                showCustomToast(it.errorMessage ?: "콘텐츠를 재추천을 실패했습니다.")
             }
         )
     }

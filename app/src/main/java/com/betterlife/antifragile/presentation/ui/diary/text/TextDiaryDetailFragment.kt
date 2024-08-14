@@ -104,11 +104,11 @@ class TextDiaryDetailFragment: BaseFragment<FragmentTextDiaryDetailBinding>(
 
     private fun setupButton() {
         binding.btnMoveContent.setOnClickListener {
-            val action =
+            findNavController().navigate(
                 TextDiaryDetailFragmentDirections.actionNavTextDiaryDetailToNavContentRecommend(
-                diaryDate, false, null, true
+                    diaryDate, true
+                )
             )
-            findNavController().navigate(action)
         }
     }
 }

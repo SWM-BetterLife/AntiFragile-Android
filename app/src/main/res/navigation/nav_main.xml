@@ -69,13 +69,6 @@
             android:name="diaryDate"
             app:argType="string" />
         <argument
-            android:name="isNewDiary"
-            app:argType="boolean" />
-        <argument
-            android:name="feedback"
-            app:argType="string"
-            app:nullable="true" />
-        <argument
             android:name="isBackActive"
             app:argType="boolean" />
     </fragment>

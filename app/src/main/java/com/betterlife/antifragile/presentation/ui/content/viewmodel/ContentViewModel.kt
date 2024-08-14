@@ -21,7 +21,7 @@ class ContentViewModel(
         _contentListResponse.value = BaseResponse(Status.INIT, null, null)
     }
 
-    fun getContentList(date: LocalDate) {
+    fun getContentList(date: String) {
         viewModelScope.launch {
             _contentListResponse.value = BaseResponse(Status.LOADING, null, null)
             val response = contentRepository.getContents(date)

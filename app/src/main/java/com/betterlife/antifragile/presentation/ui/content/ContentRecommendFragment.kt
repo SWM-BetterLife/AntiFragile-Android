@@ -23,12 +23,7 @@ class ContentRecommendFragment : BaseFragment<FragmentContentRecommendBinding>(
 
     private lateinit var contentRecommendViewModel: ContentRecommendViewModel
     private lateinit var contentAdapter: ContentAdapter
-    private lateinit var diaryDateString: String
-    private lateinit var diaryDate: LocalDate
-    private var isNewDiary: Boolean = false
-    private var feedback: String? = null
-
-    private var hasShownRecommendDialog = false
+    private lateinit var diaryDate: String
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -37,32 +32,8 @@ class ContentRecommendFragment : BaseFragment<FragmentContentRecommendBinding>(
         setupObservers()
         setupRecyclerView()
 
-        diaryDateString = arguments?.getString("diaryDate").toString()
-        isNewDiary = arguments?.getBoolean("isNewDiary") ?: false
-        feedback = arguments?.getString("feedback")
-
-        diaryDate = diaryDateString.let { LocalDate.parse(it) }
-
-        // 로직 구성
-        diaryDate.let { date ->
-            when {
-                isNewDiary -> {
-                    // 신규 일기 생성 -> 추천 API 호출
-                    contentRecommendViewModel.getRecommendContents(null, date)
-                }
-                !isNewDiary && feedback == null -> {
-                    // 기존 일기 -> 조회 API 호출
-                    contentRecommendViewModel.getContentList(date)
-                }
-                !isNewDiary && feedback != null -> {
-                    // 재추천 -> 재추천 API 호출
-                    contentRecommendViewModel.getRecommendContents(feedback, date)
-                }
-                else -> {
-                    Log.e("RecommendContentFragment", "Unhandled case for isNewDiary and feedback")
-                }
-            }
-        }
+        diaryDate = arguments?.getString("diaryDate").toString()
+        contentRecommendViewModel.getContentList(diaryDate)
 
         (activity as MainActivity).showBottomNavigation()
     }
@@ -70,7 +41,7 @@ class ContentRecommendFragment : BaseFragment<FragmentContentRecommendBinding>(
     private fun setupRecyclerView() {
         contentAdapter = ContentAdapter(emptyList()) { content ->
             val action = ContentRecommendFragmentDirections.
-                actionContentRecommendFragmentToContentDetailFragment(content.id, diaryDateString)
+                actionContentRecommendFragmentToContentDetailFragment(content.id, diaryDate)
             findNavController().navigate(action)
         }
         binding.rvContentList.apply {
@@ -85,11 +56,11 @@ class ContentRecommendFragment : BaseFragment<FragmentContentRecommendBinding>(
             onSuccess = { contentListResponse ->
                 contentAdapter = ContentAdapter(contentListResponse.contents) { content ->
                     val action = ContentRecommendFragmentDirections.
-                        actionContentRecommendFragmentToContentDetailFragment(content.id, diaryDateString)
+                        actionContentRecommendFragmentToContentDetailFragment(content.id, diaryDate)
                     findNavController().navigate(action)
                 }
                 binding.rvContentList.adapter = contentAdapter
-                binding.tvDate.text = DateUtil.convertDateToFullFormat(diaryDateString)
+                binding.tvDate.text = DateUtil.convertDateToFullFormat(diaryDate)
             },
             onError = {
                 Log.e("ContentFragment", "Error: ${it.errorMessage}")
@@ -98,18 +69,15 @@ class ContentRecommendFragment : BaseFragment<FragmentContentRecommendBinding>(
         setupBaseObserver(
             liveData = contentRecommendViewModel.remainRecommendNumber,
             onSuccess = { response ->
-                if (!hasShownRecommendDialog) {
-                    RecommendDialogUtil.showRecommendDialogs(
-                        fragment = this,
-                        remainNumber = response.remainNumber,
-                        onLeftButtonClicked = { },
-                        onRightButtonFeedbackProvided = { feedback ->
-                            contentRecommendViewModel.getRecommendContents(feedback, diaryDate)
-                        },
-                        onExcessRemainNumber = { }
-                    )
-                    hasShownRecommendDialog = true // 다이얼로그를 띄운 후 상태 저장
-                }
+                RecommendDialogUtil.showRecommendDialogs(
+                    fragment = this,
+                    remainNumber = response.remainNumber,
+                    onLeftButtonClicked = { },
+                    onRightButtonFeedbackProvided = { feedback ->
+                        contentRecommendViewModel.getReRecommendContents(diaryDate, feedback)
+                    },
+                    onExcessRemainNumber = { }
+                )
             },
             onError = {
                 showCustomToast(it.errorMessage ?: "남은 추천 횟수 조회에 실패했습니다.")
@@ -122,14 +90,13 @@ class ContentRecommendFragment : BaseFragment<FragmentContentRecommendBinding>(
             reset()
             setSubTitle("맞춤형 콘텐츠")
 
-            if (arguments?.getBoolean("isBackActive") ?: false) {
+            if (arguments?.getBoolean("isBackActive") == true) {
                 showBackButton {
                     findNavController().popBackStack()
                 }
             }
 
             showCustomButton(R.drawable.btn_re) {
-                hasShownRecommendDialog = false
                 contentRecommendViewModel.getRemainRecommendNumber()
             }
         }

@@ -11,7 +11,7 @@ class ContentRepository(
 ) : BaseRepository() {
 
     suspend fun getRecommendContents(
-        date: LocalDate
+        date: String
     ): BaseResponse<ContentListResponse> {
         return safeApiCall {
             contentApiService.recommendContents(date)
@@ -19,7 +19,7 @@ class ContentRepository(
     }
 
     suspend fun getReRecommendContents(
-        date: LocalDate,
+        date: String,
         feedback: String
     ): BaseResponse<ContentListResponse> {
         return safeApiCall {
@@ -44,7 +44,7 @@ class ContentRepository(
     }
 
     suspend fun getContents(
-        date: LocalDate
+        date: String
     ): BaseResponse<ContentListResponse> {
         return safeApiCall {
             contentApiService.getContents(date)
