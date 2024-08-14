@@ -9,6 +9,7 @@ import com.betterlife.antifragile.data.model.member.response.MemberRemainNumberR
 import com.betterlife.antifragile.data.model.member.response.NicknameDuplicateResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -39,4 +40,7 @@ interface MemberApiService {
     suspend fun checkNicknameExistence(
         @Query("nickname") nickname: String
     ): Response<BaseResponse<NicknameDuplicateResponse>>
+
+    @DELETE("/auth")
+    suspend fun delete(): Response<BaseResponse<Any?>>
 }

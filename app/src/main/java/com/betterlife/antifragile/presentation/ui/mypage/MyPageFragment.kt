@@ -4,20 +4,16 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
-import com.betterlife.antifragile.config.RetrofitInterface
-import com.betterlife.antifragile.data.model.base.CustomErrorMessage
-import com.betterlife.antifragile.data.model.base.Status
 import com.betterlife.antifragile.data.model.enums.LoginType
-import com.betterlife.antifragile.data.repository.MemberRepository
 import com.betterlife.antifragile.databinding.FragmentMyPageBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
-import com.betterlife.antifragile.presentation.ui.auth.AuthActivity
+import com.betterlife.antifragile.presentation.ui.splash.SplashActivity
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.ImageUtil.setImage
-import com.betterlife.antifragile.presentation.util.TokenManager.getAccessToken
-
+import com.betterlife.antifragile.presentation.util.TokenManager
 
 class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_page) {
 
@@ -41,61 +37,62 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
     }
 
     private fun setupViewModel() {
-        val memberApiService =
-            RetrofitInterface.createMemberApiService(requireContext())
-        val memberRepository = MemberRepository(memberApiService)
-        val factory = MyPageViewModelFactory(memberRepository)
-        myPageViewModel = factory.create(MyPageViewModel::class.java)
+        val factory = MyPageViewModelFactory(requireContext())
+        myPageViewModel =
+            ViewModelProvider(this, factory)[MyPageViewModel::class.java]
     }
 
     private fun setupObserver() {
-        myPageViewModel.memberDetailResponse.observe(viewLifecycleOwner) { response ->
-            when (response.status) {
-                Status.LOADING -> {
-                    showLoading(requireContext())
-                }
-                Status.SUCCESS -> {
-                    dismissLoading()
-                    setupMemberVisibility(true)
-                    binding.apply {
-                        tvNickname.text = response.data?.nickname ?: "-"
-                        tvEmail.text = response.data?.email ?: "-"
-                        tvDiaryTotalNum.text = response.data?.diaryTotalNum.toString() + " 일"
-                        if (response.data?.profileImgUrl.isNullOrEmpty()) {
-                            ivProfileImg.setImageResource(R.drawable.ic_member_default_profile)
-                        } else {
-                            ivProfileImg.setImage(response.data?.profileImgUrl)
-                        }
-                    }
-                }
-                Status.FAIL -> {
-                    dismissLoading()
-                    if (
-                        response.errorMessage == CustomErrorMessage.MEMBER_NOT_FOUND.message
-                    ) {
-                        setupMemberVisibility(false)
+        setupBaseObserver(
+            liveData = myPageViewModel.memberDetailResponse,
+            onSuccess = { memberDetailResponse ->
+                setupMemberVisibility()
+                binding.apply {
+                    tvNickname.text = memberDetailResponse.nickname
+                    tvEmail.text = memberDetailResponse.email
+                    tvDiaryTotalNum.text = getString(
+                        R.string.diary_total_num_format, memberDetailResponse.diaryTotalNum
+                    )
+                    if (memberDetailResponse.profileImgUrl == null) {
+                        ivProfileImg.setImageResource(R.drawable.ic_member_default_profile)
                     } else {
-                        showCustomToast(response.errorMessage ?: "내 정보를 불러오는데 실패했습니다.")
+                        ivProfileImg.setImage(memberDetailResponse.profileImgUrl)
                     }
                 }
-                Status.ERROR -> {
-                    dismissLoading()
-                    showCustomToast(response.errorMessage ?: "내 정보를 불러오는데 실패했습니다.")
-                }
-                else -> {
-                    Log.d("MyPageFragment", "Unknown status: ${response.status}")
-                }
+            },
+            onError = {
+                Log.e("MyPageFragment", "Error: ${it.errorMessage}")
             }
-        }
+        )
+
+        setupNullObserver(
+            liveData = myPageViewModel.memberLogoutResponse,
+            onSuccess = {
+                handleLogout()
+            },
+            onError = {
+                Log.e("MyPageFragment", "Logout Error: ${it.errorMessage ?: "로그아웃에 실패했습니다."}")
+                showCustomToast("로그아웃에 실패했습니다.")
+            }
+        )
+
+        setupNullObserver(
+            liveData = myPageViewModel.memberDeleteResponse,
+            onSuccess = {
+                handleWithdraw()
+            },
+            onError = {
+                Log.e("MyPageFragment", "Withdraw Error: ${it.errorMessage ?: "회원탈퇴에 실패했습니다."}")
+                showCustomToast("회원탈퇴에 실패했습니다.")
+            }
+        )
     }
 
-    private fun setupMemberVisibility(isActive: Boolean) {
+    private fun setupMemberVisibility() {
         binding.apply {
-            val activeVisibility = if (isActive) View.VISIBLE else View.GONE
-
-            tvNickname.visibility = activeVisibility
-            tvEmail.visibility = activeVisibility
-            tvDiaryTotalNum.visibility = activeVisibility
+            tvNickname.visibility = View.VISIBLE
+            tvEmail.visibility = View.VISIBLE
+            tvDiaryTotalNum.visibility = View.VISIBLE
         }
     }
 
@@ -116,26 +113,34 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
             }
 
             btnLogout.setOnClickListener {
-                //  TODO: 로그아웃
-                handleLogout()
+                val refreshToken = TokenManager.getRefreshToken(requireContext())
+                if (refreshToken == null) {
+                    handleLogout()
+                    return@setOnClickListener
+                } else {
+                    myPageViewModel.logout(refreshToken)
+                }
             }
 
             btnWithdraw.setOnClickListener {
-                // TODO: 회원 탈퇴
+                myPageViewModel.delete()
             }
         }
     }
 
     private fun handleLogout() {
-        logout()
-
-        val intent = Intent(requireActivity(), AuthActivity::class.java)
+        val intent = Intent(requireActivity(), SplashActivity::class.java)
         requireActivity().supportFragmentManager.popBackStack()
         startActivity(intent)
         requireActivity().finish()
+        TokenManager.clearTokens(requireContext())
     }
 
-    private fun logout() {
-        // TODO: 로그아웃 구현
+    private fun handleWithdraw() {
+        val intent = Intent(requireActivity(), SplashActivity::class.java)
+        requireActivity().supportFragmentManager.popBackStack()
+        startActivity(intent)
+        requireActivity().finish()
+        TokenManager.clearTokens(requireContext())
     }
 }

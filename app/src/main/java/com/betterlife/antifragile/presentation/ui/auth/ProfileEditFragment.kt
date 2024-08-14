@@ -29,7 +29,6 @@ import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.DateUtil
 import com.betterlife.antifragile.presentation.util.ImageUtil.setImage
 import com.betterlife.antifragile.presentation.util.PermissionUtil
-import com.betterlife.antifragile.presentation.util.TokenManager.getAccessToken
 import com.betterlife.antifragile.presentation.util.TokenManager.saveTokens
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody

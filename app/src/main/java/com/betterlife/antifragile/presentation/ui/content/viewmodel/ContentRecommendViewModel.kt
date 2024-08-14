@@ -10,7 +10,6 @@ import com.betterlife.antifragile.data.model.member.response.MemberRemainNumberR
 import com.betterlife.antifragile.data.repository.ContentRepository
 import com.betterlife.antifragile.data.repository.MemberRepository
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 
 class ContentRecommendViewModel(
     private val contentRepository: ContentRepository,
@@ -29,7 +28,7 @@ class ContentRecommendViewModel(
     }
 
     // 해당 일자 추천 콘텐츠 조회인 경우 호출
-    fun getContentList(date: LocalDate) {
+    fun getContentList(date: String) {
         viewModelScope.launch {
             _contentResponse.value = BaseResponse(Status.LOADING, null, null)
             val response = contentRepository.getContents(date)
@@ -37,24 +36,7 @@ class ContentRecommendViewModel(
         }
     }
 
-    // 추천 또는 재추천인 경우 호출
-    fun getRecommendContents(feedback: String?, date: LocalDate) {
-        if (feedback != null) {
-            getReRecommendContents(date, feedback)
-        } else {
-            getRecommendContents(date)
-        }
-    }
-
-    private fun getRecommendContents(date: LocalDate) {
-        viewModelScope.launch {
-            _contentResponse.value = BaseResponse(Status.LOADING, null, null)
-            val response = contentRepository.getRecommendContents(date)
-            _contentResponse.postValue(response)
-        }
-    }
-
-    private fun getReRecommendContents(date: LocalDate, feedback: String) {
+    fun getReRecommendContents(date: String, feedback: String) {
         viewModelScope.launch {
             _contentResponse.value = BaseResponse(Status.LOADING, null, null)
             val response = contentRepository.getReRecommendContents(date, feedback)

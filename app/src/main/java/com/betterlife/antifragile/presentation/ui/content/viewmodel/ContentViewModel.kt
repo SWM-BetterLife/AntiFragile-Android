@@ -8,7 +8,6 @@ import com.betterlife.antifragile.data.model.base.Status
 import com.betterlife.antifragile.data.model.content.response.ContentListResponse
 import com.betterlife.antifragile.data.repository.ContentRepository
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 
 class ContentViewModel(
     private val contentRepository: ContentRepository
@@ -21,7 +20,7 @@ class ContentViewModel(
         _contentListResponse.value = BaseResponse(Status.INIT, null, null)
     }
 
-    fun getContentList(date: LocalDate) {
+    fun getContentList(date: String) {
         viewModelScope.launch {
             _contentListResponse.value = BaseResponse(Status.LOADING, null, null)
             val response = contentRepository.getContents(date)
