@@ -101,7 +101,7 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
                         EmotionAnalysisFragmentDirections
                             .actionNavEmotionAnalysisToNavEmoticonRecommend(
                                 diaryAnalysisData,
-                                Emotion.JOY,
+                                responseEmotion,
                                 null,
                                 getIsUpdateFromArguments()
                             )

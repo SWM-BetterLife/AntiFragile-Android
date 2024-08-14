@@ -40,7 +40,7 @@ enum class Emotion(val toKorean: String, val bgRes: Int) {
         @JvmStatic
         fun parseEmotionFromStr(s: String): Emotion {
             return entries.find { emotion ->
-                s.contains(emotion.name) || s.contains(emotion.name.lowercase())
+                s.uppercase().contains(emotion.name)
             } ?: ERROR
         }
     }
