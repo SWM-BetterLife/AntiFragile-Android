@@ -17,7 +17,6 @@ import com.betterlife.antifragile.presentation.ui.diary.viewmodel.TextDiaryViewM
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.TextDiaryViewModelFactory
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.DateUtil
-import com.betterlife.antifragile.presentation.util.TokenManager.getAccessToken
 
 class TextDiaryDetailFragment: BaseFragment<FragmentTextDiaryDetailBinding>(
     R.layout.fragment_text_diary_detail

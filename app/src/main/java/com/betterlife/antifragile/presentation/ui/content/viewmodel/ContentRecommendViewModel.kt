@@ -10,7 +10,6 @@ import com.betterlife.antifragile.data.model.member.response.MemberRemainNumberR
 import com.betterlife.antifragile.data.repository.ContentRepository
 import com.betterlife.antifragile.data.repository.MemberRepository
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 
 class ContentRecommendViewModel(
     private val contentRepository: ContentRepository,

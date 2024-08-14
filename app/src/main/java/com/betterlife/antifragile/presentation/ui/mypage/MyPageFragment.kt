@@ -10,7 +10,6 @@ import com.betterlife.antifragile.R
 import com.betterlife.antifragile.data.model.enums.LoginType
 import com.betterlife.antifragile.databinding.FragmentMyPageBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
-import com.betterlife.antifragile.presentation.ui.auth.AuthActivity
 import com.betterlife.antifragile.presentation.ui.splash.SplashActivity
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.ImageUtil.setImage

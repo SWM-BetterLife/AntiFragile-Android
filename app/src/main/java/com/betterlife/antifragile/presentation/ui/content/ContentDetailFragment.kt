@@ -17,7 +17,6 @@ import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentDetai
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.DateUtil
 import com.betterlife.antifragile.presentation.util.NumberUtil
-import com.betterlife.antifragile.presentation.util.TokenManager.getAccessToken
 import java.util.regex.Pattern
 
 class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(

@@ -11,7 +11,6 @@ import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentViewC
 import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentViewCompleteViewModelFactory
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.RecommendDialogUtil
-import com.betterlife.antifragile.presentation.util.TokenManager.getAccessToken
 
 class ContentViewCompleteFragment : BaseFragment<FragmentContentViewCompleteBinding>(
     R.layout.fragment_content_view_complete

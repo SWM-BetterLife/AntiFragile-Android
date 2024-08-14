@@ -14,7 +14,6 @@ import com.betterlife.antifragile.data.repository.DiaryAnalysisRepository
 import com.betterlife.antifragile.data.repository.EmoticonThemeRepository
 import com.betterlife.antifragile.data.repository.MemberRepository
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 
 class EmoticonRecommendViewModel(
     private val diaryAnalysisRepository: DiaryAnalysisRepository,

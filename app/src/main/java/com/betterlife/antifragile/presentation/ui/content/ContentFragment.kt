@@ -13,8 +13,6 @@ import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentViewM
 import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentViewModelFactory
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.DateUtil
-import com.betterlife.antifragile.presentation.util.TokenManager.getAccessToken
-import java.time.LocalDate
 
 class ContentFragment : BaseFragment<FragmentContentBinding>(R.layout.fragment_content) {
 

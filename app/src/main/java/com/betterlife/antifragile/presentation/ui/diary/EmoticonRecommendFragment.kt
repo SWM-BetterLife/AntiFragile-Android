@@ -19,7 +19,6 @@ import com.betterlife.antifragile.presentation.ui.diary.viewmodel.EmoticonRecomm
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.DateUtil
 import com.betterlife.antifragile.presentation.util.RecommendDialogUtil
-import com.betterlife.antifragile.presentation.util.TokenManager.getAccessToken
 
 class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>(
     R.layout.fragment_emoticon_recommend

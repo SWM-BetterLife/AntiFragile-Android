@@ -12,7 +12,6 @@ import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.DateUtil.getTodayDate
 import com.betterlife.antifragile.presentation.util.ImageUtil.setImage
-import com.betterlife.antifragile.presentation.util.TokenManager.getAccessToken
 
 class MyEmotionFragment : BaseFragment<FragmentMyEmotionBinding>(
     R.layout.fragment_my_emotion

@@ -14,8 +14,6 @@ import com.betterlife.antifragile.presentation.ui.main.MainActivity
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.DateUtil
 import com.betterlife.antifragile.presentation.util.RecommendDialogUtil
-import com.betterlife.antifragile.presentation.util.TokenManager.getAccessToken
-import java.time.LocalDate
 
 class ContentRecommendFragment : BaseFragment<FragmentContentRecommendBinding>(
     R.layout.fragment_content_recommend

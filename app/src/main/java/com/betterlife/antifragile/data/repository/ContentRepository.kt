@@ -4,7 +4,6 @@ import com.betterlife.antifragile.data.model.base.BaseResponse
 import com.betterlife.antifragile.data.model.content.response.ContentDetailResponse
 import com.betterlife.antifragile.data.model.content.response.ContentListResponse
 import com.betterlife.antifragile.data.remote.ContentApiService
-import java.time.LocalDate
 
 class ContentRepository(
     private val contentApiService: ContentApiService
