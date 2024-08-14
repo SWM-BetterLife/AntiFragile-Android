@@ -1,6 +1,5 @@
 package com.betterlife.antifragile.presentation.ui.mypage
 
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,7 +8,6 @@ import com.betterlife.antifragile.data.model.base.BaseResponse
 import com.betterlife.antifragile.data.model.base.Status
 import com.betterlife.antifragile.data.model.member.response.MemberMyPageResponse
 import com.betterlife.antifragile.data.repository.MyPageRepository
-import com.betterlife.antifragile.presentation.util.TokenManager
 import kotlinx.coroutines.launch
 
 class MyPageViewModel(

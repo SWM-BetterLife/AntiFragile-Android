@@ -11,6 +11,7 @@ import com.betterlife.antifragile.data.model.enums.LoginType
 import com.betterlife.antifragile.databinding.FragmentMyPageBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.auth.AuthActivity
+import com.betterlife.antifragile.presentation.ui.splash.SplashActivity
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.ImageUtil.setImage
 import com.betterlife.antifragile.presentation.util.TokenManager
@@ -53,7 +54,7 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
                     tvDiaryTotalNum.text = getString(
                         R.string.diary_total_num_format, memberDetailResponse.diaryTotalNum
                     )
-                    if (memberDetailResponse.profileImgUrl.isEmpty()) {
+                    if (memberDetailResponse.profileImgUrl == null) {
                         ivProfileImg.setImageResource(R.drawable.ic_member_default_profile)
                     } else {
                         ivProfileImg.setImage(memberDetailResponse.profileImgUrl)
@@ -65,7 +66,7 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
             }
         )
 
-        setupBaseObserver(
+        setupNullObserver(
             liveData = myPageViewModel.memberLogoutResponse,
             onSuccess = {
                 handleLogout()
@@ -76,7 +77,7 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
             }
         )
 
-        setupBaseObserver(
+        setupNullObserver(
             liveData = myPageViewModel.memberDeleteResponse,
             onSuccess = {
                 handleWithdraw()
@@ -129,24 +130,18 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
     }
 
     private fun handleLogout() {
-        deleteToken()
-
-        val intent = Intent(requireActivity(), AuthActivity::class.java)
+        val intent = Intent(requireActivity(), SplashActivity::class.java)
         requireActivity().supportFragmentManager.popBackStack()
         startActivity(intent)
         requireActivity().finish()
+        TokenManager.clearTokens(requireContext())
     }
 
     private fun handleWithdraw() {
-        deleteToken()
-
-        val intent = Intent(requireActivity(), AuthActivity::class.java)
+        val intent = Intent(requireActivity(), SplashActivity::class.java)
         requireActivity().supportFragmentManager.popBackStack()
         startActivity(intent)
         requireActivity().finish()
-    }
-
-    private fun deleteToken() {
         TokenManager.clearTokens(requireContext())
     }
 }
