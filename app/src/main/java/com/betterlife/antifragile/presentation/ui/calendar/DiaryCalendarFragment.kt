@@ -13,9 +13,9 @@ import com.betterlife.antifragile.databinding.FragmentDiaryCalendarBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.calendar.viewmodel.DiaryCalendarViewModel
 import com.betterlife.antifragile.presentation.ui.calendar.viewmodel.DiaryCalendarViewModelFactory
-import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.DateUtil.getTodayDate
+import com.betterlife.antifragile.presentation.util.TokenManager.getAccessToken
 import java.util.Calendar
 
 class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
@@ -35,6 +35,9 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
         setupListeners()
         loadCurrentMonth()
         observeTodayDiaryId()
+
+        Log.d("accessToken", getAccessToken(requireContext()).toString())
+        Log.d("refreshToken", getAccessToken(requireContext()).toString())
     }
 
     override fun configureToolbar(toolbar: CustomToolbar) {
@@ -45,9 +48,8 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
     }
 
     private fun setupViewModel() {
-        val factory = DiaryCalendarViewModelFactory(requireContext(), Constants.TOKEN)
-        diaryCalendarViewModel =
-            ViewModelProvider(this, factory)[DiaryCalendarViewModel::class.java]
+        val factory = DiaryCalendarViewModelFactory(requireContext())
+        diaryCalendarViewModel = factory.create(DiaryCalendarViewModel::class.java)
     }
 
     private fun setupRecyclerView() {

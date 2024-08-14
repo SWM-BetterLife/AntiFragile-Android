@@ -1,13 +1,9 @@
 package com.betterlife.antifragile.data.repository
 
 import android.annotation.SuppressLint
-import com.betterlife.antifragile.data.local.DiaryDao
 import com.betterlife.antifragile.data.model.base.BaseResponse
 import com.betterlife.antifragile.data.model.base.Status
 import com.betterlife.antifragile.data.model.calendar.CalendarDateModel
-import com.betterlife.antifragile.data.model.diary.DiarySummary
-import com.betterlife.antifragile.data.model.diaryanalysis.response.DiaryAnalysisEmoticonsResponse
-import com.betterlife.antifragile.data.remote.DiaryAnalysisApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.Calendar

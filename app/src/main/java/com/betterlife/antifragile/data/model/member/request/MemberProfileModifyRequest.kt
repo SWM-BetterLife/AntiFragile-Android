@@ -4,7 +4,7 @@ import com.betterlife.antifragile.data.model.enums.Gender
 
 data class MemberProfileModifyRequest(
     val nickname: String,
-    val age: Int,
+    val birthDate: String,
     val gender: Gender,
     val job: String
 )

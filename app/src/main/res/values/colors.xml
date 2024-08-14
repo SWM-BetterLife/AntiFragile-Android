@@ -16,4 +16,7 @@
     <color name="semi_transparent_black">#BF000000</color>
     <color name="like_button_color">#F64949</color>
     <color name="unlike_button_color">#EAEAEA</color>
+    <color name="google_btn_stroke">#CACACA</color>
+    <color name="red">#FF6262</color>
+    <color name="green">#00C86F</color>
 </resources>

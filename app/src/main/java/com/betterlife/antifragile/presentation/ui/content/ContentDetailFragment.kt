@@ -8,17 +8,16 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.databinding.FragmentContentDetailBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentDetailViewModel
 import com.betterlife.antifragile.presentation.ui.content.viewmodel.ContentDetailViewModelFactory
-import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.DateUtil
 import com.betterlife.antifragile.presentation.util.NumberUtil
+import com.betterlife.antifragile.presentation.util.TokenManager.getAccessToken
 import java.util.regex.Pattern
 
 class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(
@@ -53,9 +52,8 @@ class ContentDetailFragment : BaseFragment<FragmentContentDetailBinding>(
     }
 
     private fun setupViewModel() {
-        val factory = ContentDetailViewModelFactory(Constants.TOKEN)
-        contentDetailViewModel =
-            ViewModelProvider(this, factory)[ContentDetailViewModel::class.java]
+        val factory = ContentDetailViewModelFactory(requireContext())
+        contentDetailViewModel = factory.create(ContentDetailViewModel::class.java)
     }
 
     private fun setupObservers() {

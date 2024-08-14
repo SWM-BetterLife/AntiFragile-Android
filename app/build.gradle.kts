@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -6,6 +9,9 @@ plugins {
     id("kotlin-parcelize")
 }
 
+var properties = Properties()
+properties.load(FileInputStream("local.properties"))
+
 android {
     namespace = "com.betterlife.antifragile"
     compileSdk = 34
@@ -13,6 +19,7 @@ android {
     buildFeatures {
         dataBinding = true
         viewBinding = true
+        buildConfig = true
         buildConfig = true
     }
 
@@ -24,6 +31,13 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField(
+            "String", "GOOGLE_CLIENT_ID", properties.getProperty("google_client_id")
+        )
+        buildConfigField(
+            "String", "GOOGLE_LOGIN_PASSWORD", properties.getProperty("google_login_password")
+        )
     }
 
     buildTypes {
@@ -89,8 +103,12 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
 
-    implementation("com.google.android.gms:play-services-auth:20.2.0")
+    implementation("com.google.android.gms:play-services-auth:20.2.0")  //todo: 사용 확인 후 삭제
 
     implementation("androidx.viewpager2:viewpager2:1.0.0")
 
+    // Google Login
+    implementation("androidx.credentials:credentials:1.3.0-alpha01")
+    implementation("androidx.credentials:credentials-play-services-auth:1.3.0-alpha01")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.0")
 }

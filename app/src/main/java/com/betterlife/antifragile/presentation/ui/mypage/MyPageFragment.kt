@@ -2,21 +2,21 @@ package com.betterlife.antifragile.presentation.ui.mypage
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.style.UnderlineSpan
 import android.util.Log
 import android.view.View
-import android.widget.Button
+import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.config.RetrofitInterface
 import com.betterlife.antifragile.data.model.base.CustomErrorMessage
 import com.betterlife.antifragile.data.model.base.Status
+import com.betterlife.antifragile.data.model.enums.LoginType
 import com.betterlife.antifragile.data.repository.MemberRepository
 import com.betterlife.antifragile.databinding.FragmentMyPageBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
-import com.betterlife.antifragile.presentation.ui.login.LoginActivity
-import com.betterlife.antifragile.presentation.util.Constants
+import com.betterlife.antifragile.presentation.ui.auth.AuthActivity
 import com.betterlife.antifragile.presentation.util.CustomToolbar
+import com.betterlife.antifragile.presentation.util.ImageUtil.setImage
+import com.betterlife.antifragile.presentation.util.TokenManager.getAccessToken
 
 
 class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_page) {
@@ -41,9 +41,8 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
     }
 
     private fun setupViewModel() {
-        // TODO: 로그인 구현 후 preference에서 토큰 가져오기
-        val token = Constants.TOKEN
-        val memberApiService = RetrofitInterface.createMemberApiService(token)
+        val memberApiService =
+            RetrofitInterface.createMemberApiService(requireContext())
         val memberRepository = MemberRepository(memberApiService)
         val factory = MyPageViewModelFactory(memberRepository)
         myPageViewModel = factory.create(MyPageViewModel::class.java)
@@ -59,9 +58,14 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
                     dismissLoading()
                     setupMemberVisibility(true)
                     binding.apply {
-                        tvNickname.text = response.data?.nickname
-                        tvEmail.text = response.data?.email
-                        tvDiaryTotalNum.text = response.data?.diaryTotalNum.toString()
+                        tvNickname.text = response.data?.nickname ?: "-"
+                        tvEmail.text = response.data?.email ?: "-"
+                        tvDiaryTotalNum.text = response.data?.diaryTotalNum.toString() + " 일"
+                        if (response.data?.profileImgUrl.isNullOrEmpty()) {
+                            ivProfileImg.setImageResource(R.drawable.ic_member_default_profile)
+                        } else {
+                            ivProfileImg.setImage(response.data?.profileImgUrl)
+                        }
                     }
                 }
                 Status.FAIL -> {
@@ -100,12 +104,15 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
     }
 
     private fun setupButton() {
-        customLogoutBtn()
-        customWithdrawBtn()
-
         binding.apply {
             btnUpdate.setOnClickListener {
-                // TODO: 나의 정보 수정
+                findNavController().navigate(
+                    MyPageFragmentDirections.actionNavMyPageToNavProfileEditFragment(
+                        "",
+                        LoginType.GOOGLE,
+                        false
+                    )
+                )
             }
 
             btnLogout.setOnClickListener {
@@ -122,7 +129,7 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
     private fun handleLogout() {
         logout()
 
-        val intent = Intent(requireActivity(), LoginActivity::class.java)
+        val intent = Intent(requireActivity(), AuthActivity::class.java)
         requireActivity().supportFragmentManager.popBackStack()
         startActivity(intent)
         requireActivity().finish()
@@ -130,23 +137,5 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
 
     private fun logout() {
         // TODO: 로그아웃 구현
-    }
-
-    private fun customWithdrawBtn() {
-        val btnWithdraw = view?.findViewById<Button>(R.id.btn_withdraw) ?: return
-        val text = btnWithdraw.text.toString()
-        val spannableString = SpannableString(text).apply {
-            setSpan(UnderlineSpan(), 0, text.length, 0)
-        }
-        btnWithdraw.text = spannableString
-    }
-
-    private fun customLogoutBtn() {
-        val btnLogout= view?.findViewById<Button>(R.id.btn_logout) ?: return
-        val text = btnLogout.text.toString()
-        val spannableString = SpannableString(text).apply {
-            setSpan(UnderlineSpan(), 0, text.length, 0)
-        }
-        btnLogout.text = spannableString
     }
 }
