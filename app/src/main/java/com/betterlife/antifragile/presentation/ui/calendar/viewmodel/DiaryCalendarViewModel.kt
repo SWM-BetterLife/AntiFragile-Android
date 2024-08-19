@@ -68,9 +68,15 @@ class DiaryCalendarViewModel(
         _selectedDate.value = date
     }
 
-    private fun updateTodayDiaryId() {
-        _selectedDate.value?.let { date ->
-            _todayDiaryId.value = _calendarResponse.value?.data?.find { it.date == date }?.diaryId
+    fun updateTodayDiaryId() {
+        viewModelScope.launch {
+            val todayDate = LocalDate.now().toString()
+            val response = calendarRepository.getDiaryInfoByDate(todayDate)
+            if (response != null) {
+                _todayDiaryId.value = response.id
+            } else {
+                _todayDiaryId.value = null
+            }
         }
     }
 }

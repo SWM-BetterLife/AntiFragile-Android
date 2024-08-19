@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.betterlife.antifragile.R
@@ -11,10 +12,8 @@ import com.betterlife.antifragile.data.model.diary.DiaryType
 import com.betterlife.antifragile.databinding.FragmentDiaryCalendarBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.calendar.viewmodel.DiaryCalendarViewModel
-import com.betterlife.antifragile.presentation.ui.calendar.viewmodel.DiaryCalendarViewModelFactory
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.DateUtil.getTodayDate
-import com.betterlife.antifragile.presentation.util.TokenManager.getAccessToken
 import java.util.Calendar
 
 class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
@@ -27,16 +26,12 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        Log.d("Lifecycle", "DiaryCalendarFragment onCreate")
         setupViewModel()
         setupRecyclerView()
         setupObservers()
         setupListeners()
         loadCurrentMonth()
-        observeTodayDiaryId()
-
-        Log.d("accessToken", getAccessToken(requireContext()).toString())
-        Log.d("refreshToken", getAccessToken(requireContext()).toString())
     }
 
     override fun configureToolbar(toolbar: CustomToolbar) {
@@ -47,8 +42,7 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
     }
 
     private fun setupViewModel() {
-        val factory = DiaryCalendarViewModelFactory(requireContext())
-        diaryCalendarViewModel = factory.create(DiaryCalendarViewModel::class.java)
+        diaryCalendarViewModel = ViewModelProvider(requireActivity())[DiaryCalendarViewModel::class.java]
     }
 
     private fun setupRecyclerView() {
@@ -126,10 +120,6 @@ class DiaryCalendarFragment : BaseFragment<FragmentDiaryCalendarBinding>(
     private fun loadCurrentMonth() {
         val calendar = Calendar.getInstance()
         diaryCalendarViewModel.loadCalendarDates(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1)
-    }
-
-    private fun observeTodayDiaryId() {
-        diaryCalendarViewModel.setTodayDate(todayDate)
     }
 
     private fun dismissAddDiaryComment() {

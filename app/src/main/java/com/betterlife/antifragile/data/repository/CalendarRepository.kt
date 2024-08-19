@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import com.betterlife.antifragile.data.model.base.BaseResponse
 import com.betterlife.antifragile.data.model.base.Status
 import com.betterlife.antifragile.data.model.calendar.CalendarDateModel
+import com.betterlife.antifragile.data.model.diary.DiaryInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.Calendar
@@ -70,6 +71,10 @@ class CalendarRepository(
         } catch (e: Exception) {
             BaseResponse(Status.ERROR, e.message, null)
         }
+    }
+
+    suspend fun getDiaryInfoByDate(date: String): DiaryInfo? {
+        return diaryRepository.getDiaryInfoByDate(date)
     }
 
     @SuppressLint("DefaultLocale")

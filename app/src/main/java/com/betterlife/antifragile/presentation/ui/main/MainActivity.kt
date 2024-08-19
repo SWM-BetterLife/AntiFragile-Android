@@ -1,11 +1,12 @@
 package com.betterlife.antifragile.presentation.ui.main
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.navOptions
 import androidx.navigation.ui.setupWithNavController
 import com.betterlife.antifragile.NavMainDirections
 import com.betterlife.antifragile.R
@@ -34,6 +35,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         setupBottomNavigation()
         setupAddDiaryButton()
         observeTodayDiaryId()
+        observeNavigationChanges()
     }
 
     override fun getLayoutResourceId() = R.layout.activity_main
@@ -47,7 +49,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     private fun setupViewModel() {
         val factory = DiaryCalendarViewModelFactory(this)
-        diaryCalendarViewModel = factory.create(DiaryCalendarViewModel::class.java)
+        diaryCalendarViewModel = ViewModelProvider(this, factory)[DiaryCalendarViewModel::class.java]
     }
 
     private fun setupBottomNavigation() {
@@ -68,24 +70,41 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     }
 
     private fun setupAddDiaryButton() {
-        binding.btnAddDiary.setOnClickListener {
-            val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-            diaryCalendarViewModel.setTodayDate(today)
-        }
+        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        diaryCalendarViewModel.setTodayDate(today)
     }
 
     private fun observeTodayDiaryId() {
         diaryCalendarViewModel.todayDiaryId.observe(this, Observer { diaryId ->
             val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-            Log.d("MainActivity", "todayDiaryId: $diaryId")
             if (diaryId != null) {
-                binding.bottomNavigation.selectedItemId = R.id.nav_emotion
+                binding.btnAddDiary.setOnClickListener {
+                    binding.bottomNavigation.selectedItemId = R.id.nav_emotion
+                    navController.navigate(NavMainDirections.actionToNavEmotion(), navOptions {
+                        popUpTo(navController.graph.startDestinationId) {
+                            inclusive = true
+                        }
+                    })
+                }
             } else {
-                val action = NavMainDirections.actionToNavDiaryTypeSelect(today)
-                binding.bottomNavigation.selectedItemId = R.id.nav_calendar
-                navController.navigate(action)
+                binding.btnAddDiary.setOnClickListener {
+                    binding.bottomNavigation.selectedItemId = R.id.nav_calendar
+                    navController.navigate(
+                        NavMainDirections.actionToNavDiaryTypeSelect(today)
+                    )
+                }
             }
         })
+    }
+
+    private fun observeNavigationChanges() {
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.nav_content_recommend, R.id.nav_calendar -> {
+                    diaryCalendarViewModel.updateTodayDiaryId()
+                }
+            }
+        }
     }
 
     fun showBottomNavigation() {
