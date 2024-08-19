@@ -5,7 +5,7 @@ import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.betterlife.antifragile.R
-import com.betterlife.antifragile.data.model.diary.llm.DiaryAnalysisData
+import com.betterlife.antifragile.data.model.llm.DiaryAnalysisData
 import com.betterlife.antifragile.data.model.emoticontheme.EmotionSelectData
 import com.betterlife.antifragile.databinding.FragmentEmotionSelectBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment

@@ -14,7 +14,7 @@ import com.betterlife.antifragile.R
 import com.betterlife.antifragile.data.model.common.Emotion
 import com.betterlife.antifragile.data.model.diary.TextDiary
 import com.betterlife.antifragile.data.model.diary.TextDiaryDetail
-import com.betterlife.antifragile.data.model.diary.llm.DiaryAnalysisData
+import com.betterlife.antifragile.data.model.llm.DiaryAnalysisData
 import com.betterlife.antifragile.databinding.FragmentTextDiaryCreateBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.DiaryViewModel

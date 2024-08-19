@@ -6,7 +6,7 @@ import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.data.model.base.CustomErrorMessage
 import com.betterlife.antifragile.data.model.common.Emotion
-import com.betterlife.antifragile.data.model.diary.llm.DiaryAnalysisData
+import com.betterlife.antifragile.data.model.llm.DiaryAnalysisData
 import com.betterlife.antifragile.data.model.diaryanalysis.request.DiaryAnalysisCreateRequest
 import com.betterlife.antifragile.data.model.diaryanalysis.request.Emoticon
 import com.betterlife.antifragile.data.model.emoticontheme.response.EmoticonByEmotion

@@ -10,7 +10,7 @@ import com.betterlife.antifragile.data.model.common.Emotion
 import com.betterlife.antifragile.data.model.common.LLMInferenceType.EMOTION
 import com.betterlife.antifragile.data.model.diary.QuestionDiary
 import com.betterlife.antifragile.data.model.diary.TextDiary
-import com.betterlife.antifragile.data.model.diary.llm.DiaryAnalysisData
+import com.betterlife.antifragile.data.model.llm.DiaryAnalysisData
 import com.betterlife.antifragile.databinding.FragmentEmotionAnalysisBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.customview.CustomLoadingDialog

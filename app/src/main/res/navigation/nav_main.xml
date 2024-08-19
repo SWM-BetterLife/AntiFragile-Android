@@ -138,7 +138,7 @@
             app:destination="@id/nav_content_recommend" />
         <argument
             android:name="diaryAnalysisData"
-            app:argType="com.betterlife.antifragile.data.model.diary.llm.DiaryAnalysisData" />
+            app:argType="com.betterlife.antifragile.data.model.llm.DiaryAnalysisData" />
         <argument
             android:name="emotion"
             app:argType="com.betterlife.antifragile.data.model.common.Emotion" />
@@ -167,7 +167,7 @@
             app:argType="com.betterlife.antifragile.data.model.common.Emotion" />
         <argument
             android:name="diaryAnalysisData"
-            app:argType="com.betterlife.antifragile.data.model.diary.llm.DiaryAnalysisData" />
+            app:argType="com.betterlife.antifragile.data.model.llm.DiaryAnalysisData" />
         <argument
             android:name="isUpdate"
             app:argType="boolean" />
