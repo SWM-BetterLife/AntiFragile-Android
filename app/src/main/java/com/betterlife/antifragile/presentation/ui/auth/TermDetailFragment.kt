@@ -2,6 +2,7 @@ package com.betterlife.antifragile.presentation.ui.auth
 
 import android.os.Bundle
 import android.view.View
+import android.webkit.WebSettings
 import androidx.navigation.findNavController
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.data.model.enums.TermType
@@ -19,7 +20,7 @@ class TermDetailFragment : BaseFragment<FragmentTermDetailBinding>(
         super.onViewCreated(view, savedInstanceState)
 
         setVariables()
-        setTermData()
+        loadTermInWebView()
         termType.isAgreed = true
     }
 
@@ -27,10 +28,14 @@ class TermDetailFragment : BaseFragment<FragmentTermDetailBinding>(
         termType = TermDetailFragmentArgs.fromBundle(requireArguments()).termType
     }
 
-    private fun setTermData() {
-        binding.termDetailContent.text = termType.content
+    private fun loadTermInWebView() {
+        binding.webviewTerm.apply {
+            settings.javaScriptEnabled = true
+            settings.domStorageEnabled = true
+            settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+            loadUrl(termType.content)
+        }
     }
-
 
     override fun configureToolbar(toolbar: CustomToolbar) {
         toolbar.apply {
