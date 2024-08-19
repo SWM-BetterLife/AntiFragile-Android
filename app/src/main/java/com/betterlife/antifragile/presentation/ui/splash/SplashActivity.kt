@@ -5,18 +5,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.betterlife.antifragile.R
-import com.betterlife.antifragile.config.RetrofitInterface
 import com.betterlife.antifragile.data.model.auth.request.AuthReIssueTokenRequest
 import com.betterlife.antifragile.data.model.base.Status
 import com.betterlife.antifragile.presentation.ui.auth.AuthActivity
 import com.betterlife.antifragile.presentation.ui.main.MainActivity
 import com.betterlife.antifragile.presentation.util.ModelDownloader
 import com.betterlife.antifragile.presentation.util.TokenManager
-import kotlinx.coroutines.runBlocking
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
@@ -28,10 +27,14 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        progressBar = findViewById(R.id.progressBar)
+        setupProgressBar()
         setupViewModel()
         setupObserver()
         checkAndDownloadModel()
+    }
+
+    private fun setupProgressBar() {
+        progressBar = findViewById(R.id.progressBar)
     }
 
     private fun setupViewModel() {
@@ -59,16 +62,35 @@ class SplashActivity : AppCompatActivity() {
                 }
             }
         }
+
+        splashViewModel.reIssueToken.observe(this) { response ->
+            when (response.status) {
+                Status.SUCCESS -> {
+                    response.data?.let { newTokens ->
+                        TokenManager.saveTokens(this, newTokens.accessToken, newTokens.refreshToken)
+                        navigateToMainActivity()
+                    }
+                }
+                Status.ERROR, Status.FAIL -> {
+                    navigateToLogin()
+                }
+                else -> {
+                    // do nothing
+                }
+            }
+        }
     }
 
     private fun checkAndDownloadModel() {
         val modelDownloader = ModelDownloader(this)
 
         if (modelDownloader.isModelAlreadyDownloaded()) {
+            progressBar.visibility = View.GONE
             Handler(Looper.getMainLooper()).postDelayed({
                 autoLoginIfNeeded()
             }, 2000)
         } else {
+            progressBar.visibility = View.VISIBLE
             splashViewModel.getLlmModelUrl()
         }
     }
@@ -105,36 +127,9 @@ class SplashActivity : AppCompatActivity() {
         val refreshToken = TokenManager.getRefreshToken(this)
 
         if (!refreshToken.isNullOrEmpty()) {
-            // 토큰 유효성 확인
-            checkTokenValidity(refreshToken)
+            splashViewModel.reIssueToken(AuthReIssueTokenRequest(refreshToken))
         } else {
-            // 토큰이 없으면 로그인 화면으로 이동
             navigateToLogin()
-        }
-    }
-
-    private fun checkTokenValidity(refreshToken: String) {
-        // API 호출 전 토큰 유효성을 확인하기 위해 서버에 간단한 요청을 보냄
-        runBlocking {
-            val authApiService = RetrofitInterface.getAuthApiService()
-            val response = try {
-                authApiService.reIssueToken(AuthReIssueTokenRequest(refreshToken))
-            } catch (e: Exception) {
-                null
-            }
-
-            if (response?.isSuccessful == true && response.body()?.status == Status.SUCCESS) {
-                // 새 토큰 저장 및 메인 화면으로 이동
-                val newTokens = response.body()?.data
-                if (newTokens != null) {
-                    TokenManager.saveTokens(this@SplashActivity, newTokens.accessToken, newTokens.refreshToken)
-                    navigateToMainActivity()
-                } else {
-                    navigateToLogin()
-                }
-            } else {
-                navigateToLogin()
-            }
         }
     }
 
