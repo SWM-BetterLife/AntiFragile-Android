@@ -113,17 +113,35 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
             }
 
             btnLogout.setOnClickListener {
-                val refreshToken = TokenManager.getRefreshToken(requireContext())
-                if (refreshToken == null) {
-                    handleLogout()
-                    return@setOnClickListener
-                } else {
-                    myPageViewModel.logout(refreshToken)
-                }
+                showSelectDialog(
+                    requireContext(),
+                    title = "로그아웃",
+                    description = "로그아웃하시겠습니까?",
+                    leftButtonText = "취소하기",
+                    rightButtonText = "로그아웃",
+                    rightButtonListener = {
+                        val refreshToken = TokenManager.getRefreshToken(requireContext())
+                        if (refreshToken == null) {
+                            handleLogout()
+                            return@showSelectDialog
+                        } else {
+                            myPageViewModel.logout(refreshToken)
+                        }
+                    }
+                )
             }
 
             btnWithdraw.setOnClickListener {
-                myPageViewModel.delete()
+                showSelectDialog(
+                    requireContext(),
+                    title = "회원탈퇴",
+                    description = "계정을 탈퇴하시겠습니까? 2주 후 데이터가 영구 삭제됩니다. 이 기간 동안 복구 가능합니다.",
+                    leftButtonText = "취소하기",
+                    rightButtonText = "회원탈퇴",
+                    rightButtonListener = {
+                        myPageViewModel.delete()
+                    }
+                )
             }
         }
     }
