@@ -11,6 +11,7 @@ import com.betterlife.antifragile.data.model.auth.request.AuthLoginRequest
 import com.betterlife.antifragile.data.model.base.CustomErrorMessage
 import com.betterlife.antifragile.data.model.enums.LoginType
 import com.betterlife.antifragile.data.model.enums.LoginType.GOOGLE
+import com.betterlife.antifragile.data.model.enums.MemberStatus
 import com.betterlife.antifragile.databinding.FragmentLoginBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.auth.oauth.GoogleLogin
@@ -65,10 +66,16 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
         setupBaseObserver(
             liveData = loginViewModel.memberExistenceResponse,
             onSuccess = {
-                if (it.isExist) {
-                    login(email!!, BuildConfig.GOOGLE_LOGIN_PASSWORD, loginType!!)
-                } else {
-                    navigateToTermsFragment(email!!, loginType!!)
+                when(it.status) {
+                    MemberStatus.EXISTENCE -> {
+                        login(email!!, BuildConfig.GOOGLE_LOGIN_PASSWORD, loginType!!)
+                    }
+                    MemberStatus.NOT_EXISTENCE -> {
+                        navigateToTermsFragment(email!!, loginType!!)
+                    }
+                    MemberStatus.HUMAN -> {
+                        // TODO: 휴먼 계정 해지 후 로그인 처리
+                    }
                 }
             },
             onError = {
