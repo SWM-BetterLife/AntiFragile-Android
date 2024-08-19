@@ -74,7 +74,16 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
                         navigateToTermsFragment(email!!, loginType!!)
                     }
                     MemberStatus.HUMAN -> {
-                        // TODO: 휴먼 계정 해지 후 로그인 처리
+                        showSelectDialog(
+                            requireContext(),
+                            title = "휴먼 계정 해제",
+                            description = "이 계정은 탈퇴된 상태입니다. 해제하지 않으면 일정 기간 후 완전히 삭제됩니다. 휴먼 상태를 해제하시겠습니까?",
+                            leftButtonText = "취소하기",
+                            rightButtonText = "해제하기",
+                            rightButtonListener = {
+                                login(email!!, BuildConfig.GOOGLE_LOGIN_PASSWORD, loginType!!)
+                            }
+                        )
                     }
                 }
             },
