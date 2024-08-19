@@ -41,16 +41,22 @@ class SplashActivity : AppCompatActivity() {
 
     private fun setupObserver() {
         splashViewModel.llmModelUrl.observe(this) { response ->
-            if (response.status == Status.SUCCESS) {
-                response.data?.modelUrl?.let { url ->
-                    startModelDownload(url)
+            when (response.status) {
+                Status.SUCCESS -> {
+                    response.data?.modelUrl?.let { url ->
+                        startModelDownload(url)
+                    }
                 }
-            } else {
-                Toast.makeText(
-                    this,
-                    "모델 URL을 가져오지 못했습니다.",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Status.ERROR -> {
+                    Toast.makeText(
+                        this,
+                        "모델 URL을 가져오지 못했습니다.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                else -> {
+                    // do nothing
+                }
             }
         }
     }
