@@ -92,8 +92,9 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
                 if (it != null) {
                     Log.d("LLMViewModel", "LLM Response: $it")
                     val responseEmotion = Emotion.parseEmotionFromStr(it)
-                    val diaryAnalysisData
-                    = createDiaryAnalysisData(textDiary?.date ?: "", responseEmotion.toKorean)
+                    val diaryAnalysisData = createDiaryAnalysisData(
+                        textDiary?.date ?: "", responseEmotion.toKorean
+                    )
                     findNavController().navigate(
                         EmotionAnalysisFragmentDirections
                             .actionNavEmotionAnalysisToNavEmoticonRecommend(
@@ -158,7 +159,6 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
     }
 
     private fun createDiaryAnalysisData(date: String, emotion: String): DiaryAnalysisData {
-        //TODO: LLM
 
         return DiaryAnalysisData(
             emotions = listOf(emotion),

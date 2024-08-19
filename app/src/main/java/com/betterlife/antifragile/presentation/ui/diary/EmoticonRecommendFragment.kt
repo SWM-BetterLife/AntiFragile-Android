@@ -54,6 +54,10 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
         diaryAnalysisData =
             EmoticonRecommendFragmentArgs.fromBundle(requireArguments()).diaryAnalysisData
         emotion = EmoticonRecommendFragmentArgs.fromBundle(requireArguments()).emotion
+        if (emotion == Emotion.ERROR) {
+            showCustomToast("감정 분석에 실패했습니다. 감정을 선택해주세요")
+            emotion = Emotion.NORMAL
+        }
     }
 
     private fun setupViewModels() {
