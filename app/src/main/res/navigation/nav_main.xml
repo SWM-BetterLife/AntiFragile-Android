@@ -193,6 +193,9 @@
         <action
             android:id="@+id/action_content_fragment_to_content_detail_fragment"
             app:destination="@id/nav_content_detail"/>
+        <action
+            android:id="@+id/action_content_fragment_to_select_diary_type"
+            app:destination="@id/nav_diary_type_select"/>
         <argument
             android:name="contentId"
             app:argType="string" />
