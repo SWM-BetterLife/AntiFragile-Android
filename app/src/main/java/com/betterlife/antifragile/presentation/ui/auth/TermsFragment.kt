@@ -53,8 +53,8 @@ class TermsFragment : BaseFragment<FragmentTermsBinding>(
     private fun setupButton() {
         binding.apply {
             setTermClickListener(loServiceTerm, TermType.SERVICE_TERM)
-            setTermClickListener(loCameraTerm, TermType.CAMERA_TERM)
             setTermClickListener(loPrivacyTerm, TermType.PRIVACY_TERM)
+            setMarketingTermClickListener(loMarketingTerm)
             setDiaryTermClickListener(loDiaryTerm)
 
             btnStart.setOnClickListener {
@@ -74,8 +74,8 @@ class TermsFragment : BaseFragment<FragmentTermsBinding>(
     private fun updateAgreementStatus() {
         binding.apply {
             updateTermView(TermType.SERVICE_TERM, loServiceTerm, ivServiceTerm, tvServiceTerm)
-            updateTermView(TermType.CAMERA_TERM, loCameraTerm, ivCameraTerm, tvCameraTerm)
             updateTermView(TermType.PRIVACY_TERM, loPrivacyTerm, ivPrivacyTerm, tvPrivacyTerm)
+            updateTermView(TermType.MARKETING_TERM, loMarketingTerm, ivMarketingTerm, tvMarketingTerm)
             updateTermView(TermType.DIARY_TERM, loDiaryTerm, ivDiaryTerm, tvDiaryTerm)
 
             val allAgreed = validateAgreements()
@@ -124,6 +124,18 @@ class TermsFragment : BaseFragment<FragmentTermsBinding>(
         }
     }
 
+    private fun setMarketingTermClickListener(layout: View) {
+        val termType = TermType.MARKETING_TERM
+        layout.setOnClickListener {
+            termType.isAgreed = !termType.isAgreed
+            if (!termType.isAgreed) {
+                updateAgreementStatus()
+            } else {
+                navigateToTermDetail(termType)
+            }
+        }
+    }
+
     private fun setDiaryTermClickListener(layout: View) {
         val termType = TermType.DIARY_TERM
         layout.setOnClickListener {
@@ -138,7 +150,6 @@ class TermsFragment : BaseFragment<FragmentTermsBinding>(
 
     private fun validateAgreements(): Boolean {
         return TermType.SERVICE_TERM.isAgreed &&
-                TermType.CAMERA_TERM.isAgreed &&
                 TermType.PRIVACY_TERM.isAgreed
     }
 
