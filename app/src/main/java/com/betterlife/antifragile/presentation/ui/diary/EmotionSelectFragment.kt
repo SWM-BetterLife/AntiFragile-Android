@@ -68,6 +68,10 @@ class EmotionSelectFragment : BaseFragment<FragmentEmotionSelectBinding>(
                 val sortedEmoticons = response.sortedBy { emotion ->
                     emotion.emotionEnum.ordinal
                 }
+
+                selectedEmotion = sortedEmoticons.find { it.emotionEnum.name == initialEmotion }
+                    ?: sortedEmoticons.first()
+
                 emotionSelectAdapter = EmotionSelectAdapter(sortedEmoticons, { selectedEmoticon ->
                     selectedEmotion = selectedEmoticon
                 }, initialEmotion)
