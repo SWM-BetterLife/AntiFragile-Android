@@ -5,6 +5,7 @@ import com.betterlife.antifragile.data.remote.AuthApiService
 import com.betterlife.antifragile.data.remote.ContentApiService
 import com.betterlife.antifragile.data.remote.DiaryAnalysisApiService
 import com.betterlife.antifragile.data.remote.EmoticonThemeApiService
+import com.betterlife.antifragile.data.remote.LlmModelApiService
 import com.betterlife.antifragile.data.remote.MemberApiService
 import com.betterlife.antifragile.presentation.util.Constants
 import com.betterlife.antifragile.presentation.util.TokenManager
@@ -71,6 +72,10 @@ object RetrofitInterface {
 
     fun createMemberApiService(context: Context): MemberApiService {
         return createService(context, MemberApiService::class.java)
+    }
+
+    fun createLlmModelApiService(context: Context): LlmModelApiService {
+        return createService(context, LlmModelApiService::class.java)
     }
 
     fun getAuthApiService(): AuthApiService {

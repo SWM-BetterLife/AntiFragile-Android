@@ -18,9 +18,8 @@ enum class Emotion(val toKorean: String, val bgRes: Int) {
     FEAR("공포", R.drawable.bg_emoticon_fear),
     ANGER("분노", R.drawable.bg_emoticon_anger),
     FATIGUE("피곤", R.drawable.bg_emoticon_fatigue),
-    ERROR("오류", R.color.white),
-    NOT_SELECTED("미선택", R.color.white);
-
+    ERROR("오류", R.color.white)
+    ;
     fun getBackgroundResource(): Int {
         return bgRes
     }
@@ -32,7 +31,7 @@ enum class Emotion(val toKorean: String, val bgRes: Int) {
                 ERROR
             } else {
                 entries.find {
-                    it.name.equals(value, ignoreCase = true) && it != ERROR && it != NOT_SELECTED
+                    it.name.equals(value, ignoreCase = true) && it != ERROR
                 } ?: ERROR
             }
         }

@@ -1,7 +1,6 @@
 package com.betterlife.antifragile.presentation.ui.content
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
@@ -29,6 +28,7 @@ class ContentFragment : BaseFragment<FragmentContentBinding>(R.layout.fragment_c
         setupViewModel()
         setupObservers()
         setupRecyclerView()
+        setupButton()
 
         contentViewModel.getContentList(today)
     }
@@ -60,11 +60,23 @@ class ContentFragment : BaseFragment<FragmentContentBinding>(R.layout.fragment_c
                     navController.navigate(action)
                 }
                 binding.rvContentList.adapter = contentAdapter
+                binding.rvContentList.visibility = View.VISIBLE
+                binding.loEmoticon.visibility = View.GONE
             },
             onError = {
-                Log.e("ContentFragment", "Error: ${it.errorMessage}")
+                binding.rvContentList.visibility = View.GONE
+                binding.loEmoticon.visibility = View.VISIBLE
+
             }
         )
+    }
+
+    private fun setupButton() {
+        binding.btnMoveCreateDiary.setOnClickListener {
+            findNavController().navigate(
+                ContentFragmentDirections.actionContentFragmentToSelectDiaryType(today)
+            )
+        }
     }
 
     override fun configureToolbar(toolbar: CustomToolbar) {

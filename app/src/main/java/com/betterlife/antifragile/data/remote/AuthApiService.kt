@@ -41,7 +41,7 @@ interface AuthApiService {
         @Body request: AuthReIssueTokenRequest
     ): Response<BaseResponse<AuthReIssueTokenResponse>>
 
-    @GET("/members/existence")
+    @GET("/members/status")
     suspend fun checkMemberExistence(
         @Query("email") email: String,
         @Query("loginType") loginType: LoginType

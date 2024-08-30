@@ -11,6 +11,7 @@ import com.betterlife.antifragile.data.model.auth.request.AuthLoginRequest
 import com.betterlife.antifragile.data.model.base.CustomErrorMessage
 import com.betterlife.antifragile.data.model.enums.LoginType
 import com.betterlife.antifragile.data.model.enums.LoginType.GOOGLE
+import com.betterlife.antifragile.data.model.enums.MemberStatus
 import com.betterlife.antifragile.databinding.FragmentLoginBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.auth.oauth.GoogleLogin
@@ -65,10 +66,25 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
         setupBaseObserver(
             liveData = loginViewModel.memberExistenceResponse,
             onSuccess = {
-                if (it.isExist) {
-                    login(email!!, BuildConfig.GOOGLE_LOGIN_PASSWORD, loginType!!)
-                } else {
-                    navigateToTermsFragment(email!!, loginType!!)
+                when(it.status) {
+                    MemberStatus.EXISTENCE -> {
+                        login(email!!, BuildConfig.GOOGLE_LOGIN_PASSWORD, loginType!!)
+                    }
+                    MemberStatus.NOT_EXISTENCE -> {
+                        navigateToTermsFragment(email!!, loginType!!)
+                    }
+                    MemberStatus.HUMAN -> {
+                        showSelectDialog(
+                            requireContext(),
+                            title = "휴먼 계정 해제",
+                            description = "이 계정은 탈퇴된 상태입니다. 해제하지 않으면 일정 기간 후 완전히 삭제됩니다. 휴먼 상태를 해제하시겠습니까?",
+                            leftButtonText = "취소하기",
+                            rightButtonText = "해제하기",
+                            rightButtonListener = {
+                                login(email!!, BuildConfig.GOOGLE_LOGIN_PASSWORD, loginType!!)
+                            }
+                        )
+                    }
                 }
             },
             onError = {
