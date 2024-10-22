@@ -71,4 +71,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="diary_total_num_format">%1$d 일</string>
+    <string name="no_member">아직 회원이 아니신가요?</string>
+    <string name="password">비밀번호</string>
+    <string name="input_password">비밀번호를 입력해주세요.</string>
+    <string name="id">아이디</string>
+    <string name="input_id">아이디을 입력해주세요.</string>
 </resources>
