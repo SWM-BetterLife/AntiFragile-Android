@@ -41,6 +41,11 @@ interface MemberApiService {
         @Query("nickname") nickname: String
     ): Response<BaseResponse<NicknameDuplicateResponse>>
 
+    @GET("/members/duplication-check")
+    suspend fun checkMemberStatus(
+        @Query("nickname") nickname: String
+    ): Response<BaseResponse<NicknameDuplicateResponse>>
+
     @DELETE("/auth")
     suspend fun delete(): Response<BaseResponse<Any?>>
 }

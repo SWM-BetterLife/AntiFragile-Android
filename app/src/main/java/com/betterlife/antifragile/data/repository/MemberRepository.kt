@@ -41,4 +41,12 @@ class MemberRepository(
             memberApiService.checkNicknameExistence(nickname)
         }
     }
+
+    suspend fun checkEmailExistence(
+        email: String
+    ): BaseResponse<NicknameDuplicateResponse> {
+        return safeApiCall {
+            memberApiService.checkNicknameExistence(email)
+        }
+    }
 }

@@ -258,12 +258,12 @@
                         android:inputType="text"
                         android:layout_marginEnd="5dp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/btn_duplicate_check"
+                        app:layout_constraintEnd_toStartOf="@id/btn_nickname_duplicate_check"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/btn_duplicate_check"
+                        android:id="@+id/btn_nickname_duplicate_check"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/duplicate_check"
