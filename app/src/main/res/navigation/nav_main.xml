@@ -248,6 +248,9 @@
         <action
             android:id="@+id/action_nav_my_page_to_nav_profile_edit_fragment"
             app:destination="@id/nav_profile_edit_fragment"/>
+        <action
+            android:id="@+id/action_nav_my_page_to_nav_password_edit_fragment"
+            app:destination="@id/nav_password_edit_fragment"/>
     </fragment>
 
     <fragment
@@ -263,6 +266,12 @@
         <argument
             android:name="isNewMember"
             app:argType="boolean" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_password_edit_fragment"
+        android:name="com.betterlife.antifragile.presentation.ui.mypage.PasswordEditFragment"
+        android:label="PasswordEditFragment">
     </fragment>
 
     <action

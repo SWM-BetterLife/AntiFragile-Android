@@ -10,6 +10,8 @@ import com.betterlife.antifragile.R
 import com.betterlife.antifragile.data.model.enums.LoginType
 import com.betterlife.antifragile.databinding.FragmentMyPageBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
+import com.betterlife.antifragile.presentation.ui.mypage.viewmodel.MyPageViewModel
+import com.betterlife.antifragile.presentation.ui.mypage.viewmodel.MyPageViewModelFactory
 import com.betterlife.antifragile.presentation.ui.splash.SplashActivity
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.ImageUtil.setImage
@@ -109,6 +111,12 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
                         LoginType.GOOGLE,
                         false
                     )
+                )
+            }
+
+            btnModifyPassword.setOnClickListener {
+                findNavController().navigate(
+                    MyPageFragmentDirections.actionNavMyPageToNavPasswordEditFragment()
                 )
             }
 
