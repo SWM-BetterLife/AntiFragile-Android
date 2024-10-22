@@ -1,7 +1,6 @@
 package com.betterlife.antifragile.data.repository
 
 import com.betterlife.antifragile.data.model.auth.request.AuthLoginRequest
-import com.betterlife.antifragile.data.model.auth.request.AuthPasswordModifyRequest
 import com.betterlife.antifragile.data.model.auth.request.AuthReIssueTokenRequest
 import com.betterlife.antifragile.data.model.auth.request.AuthSignUpRequest
 import com.betterlife.antifragile.data.model.auth.response.AuthLoginResponse
@@ -44,12 +43,6 @@ class AuthRepository(
     ): BaseResponse<AuthReIssueTokenResponse> {
         return safeApiCall {
             authApiService.reIssueToken(request)
-        }
-    }
-
-    suspend fun modifyPassword(request: AuthPasswordModifyRequest): BaseResponse<Any?> {
-        return safeApiCall {
-            authApiService.modifyPassword(request)
         }
     }
 }

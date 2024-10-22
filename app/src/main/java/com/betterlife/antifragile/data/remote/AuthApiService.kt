@@ -2,7 +2,6 @@ package com.betterlife.antifragile.data.remote
 
 import com.betterlife.antifragile.data.model.auth.request.AuthLoginRequest
 import com.betterlife.antifragile.data.model.auth.request.AuthLogoutRequest
-import com.betterlife.antifragile.data.model.auth.request.AuthPasswordModifyRequest
 import com.betterlife.antifragile.data.model.auth.request.AuthReIssueTokenRequest
 import com.betterlife.antifragile.data.model.auth.request.AuthSignUpRequest
 import com.betterlife.antifragile.data.model.auth.response.AuthLoginResponse
@@ -51,10 +50,5 @@ interface AuthApiService {
     @POST("/auth/logout")
     suspend fun logout(
         @Body request: AuthLogoutRequest
-    ): Response<BaseResponse<Any?>>
-
-    @POST("/auth/password")
-    suspend fun modifyPassword(
-        @Body request: AuthPasswordModifyRequest
     ): Response<BaseResponse<Any?>>
 }

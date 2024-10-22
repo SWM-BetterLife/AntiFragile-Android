@@ -166,6 +166,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
                     android:textColor="@color/black"
+                    android:layout_marginTop="10dp"
                     android:layout_alignParentEnd="true" />
             </RelativeLayout>
 

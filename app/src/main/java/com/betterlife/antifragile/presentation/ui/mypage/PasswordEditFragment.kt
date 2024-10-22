@@ -10,7 +10,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.betterlife.antifragile.R
-import com.betterlife.antifragile.data.model.auth.request.AuthPasswordModifyRequest
+import com.betterlife.antifragile.data.model.member.request.MemberPasswordModifyRequest
 import com.betterlife.antifragile.databinding.FragmentPasswordEditBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.mypage.viewmodel.PasswordEditViewModel
@@ -34,14 +34,14 @@ class PasswordEditFragment : BaseFragment<FragmentPasswordEditBinding>(
     }
 
     private fun setupViewModel() {
-        val factory = PasswordEditViewModelFactory()
+        val factory = PasswordEditViewModelFactory(requireContext())
         passwordEditViewModel =
             ViewModelProvider(this, factory)[PasswordEditViewModel::class.java]
     }
 
     private fun setupObserver() {
         setupNullObserver(
-            liveData = passwordEditViewModel.authModifyPasswordResponse,
+            liveData = passwordEditViewModel.memberModifyPasswordResponse,
             onSuccess = {
                 handleModifyPassword()
             },
@@ -86,8 +86,8 @@ class PasswordEditFragment : BaseFragment<FragmentPasswordEditBinding>(
         }
     }
 
-    private fun convertToPasswordModifyRequest(): AuthPasswordModifyRequest {
-        return AuthPasswordModifyRequest(
+    private fun convertToPasswordModifyRequest(): MemberPasswordModifyRequest {
+        return MemberPasswordModifyRequest(
             curPassword = binding.etCurPassword.text.toString(),
             newPassword = binding.etNewPassword.text.toString()
         )

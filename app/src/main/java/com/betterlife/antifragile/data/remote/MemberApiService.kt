@@ -1,6 +1,7 @@
 package com.betterlife.antifragile.data.remote
 
 import com.betterlife.antifragile.data.model.base.BaseResponse
+import com.betterlife.antifragile.data.model.member.request.MemberPasswordModifyRequest
 import com.betterlife.antifragile.data.model.member.request.MemberProfileModifyRequest
 import com.betterlife.antifragile.data.model.member.response.MemberDetailResponse
 import com.betterlife.antifragile.data.model.member.response.MemberMyPageResponse
@@ -9,6 +10,7 @@ import com.betterlife.antifragile.data.model.member.response.MemberRemainNumberR
 import com.betterlife.antifragile.data.model.member.response.NicknameDuplicateResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
@@ -43,4 +45,9 @@ interface MemberApiService {
 
     @DELETE("/auth")
     suspend fun delete(): Response<BaseResponse<Any?>>
+
+    @POST("/members/password")
+    suspend fun modifyPassword(
+        @Body request: MemberPasswordModifyRequest
+    ): Response<BaseResponse<Any?>>
 }
