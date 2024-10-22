@@ -44,6 +44,7 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
     private var isNewMember: Boolean = false
     private var isCheckedNickname = false
     private var gender = Gender.MALE
+
     // TODO: 중복 체크 api 수정되면 제거
     private var originNickname = ""
 
@@ -130,7 +131,11 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
                     etJob.setText(member.job)
                     gender = member.gender
                     updateGenderButton()
-                    ivProfileImg.setImage(member.profileImgUrl)
+                    if (member.profileImgUrl == null) {
+                        ivProfileImg.setImageResource(R.drawable.ic_member_default_profile)
+                    } else {
+                        ivProfileImg.setImage(member.profileImgUrl)
+                    }
                     originNickname = member.nickname
                 }
             },

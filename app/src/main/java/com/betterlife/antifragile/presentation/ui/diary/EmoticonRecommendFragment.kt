@@ -6,7 +6,7 @@ import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.data.model.base.CustomErrorMessage
 import com.betterlife.antifragile.data.model.common.Emotion
-import com.betterlife.antifragile.data.model.diary.llm.DiaryAnalysisData
+import com.betterlife.antifragile.data.model.llm.DiaryAnalysisData
 import com.betterlife.antifragile.data.model.diaryanalysis.request.DiaryAnalysisCreateRequest
 import com.betterlife.antifragile.data.model.diaryanalysis.request.Emoticon
 import com.betterlife.antifragile.data.model.emoticontheme.response.EmoticonByEmotion
@@ -46,9 +46,6 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
         toolbar.apply {
             reset()
             setSubTitle(DateUtil.convertDateFormat(diaryAnalysisData.diaryDate))
-            showBackButton {
-                findNavController().popBackStack()
-            }
             showLine()
         }
     }
@@ -57,6 +54,10 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
         diaryAnalysisData =
             EmoticonRecommendFragmentArgs.fromBundle(requireArguments()).diaryAnalysisData
         emotion = EmoticonRecommendFragmentArgs.fromBundle(requireArguments()).emotion
+        if (emotion == Emotion.ERROR) {
+            showCustomToast("감정 분석에 실패했습니다. 감정을 선택해주세요")
+            emotion = Emotion.NORMAL
+        }
     }
 
     private fun setupViewModels() {

@@ -1,4 +1,4 @@
-package com.betterlife.antifragile.data.model.diary.llm
+package com.betterlife.antifragile.data.model.llm
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

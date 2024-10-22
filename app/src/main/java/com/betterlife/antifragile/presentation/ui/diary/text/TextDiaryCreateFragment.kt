@@ -9,12 +9,13 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.data.model.common.Emotion
 import com.betterlife.antifragile.data.model.diary.TextDiary
 import com.betterlife.antifragile.data.model.diary.TextDiaryDetail
-import com.betterlife.antifragile.data.model.diary.llm.DiaryAnalysisData
+import com.betterlife.antifragile.data.model.llm.DiaryAnalysisData
 import com.betterlife.antifragile.databinding.FragmentTextDiaryCreateBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.diary.viewmodel.DiaryViewModel
@@ -22,14 +23,19 @@ import com.betterlife.antifragile.presentation.ui.diary.viewmodel.DiaryViewModel
 import com.betterlife.antifragile.presentation.ui.main.MainActivity
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.DateUtil
+import com.betterlife.antifragile.presentation.util.SimpleTextWatcher
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class TextDiaryCreateFragment : BaseFragment<FragmentTextDiaryCreateBinding>(
     R.layout.fragment_text_diary_create
 ) {
 
     private lateinit var diaryViewModel: DiaryViewModel
-    private var textDiaryDetail: TextDiaryDetail? = null
     private lateinit var diaryDate: String
+    private var textDiaryDetail: TextDiaryDetail? = null
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -69,14 +75,8 @@ class TextDiaryCreateFragment : BaseFragment<FragmentTextDiaryCreateBinding>(
             binding.etDiaryContent.setText(it.content)
         }
 
-        binding.etDiaryContent.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                updateSaveButtonState(s.toString())
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        binding.etDiaryContent.addTextChangedListener(SimpleTextWatcher {
+            updateSaveButtonState(it.toString())
         })
 
         updateSaveButtonState(binding.etDiaryContent.text.toString())
@@ -136,9 +136,10 @@ class TextDiaryCreateFragment : BaseFragment<FragmentTextDiaryCreateBinding>(
     private fun displaySaveSuccess(diaryId: Long) {
         // TODO: 포인트 획득 api 호출
         binding.tvGetPoint.visibility = View.VISIBLE
-        Handler(Looper.getMainLooper()).postDelayed({
+        lifecycleScope.launch {
+            delay(500)
             navigateToEmotionAnalysis(diaryId.toInt(), false)
-        }, 500)
+        }
     }
 
     private fun promptEmotionAnalysis(diaryDetail: TextDiaryDetail) {
@@ -148,12 +149,8 @@ class TextDiaryCreateFragment : BaseFragment<FragmentTextDiaryCreateBinding>(
             "수정한 일기에 대한 감정 분석을 받으시겠습니까?",
             "건너뛰기",
             "분석하기",
-            {
-                navigateToEmoticonRecommend(diaryDetail)
-            },
-            {
-                navigateToEmotionAnalysis(diaryDetail.id, true)
-            }
+            { navigateToEmoticonRecommend(diaryDetail) },
+            { navigateToEmotionAnalysis(diaryDetail.id, true) }
         )
     }
 
