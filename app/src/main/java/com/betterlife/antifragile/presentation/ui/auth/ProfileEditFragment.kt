@@ -18,6 +18,8 @@ import com.betterlife.antifragile.R
 import com.betterlife.antifragile.data.model.auth.request.AuthSignUpRequest
 import com.betterlife.antifragile.data.model.enums.Gender
 import com.betterlife.antifragile.data.model.enums.LoginType
+import com.betterlife.antifragile.data.model.enums.LoginType.NORMAL
+import com.betterlife.antifragile.data.model.enums.MemberStatus
 import com.betterlife.antifragile.data.model.member.request.MemberProfileModifyRequest
 import com.betterlife.antifragile.databinding.FragmentProfileEditBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
@@ -40,8 +42,10 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
     private lateinit var profileEditViewModel: ProfileEditViewModel
     private lateinit var imageHandler: ImageHandler
     private lateinit var email: String
+    private lateinit var password: String
     private lateinit var loginType: LoginType
     private var isNewMember: Boolean = false
+    private var isCheckEmail = false
     private var isCheckedNickname = false
     private var gender = Gender.MALE
 
@@ -78,6 +82,8 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
             binding.btnSave.text = "회원가입"
         } else {
             binding.btnSave.text = "수정완료"
+            binding.loEmail.visibility = View.GONE
+            binding.loPassword.visibility = View.GONE
         }
     }
 
@@ -116,6 +122,27 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
                     }
                 }
                 isCheckedNickname = true
+            },
+            onError = {
+                Log.d("ProfileEditFragment", "checkNicknameResponse error: $it")
+            }
+        )
+
+        setupBaseObserver(
+            liveData = profileEditViewModel.memberExistenceResponse,
+            onSuccess = {
+                binding.apply {
+                    if (it.status.equals(MemberStatus.NOT_EXISTENCE)) {
+                        tvEmailDuplicateResult.visibility = View.VISIBLE
+                        tvEmailDuplicateResult.text = "사용 가능한 이메일입니다"
+                        tvEmailDuplicateResult.setTextColor(resources.getColor(R.color.green))
+                    } else {
+                        tvNicknameDuplicateResult.visibility = View.VISIBLE
+                        tvNicknameDuplicateResult.text = "이미 사용중인 이메일입니다"
+                        tvNicknameDuplicateResult.setTextColor(resources.getColor(R.color.red))
+                    }
+                }
+                isCheckEmail = true
             },
             onError = {
                 Log.d("ProfileEditFragment", "checkNicknameResponse error: $it")
@@ -218,10 +245,11 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
     private fun setupButtons() {
         binding.apply {
             btnSave.setOnClickListener {
-                if (!isCheckedNickname && binding.etNickname.text.toString() != originNickname) {
+                if (!isCheckEmail && !isCheckedNickname && binding.etNickname.text.toString() != originNickname) {
                     showCustomToast("닉네임 중복 확인을 해주세요")
                     return@setOnClickListener
                 }
+
                 val birthday = etBirthday.text.toString()
                 if (!DateUtil.isValidBirthday(birthday)) {
                     showCustomToast("생년월일을 정확히 입력해주세요(ex. 2000.01.01)")
@@ -262,7 +290,15 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
                 }
             }
 
-            btnDuplicateCheck.setOnClickListener {
+            btnEmailDuplicateCheck.setOnClickListener {
+                if (etEmail.text.toString().isBlank()) {
+                    showCustomToast("이메일을 입력해주세요")
+                    return@setOnClickListener
+                }
+                profileEditViewModel.checkEmailInvalid(etEmail.text.toString(), NORMAL)
+            }
+
+            btnNicknameDuplicateCheck.setOnClickListener {
                 if (etNickname.text.toString().isBlank()) {
                     showCustomToast("닉네임을 입력해주세요")
                     return@setOnClickListener
@@ -301,12 +337,13 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
 
     private fun convertToSignUpRequest(): AuthSignUpRequest {
         return AuthSignUpRequest(
-            email = email,
-            loginType = loginType,
+            email = binding.etEmail.text.toString(),
+            password = binding.etPassword.text.toString(),
             nickname = binding.etNickname.text.toString(),
             birthDate = binding.etBirthday.text.toString(),
             gender = gender,
-            job = binding.etJob.text.toString()
+            job = binding.etJob.text.toString(),
+            loginType = NORMAL
         )
     }
 

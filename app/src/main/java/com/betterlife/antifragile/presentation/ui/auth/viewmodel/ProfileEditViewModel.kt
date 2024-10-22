@@ -8,8 +8,10 @@ import com.betterlife.antifragile.data.model.auth.request.AuthSignUpRequest
 import com.betterlife.antifragile.data.model.auth.response.AuthSignUpResponse
 import com.betterlife.antifragile.data.model.base.BaseResponse
 import com.betterlife.antifragile.data.model.base.Status
+import com.betterlife.antifragile.data.model.enums.LoginType
 import com.betterlife.antifragile.data.model.member.request.MemberProfileModifyRequest
 import com.betterlife.antifragile.data.model.member.response.MemberDetailResponse
+import com.betterlife.antifragile.data.model.member.response.MemberExistenceResponse
 import com.betterlife.antifragile.data.model.member.response.MemberProfileModifyResponse
 import com.betterlife.antifragile.data.model.member.response.NicknameDuplicateResponse
 import com.betterlife.antifragile.data.repository.AuthRepository
@@ -33,6 +35,9 @@ class ProfileEditViewModel(
 
     private val _checkNicknameResponse = MutableLiveData<BaseResponse<NicknameDuplicateResponse>>()
     val checkNicknameResponse= _checkNicknameResponse
+
+    private val _memberExistenceResponse = MutableLiveData<BaseResponse<MemberExistenceResponse>>()
+    val memberExistenceResponse= _memberExistenceResponse
 
     init {
         _authSignUpResponse.value = BaseResponse(Status.INIT, null, null)
@@ -70,6 +75,14 @@ class ProfileEditViewModel(
             _checkNicknameResponse.value = BaseResponse(Status.LOADING, null, null)
             val response = memberRepository.checkNicknameExistence(nickname)
             _checkNicknameResponse.postValue(response)
+        }
+    }
+
+    fun checkEmailInvalid(email: String, loginType: LoginType) {
+        viewModelScope.launch {
+            _memberExistenceResponse.value = BaseResponse(Status.LOADING, null, null)
+            val response = authRepository.checkMemberExistence(email, loginType)
+            _memberExistenceResponse.postValue(response)
         }
     }
 }

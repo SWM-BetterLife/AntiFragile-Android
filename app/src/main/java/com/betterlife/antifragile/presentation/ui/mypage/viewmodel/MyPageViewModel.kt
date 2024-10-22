@@ -1,4 +1,4 @@
-package com.betterlife.antifragile.presentation.ui.mypage
+package com.betterlife.antifragile.presentation.ui.mypage.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -51,6 +51,5 @@ class MyPageViewModel(
             val response = myPageRepository.delete()
             _memberDeleteResponse.postValue(response)
         }
-
     }
 }
