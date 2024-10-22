@@ -82,6 +82,8 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
             binding.btnSave.text = "회원가입"
         } else {
             binding.btnSave.text = "수정완료"
+            binding.loEmail.visibility = View.GONE
+            binding.loPassword.visibility = View.GONE
         }
     }
 
@@ -265,7 +267,13 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
                     }
                 }
 
-                profileEditViewModel.signUp(imageMultipart, convertToSignUpRequest())
+                if (isNewMember) {
+                    profileEditViewModel.signUp(imageMultipart, convertToSignUpRequest())
+                } else {
+                    profileEditViewModel.modifyProfile(
+                        imageMultipart, convertToProfileModifyRequest()
+                    )
+                }
             }
 
             btnProfileImg.setOnClickListener {
