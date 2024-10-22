@@ -52,8 +52,10 @@
     <string name="complete_terms">시작하기</string>
     <string name="profile_image_setting">프로필 이미지 설정</string>
     <string name="input_nickname">닉네임 입력</string>
+    <string name="input_email">이메일 입력</string>
     <string name="duplicate_check">중복확인</string>
     <string name="nickname">닉네임</string>
+    <string name="email">이메일</string>
     <string name="exmaple_birthday">2000.01.01</string>
     <string name="birthday">생년월일</string>
     <string name="input_job">직업 입력</string>
