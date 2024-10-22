@@ -64,6 +64,13 @@
     <string name="male">남성</string>
     <string name="female">여성</string>
     <string name="sign_up">회원가입</string>
+    <string name="title_modify_password">비밀번호 변경</string>
+    <string name="cur_password">현재 비밀번호</string>
+    <string name="input_cur_password">현재 비밀번호</string>
+    <string name="new_password">새로운 비밀번호</string>
+    <string name="input_new_password">새로운 비밀번호</string>
+    <string name="save_modify_password">비밀번호 변경하기</string>
+    <string name="modify_password"><u>비밀번호 변경</u></string>
     <string name="logout"><u>로그아웃</u></string>
     <string name="withdraw"><u>계정탈퇴</u></string>
     <string name="service_term"><u>(필수) Antifragile 서비스 이용 약관 동의</u></string>
