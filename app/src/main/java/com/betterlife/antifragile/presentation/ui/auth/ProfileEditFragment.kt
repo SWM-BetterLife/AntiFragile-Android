@@ -252,7 +252,7 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
             val isJobValid = etJob.text.toString().isNotBlank()
             val isPasswordValid = validatePassword(etPassword.text.toString())
 
-            val isFormValid = isNicknameValid && isBirthdayValid && isJobValid
+            val isFormValid = isNicknameValid && isBirthdayValid && isJobValid && isPasswordValid
             val color = if (isFormValid) {
                 ContextCompat.getColor(requireContext(), R.color.main_color)
             } else {
