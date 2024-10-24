@@ -2,7 +2,6 @@ package com.betterlife.antifragile.presentation.ui.auth
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.Handler
@@ -27,7 +26,6 @@ import com.betterlife.antifragile.presentation.base.BaseFragment
 import com.betterlife.antifragile.presentation.ui.auth.handler.ImageHandler
 import com.betterlife.antifragile.presentation.ui.auth.viewmodel.ProfileEditViewModel
 import com.betterlife.antifragile.presentation.ui.auth.viewmodel.ProfileEditViewModelFactory
-import com.betterlife.antifragile.presentation.ui.main.MainActivity
 import com.betterlife.antifragile.presentation.util.CustomToolbar
 import com.betterlife.antifragile.presentation.util.DateUtil
 import com.betterlife.antifragile.presentation.util.ImageUtil.setImage
@@ -216,8 +214,33 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
                 tvNicknameDuplicateResult.visibility = View.INVISIBLE
                 validateInputs()
             }
+
+            etPassword.addTextChangedListener {
+                validatePassword(it.toString())
+                validateInputs()
+            }
+
             etBirthday.addTextChangedListener { validateInputs() }
             etJob.addTextChangedListener { validateInputs() }
+        }
+    }
+
+    private fun validatePassword(password: String): Boolean {
+        binding.apply {
+            tvPasswordFormatResult.visibility = View.VISIBLE
+
+            // 정규식 패턴
+            val pattern = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@\$!%*#?&])[A-Za-z\\d@\$!%*#?&]{8,}\$".toRegex()
+
+            return if (password.matches(pattern)) {
+                tvPasswordFormatResult.text = "사용 가능한 비밀번호입니다"
+                tvPasswordFormatResult.setTextColor(resources.getColor(R.color.green))
+                true
+            } else {
+                tvPasswordFormatResult.text = "영문, 숫자, 특수문자를 포함하여 8자 이상 입력해주세요"
+                tvPasswordFormatResult.setTextColor(resources.getColor(R.color.red))
+                false
+            }
         }
     }
 
@@ -227,6 +250,7 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
             val isNicknameValid = etNickname.text.toString().isNotBlank()
             val isBirthdayValid = etBirthday.text.toString().isNotBlank()
             val isJobValid = etJob.text.toString().isNotBlank()
+            val isPasswordValid = validatePassword(etPassword.text.toString())
 
             val isFormValid = isNicknameValid && isBirthdayValid && isJobValid
             val color = if (isFormValid) {
@@ -281,7 +305,7 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
                     imageHandler.showImageSourceDialog()
                 } else if (
                     PermissionUtil.shouldShowCameraRationale(this@ProfileEditFragment)
-                    ) {
+                ) {
                     PermissionUtil.showPermissionRationaleDialog(this@ProfileEditFragment) {
                         permissionLauncher.launch(Manifest.permission.CAMERA)
                     }
