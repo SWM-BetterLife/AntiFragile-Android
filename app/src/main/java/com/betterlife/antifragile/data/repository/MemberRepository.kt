@@ -35,14 +35,6 @@ class MemberRepository(
         }
     }
 
-    suspend fun checkNicknameExistence(
-        nickname: String
-    ): BaseResponse<NicknameDuplicateResponse> {
-        return safeApiCall {
-            memberApiService.checkNicknameExistence(nickname)
-        }
-    }
-
     suspend fun modifyPassword(request: MemberPasswordModifyRequest): BaseResponse<Any?> {
         return safeApiCall {
             memberApiService.modifyPassword(request)
