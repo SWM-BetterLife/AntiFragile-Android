@@ -73,7 +73,7 @@ class ProfileEditViewModel(
     fun checkNicknameInvalid(nickname: String) {
         viewModelScope.launch {
             _checkNicknameResponse.value = BaseResponse(Status.LOADING, null, null)
-            val response = memberRepository.checkNicknameExistence(nickname)
+            val response = authRepository.checkNicknameExistence(nickname)
             _checkNicknameResponse.postValue(response)
         }
     }

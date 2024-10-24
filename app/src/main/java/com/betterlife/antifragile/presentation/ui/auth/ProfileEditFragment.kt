@@ -12,6 +12,7 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
+import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
@@ -137,9 +138,9 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
                         tvEmailDuplicateResult.text = "사용 가능한 이메일입니다"
                         tvEmailDuplicateResult.setTextColor(resources.getColor(R.color.green))
                     } else {
-                        tvNicknameDuplicateResult.visibility = View.VISIBLE
-                        tvNicknameDuplicateResult.text = "이미 사용중인 이메일입니다"
-                        tvNicknameDuplicateResult.setTextColor(resources.getColor(R.color.red))
+                        tvEmailDuplicateResult.visibility = View.VISIBLE
+                        tvEmailDuplicateResult.text = "이미 사용중인 이메일입니다"
+                        tvEmailDuplicateResult.setTextColor(resources.getColor(R.color.red))
                     }
                 }
                 isCheckEmail = true
@@ -178,7 +179,7 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
                 binding.tvSuccessMessage.visibility = View.VISIBLE
                 binding.tvSuccessMessage.text = "회원가입이 완료되었습니다"
                 Handler(Looper.getMainLooper()).postDelayed({
-                    navigateMainActivity()
+                    navigateLoginFragment()
                 }, 500)
             },
             onError = {
@@ -201,11 +202,10 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
         )
     }
 
-    private fun navigateMainActivity() {
-        val intent = Intent(requireContext(), MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-        startActivity(intent)
-        requireActivity().finish()
+    private fun navigateLoginFragment() {
+        findNavController().navigate(R.id.nav_login_fragment, null, NavOptions.Builder()
+            .setPopUpTo(R.id.nav_login_fragment, true)
+            .build())
     }
 
     private fun setupTextWatchers() {
