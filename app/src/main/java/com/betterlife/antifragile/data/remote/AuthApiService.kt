@@ -10,6 +10,7 @@ import com.betterlife.antifragile.data.model.auth.response.AuthSignUpResponse
 import com.betterlife.antifragile.data.model.base.BaseResponse
 import com.betterlife.antifragile.data.model.enums.LoginType
 import com.betterlife.antifragile.data.model.member.response.MemberExistenceResponse
+import com.betterlife.antifragile.data.model.member.response.NicknameDuplicateResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -46,6 +47,11 @@ interface AuthApiService {
         @Query("email") email: String,
         @Query("loginType") loginType: LoginType
     ): Response<BaseResponse<MemberExistenceResponse>>
+
+    @GET("/members/duplication-check")
+    suspend fun checkNicknameExistence(
+        @Query("nickname") nickname: String
+    ): Response<BaseResponse<NicknameDuplicateResponse>>
 
     @POST("/auth/logout")
     suspend fun logout(
