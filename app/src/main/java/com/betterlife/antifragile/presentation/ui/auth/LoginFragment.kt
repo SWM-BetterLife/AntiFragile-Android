@@ -11,6 +11,7 @@ import com.betterlife.antifragile.data.model.auth.request.AuthLoginRequest
 import com.betterlife.antifragile.data.model.base.CustomErrorMessage
 import com.betterlife.antifragile.data.model.enums.LoginType
 import com.betterlife.antifragile.data.model.enums.LoginType.GOOGLE
+import com.betterlife.antifragile.data.model.enums.LoginType.NORMAL
 import com.betterlife.antifragile.data.model.enums.MemberStatus
 import com.betterlife.antifragile.databinding.FragmentLoginBinding
 import com.betterlife.antifragile.presentation.base.BaseFragment
@@ -31,6 +32,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var googleLogin: GoogleLogin
     private var email: String? = null
+    private var password: String? = null
     private var loginType: LoginType? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -68,7 +70,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
             onSuccess = {
                 when(it.status) {
                     MemberStatus.EXISTENCE -> {
-                        login(email!!, BuildConfig.GOOGLE_LOGIN_PASSWORD, loginType!!)
+                        login(email!!, password!!, loginType!!)
                     }
                     MemberStatus.NOT_EXISTENCE -> {
                         navigateToTermsFragment(email!!, loginType!!)
@@ -81,7 +83,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
                             leftButtonText = "취소하기",
                             rightButtonText = "해제하기",
                             rightButtonListener = {
-                                login(email!!, BuildConfig.GOOGLE_LOGIN_PASSWORD, loginType!!)
+                                login(email!!, password!!, loginType!!)
                             }
                         )
                     }
@@ -122,6 +124,35 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
             btnGoogleLogin.setOnClickListener {
                 startGoogleLogin()
             }
+
+            btnLogin.setOnClickListener {
+                email = etEmail.text.toString()
+                password = etPassword.text.toString()
+                loginType = NORMAL
+
+                if (validateInput(email, password)) {
+                    checkMemberExistence(email!!, loginType!!)
+                }
+            }
+
+            tvSignup.setOnClickListener {
+                navigateToTermsFragment("", NORMAL)
+            }
+        }
+    }
+
+
+    private fun validateInput(email: String?, password: String?): Boolean {
+        when {
+            email.isNullOrEmpty() -> {
+                showCustomToast("아이디를 입력해주세요.")
+                return false
+            }
+            password.isNullOrEmpty() -> {
+                showCustomToast("비밀번호를 입력해주세요.")
+                return false
+            }
+            else -> return true
         }
     }
 
@@ -131,6 +162,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
         email = runBlocking {
             googleLogin.startGoogleLogin(hashedNonce)
         }
+
+        password = BuildConfig.GOOGLE_LOGIN_PASSWORD
+
         loginType = GOOGLE
 
         if (email != null) {

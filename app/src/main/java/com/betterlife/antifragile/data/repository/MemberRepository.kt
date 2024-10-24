@@ -1,6 +1,7 @@
 package com.betterlife.antifragile.data.repository
 
 import com.betterlife.antifragile.data.model.base.BaseResponse
+import com.betterlife.antifragile.data.model.member.request.MemberPasswordModifyRequest
 import com.betterlife.antifragile.data.model.member.request.MemberProfileModifyRequest
 import com.betterlife.antifragile.data.model.member.response.MemberDetailResponse
 import com.betterlife.antifragile.data.model.member.response.MemberProfileModifyResponse
@@ -39,6 +40,12 @@ class MemberRepository(
     ): BaseResponse<NicknameDuplicateResponse> {
         return safeApiCall {
             memberApiService.checkNicknameExistence(nickname)
+        }
+    }
+
+    suspend fun modifyPassword(request: MemberPasswordModifyRequest): BaseResponse<Any?> {
+        return safeApiCall {
+            memberApiService.modifyPassword(request)
         }
     }
 }
