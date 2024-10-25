@@ -15,10 +15,15 @@ class LLMViewModel(
     private val _llmResponse = MutableLiveData<String?>()
     val llmResponse: LiveData<String?> get() = _llmResponse
 
+    private val _embeddingResponse = MutableLiveData<String?>()
+    val embeddingResponse: LiveData<String?> get() = _embeddingResponse
+
     fun getResponseFromLLM(prompt: String, llmInferenceType: LLMInferenceType) {
         viewModelScope.launch {
-            val response = llmRepository.getResponseFromLLMInference(prompt, llmInferenceType)
-            _llmResponse.postValue(response)
+            val diaryShort = llmRepository.getResponseFromLLMInference(prompt, llmInferenceType)
+            val embedding = llmRepository.getEmbeddingResult(diaryShort ?: "")
+            _llmResponse.postValue(diaryShort)
+            _embeddingResponse.postValue(embedding)
         }
     }
 
