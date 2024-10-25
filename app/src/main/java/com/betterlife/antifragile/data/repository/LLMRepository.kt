@@ -29,9 +29,13 @@ class LLMRepository(context: Context) : BaseRepository() {
                 result = withContext(Dispatchers.IO) {
                     when(llmInferenceType) {
                         LLMInferenceType.EMOTION -> {
-                            llmTask.generateResponse(getPromptWithEmotionInference(text))
+                            val promptOfEmotion = getPromptWithEmotionInference(text)
+                            llmTask.generateResponse(promptOfEmotion)
                         }
-                        else -> {
+                        LLMInferenceType.SUMMATION -> {
+                            val promptOfSummation = getPromptWithSummarizeInference(text)
+                            llmTask.generateResponse(getPromptWithChatTemplate(promptOfSummation))
+                        } else -> {
                             llmTask.generateResponse(getPromptWithChatTemplate(text))
                         }
                     }
@@ -45,6 +49,12 @@ class LLMRepository(context: Context) : BaseRepository() {
         } finally {
             Log.d("LLMRepository", "LLM Inference is done.")
         }
+    }
+
+    private fun getPromptWithSummarizeInference(text: String): String {
+        val prompt =  "Request: 다음 글을 요약해주세요: \n\n" +
+                text + "\n"
+        return getPromptWithChatTemplate(prompt)
     }
 
     private fun getPromptWithEmotionInference(text: String): String {

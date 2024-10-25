@@ -6,6 +6,8 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class DiaryAnalysisData(
     val emotions: List<String>,
+    val summation: String,
+    val embedding: String,
     val event: String,
     val thought: String,
     val action: String,

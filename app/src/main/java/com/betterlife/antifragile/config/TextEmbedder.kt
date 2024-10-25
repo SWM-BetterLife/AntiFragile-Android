@@ -99,7 +99,7 @@ class TextEmbedder(
         const val MODEL_AVERAGE_WORD_PATH = "average_word.tflite"
         const val OTHER_ERROR = 0
         const val GPU_ERROR = 1
-        private const val TAG = "TextEmbedderHelper"
+        private const val TAG = "TextEmbedder"
     }
 
     interface EmbedderListener {
