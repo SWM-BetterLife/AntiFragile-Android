@@ -2,6 +2,7 @@ package com.betterlife.antifragile.data.model.diaryanalysis.request
 
 data class DiaryAnalysisCreateRequest(
     val emotions: List<String>,
+    val embedding: String,
     val event: String,
     val thought: String,
     val action: String,

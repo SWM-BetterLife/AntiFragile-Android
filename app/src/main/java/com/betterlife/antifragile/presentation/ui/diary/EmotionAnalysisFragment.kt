@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.data.model.common.Emotion
-import com.betterlife.antifragile.data.model.common.LLMInferenceType.EMOTION
+import com.betterlife.antifragile.data.model.common.Emotion.NORMAL
 import com.betterlife.antifragile.data.model.diary.QuestionDiary
 import com.betterlife.antifragile.data.model.diary.TextDiary
 import com.betterlife.antifragile.data.model.llm.DiaryAnalysisData
@@ -56,7 +56,7 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
                     return@getTextDiary
                 }
 
-                llmViewModel.getResponseFromLLM(textDiary?.content ?: "", EMOTION)
+                llmViewModel.getResponseFromLLM(textDiary?.content ?: "")
             }
         } else if (diaryType == "QUESTION"){
             getQuestionDiary(diaryId) { retrievedQuestionDiary ->
@@ -68,6 +68,8 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
                 }
                 val diaryAnalysisData = DiaryAnalysisData(
                     emotions = questionDiary?.emotions ?: arrayListOf(),
+                    summation = "",
+                    embedding = "",
                     event = questionDiary?.event ?: "",
                     thought = questionDiary?.thought ?: "",
                     action = questionDiary?.action ?: "",
@@ -90,10 +92,13 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
             liveData = llmViewModel.llmResponse,
             onSuccess = {
                 if (it != null) {
-                    Log.d("LLMViewModel", "LLM Response: $it")
-                    val responseEmotion = Emotion.parseEmotionFromStr(it)
+                    val responseEmotion
+                        = it.emotion?.let { result -> Emotion.parseEmotionFromStr(result) } ?: NORMAL
+                    val responseSummation = it.summation
+                    val responseEmbedding = it.embedding
                     val diaryAnalysisData = createDiaryAnalysisData(
-                        textDiary?.date ?: "", responseEmotion.toKorean
+                        textDiary?.date ?: "", responseEmotion.toKorean,
+                        responseSummation ?: "", responseEmbedding ?: ""
                     )
                     findNavController().navigate(
                         EmotionAnalysisFragmentDirections
@@ -158,10 +163,14 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
         customLoadingDialog?.show()
     }
 
-    private fun createDiaryAnalysisData(date: String, emotion: String): DiaryAnalysisData {
+    private fun createDiaryAnalysisData(
+        date: String, emotion: String, summation: String, embedding: String
+    ): DiaryAnalysisData {
 
         return DiaryAnalysisData(
             emotions = listOf(emotion),
+            summation = summation,
+            embedding = embedding,
             event = "사건",
             thought = "생각",
             action = "행동",
