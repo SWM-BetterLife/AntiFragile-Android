@@ -21,8 +21,7 @@ class LLMViewModel(
         viewModelScope.launch {
             val emotion = llmRepository.getResponseFromLLMInference(prompt, EMOTION)
             val summation = llmRepository.getResponseFromLLMInference(prompt, SUMMATION)
-            val embedding = llmRepository.getEmbeddingResult(summation ?: "")
-            _llmResponse.postValue(LlmInferenceResultData(emotion, summation, embedding))
+            _llmResponse.postValue(LlmInferenceResultData(emotion, summation))
         }
     }
 

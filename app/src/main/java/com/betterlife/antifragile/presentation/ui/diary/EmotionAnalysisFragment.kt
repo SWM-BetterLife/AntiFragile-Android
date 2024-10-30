@@ -69,7 +69,6 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
                 val diaryAnalysisData = DiaryAnalysisData(
                     emotions = questionDiary?.emotions ?: arrayListOf(),
                     summation = "",
-                    embedding = "",
                     event = questionDiary?.event ?: "",
                     thought = questionDiary?.thought ?: "",
                     action = questionDiary?.action ?: "",
@@ -95,10 +94,9 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
                     val responseEmotion
                         = it.emotion?.let { result -> Emotion.parseEmotionFromStr(result) } ?: NORMAL
                     val responseSummation = it.summation
-                    val responseEmbedding = it.embedding
                     val diaryAnalysisData = createDiaryAnalysisData(
                         textDiary?.date ?: "", responseEmotion.toKorean,
-                        responseSummation ?: "", responseEmbedding ?: ""
+                        responseSummation ?: ""
                     )
                     findNavController().navigate(
                         EmotionAnalysisFragmentDirections
@@ -164,13 +162,12 @@ class EmotionAnalysisFragment : BaseFragment<FragmentEmotionAnalysisBinding>(
     }
 
     private fun createDiaryAnalysisData(
-        date: String, emotion: String, summation: String, embedding: String
+        date: String, emotion: String, summation: String
     ): DiaryAnalysisData {
 
         return DiaryAnalysisData(
             emotions = listOf(emotion),
             summation = summation,
-            embedding = embedding,
             event = "사건",
             thought = "생각",
             action = "행동",
