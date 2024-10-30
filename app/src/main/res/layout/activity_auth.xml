@@ -9,8 +9,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.ui.auth.AuthActivity">
-        >
+        tools:context=".presentation.ui.auth.AuthActivity"
+        android:background="@color/white">
 
         <com.betterlife.antifragile.presentation.util.CustomToolbar
             android:id="@+id/lo_toolbar"

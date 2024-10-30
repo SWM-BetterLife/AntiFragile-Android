@@ -41,11 +41,11 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
     private lateinit var profileEditViewModel: ProfileEditViewModel
     private lateinit var imageHandler: ImageHandler
     private lateinit var email: String
-    private lateinit var password: String
     private lateinit var loginType: LoginType
     private var isNewMember: Boolean = false
     private var isCheckEmail = false
     private var isCheckedNickname = false
+    private var isCheckedPassword = false
     private var gender = Gender.MALE
 
     // TODO: 중복 체크 api 수정되면 제거
@@ -109,18 +109,20 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
                             tvNicknameDuplicateResult.visibility = View.VISIBLE
                             tvNicknameDuplicateResult.text = "사용 가능한 닉네임입니다"
                             tvNicknameDuplicateResult.setTextColor(resources.getColor(R.color.green))
+                            isCheckedNickname = true
                             return@apply
                         }
                         tvNicknameDuplicateResult.visibility = View.VISIBLE
                         tvNicknameDuplicateResult.text = "이미 사용중인 닉네임입니다"
                         tvNicknameDuplicateResult.setTextColor(resources.getColor(R.color.red))
+
                     } else {
                         tvNicknameDuplicateResult.visibility = View.VISIBLE
                         tvNicknameDuplicateResult.text = "사용 가능한 닉네임입니다"
                         tvNicknameDuplicateResult.setTextColor(resources.getColor(R.color.green))
+                        isCheckedNickname = true
                     }
                 }
-                isCheckedNickname = true
             },
             onError = {
                 Log.d("ProfileEditFragment", "checkNicknameResponse error: $it")
@@ -135,13 +137,13 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
                         tvEmailDuplicateResult.visibility = View.VISIBLE
                         tvEmailDuplicateResult.text = "사용 가능한 이메일입니다"
                         tvEmailDuplicateResult.setTextColor(resources.getColor(R.color.green))
+                        isCheckEmail = true
                     } else {
                         tvEmailDuplicateResult.visibility = View.VISIBLE
                         tvEmailDuplicateResult.text = "이미 사용중인 이메일입니다"
                         tvEmailDuplicateResult.setTextColor(resources.getColor(R.color.red))
                     }
                 }
-                isCheckEmail = true
             },
             onError = {
                 Log.d("ProfileEditFragment", "checkNicknameResponse error: $it")
@@ -208,6 +210,12 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
 
     private fun setupTextWatchers() {
         binding.apply {
+            etEmail.addTextChangedListener {
+                // 이메일 입력 시 중복 체크를 다시 하도록 설정
+                isCheckEmail = false
+                tvEmailDuplicateResult.visibility = View.INVISIBLE
+            }
+
             etNickname.addTextChangedListener {
                 // 닉네임 입력 시 중복 체크를 다시 하도록 설정
                 isCheckedNickname = false
@@ -216,6 +224,7 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
             }
 
             etPassword.addTextChangedListener {
+                if (etPassword.text.toString().isNotBlank()) tvPasswordFormatResult.visibility = View.VISIBLE
                 validatePassword(it.toString())
                 validateInputs()
             }
@@ -227,8 +236,6 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
 
     private fun validatePassword(password: String): Boolean {
         binding.apply {
-            tvPasswordFormatResult.visibility = View.VISIBLE
-
             // 정규식 패턴
             val pattern = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@\$!%*#?&])[A-Za-z\\d@\$!%*#?&]{8,}\$".toRegex()
 
@@ -247,12 +254,16 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
     // 중복 체크를 했고, 입력 칸이 빈 공백이 아닐 때만 저장 버튼 활성화
     private fun validateInputs() {
         binding.apply {
+            val isEmailValid = etEmail.text.toString().isNotBlank()
             val isNicknameValid = etNickname.text.toString().isNotBlank()
             val isBirthdayValid = etBirthday.text.toString().isNotBlank()
             val isJobValid = etJob.text.toString().isNotBlank()
             val isPasswordValid = validatePassword(etPassword.text.toString())
 
-            val isFormValid = isNicknameValid && isBirthdayValid && isJobValid && isPasswordValid
+            val isFormValid =
+                if(!isNewMember) isNicknameValid && isBirthdayValid && isJobValid
+                else isNicknameValid && isBirthdayValid && isJobValid && isEmailValid && isPasswordValid
+
             val color = if (isFormValid) {
                 ContextCompat.getColor(requireContext(), R.color.main_color)
             } else {
@@ -269,7 +280,13 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
     private fun setupButtons() {
         binding.apply {
             btnSave.setOnClickListener {
-                if (!isCheckEmail && !isCheckedNickname && binding.etNickname.text.toString() != originNickname) {
+
+                if (!isCheckEmail && isNewMember) {
+                    showCustomToast("이메일 중복 확인을 해주세요")
+                    return@setOnClickListener
+                }
+
+                if (!isCheckedNickname && binding.etNickname.text.toString() != originNickname) {
                     showCustomToast("닉네임 중복 확인을 해주세요")
                     return@setOnClickListener
                 }
@@ -278,6 +295,13 @@ class ProfileEditFragment : BaseFragment<FragmentProfileEditBinding>(
                 if (!DateUtil.isValidBirthday(birthday)) {
                     showCustomToast("생년월일을 정확히 입력해주세요(ex. 2000.01.01)")
                     return@setOnClickListener
+                }
+
+                if (!isCheckedPassword && isNewMember) {
+                    if (!validatePassword(etPassword.text.toString())) {
+                        showCustomToast("비밀번호를 정확히 입력해주세요")
+                        return@setOnClickListener
+                    }
                 }
 
                 val imageMultipart = imageHandler.getSelectedImageUri()?.let { uri ->
