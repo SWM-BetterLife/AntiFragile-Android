@@ -9,13 +9,19 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.betterlife.antifragile.R
 import com.betterlife.antifragile.data.model.auth.request.AuthReIssueTokenRequest
 import com.betterlife.antifragile.data.model.base.Status
 import com.betterlife.antifragile.presentation.ui.auth.AuthActivity
+import com.betterlife.antifragile.presentation.ui.diary.viewmodel.LLMViewModel
+import com.betterlife.antifragile.presentation.ui.diary.viewmodel.LLMViewModelFactory
 import com.betterlife.antifragile.presentation.ui.main.MainActivity
 import com.betterlife.antifragile.presentation.util.ModelDownloader
 import com.betterlife.antifragile.presentation.util.TokenManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
@@ -85,6 +91,7 @@ class SplashActivity : AppCompatActivity() {
         val modelDownloader = ModelDownloader(this)
 
         if (modelDownloader.isModelAlreadyDownloaded()) {
+            initializeLLMModel()  // 모델이 이미 있을 때 바로 초기화
             progressBar.visibility = View.GONE
             Handler(Looper.getMainLooper()).postDelayed({
                 autoLoginIfNeeded()
@@ -108,6 +115,7 @@ class SplashActivity : AppCompatActivity() {
             },
             onSuccess = {
                 handler.post {
+                    initializeLLMModel()  // 모델이 이미 있을 때 바로 초기화
                     autoLoginIfNeeded()
                 }
             },
@@ -143,5 +151,15 @@ class SplashActivity : AppCompatActivity() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
+    }
+
+    private fun initializeLLMModel() {
+        val llmViewModelFactory = LLMViewModelFactory(this)
+        val llmViewModel = ViewModelProvider(this, llmViewModelFactory).get(LLMViewModel::class.java)
+
+        // 모델을 백그라운드에서 미리 로드
+        lifecycleScope.launch(Dispatchers.IO) {
+            llmViewModel.getResponseFromLLM("초기화 테스트")
+        }
     }
 }
