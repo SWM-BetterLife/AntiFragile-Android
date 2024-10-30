@@ -29,7 +29,7 @@ class LLMTask(context: Context) {
     }
 
     private fun getModelPath(context: Context): String {
-        val modelFile = File(context.filesDir, "llm/gemma2b-cpu.bin") // 모델이 저장된 경로를 내부 저장소로 설정
+        val modelFile = File(context.filesDir, "llm/gemma2b.bin") // 모델이 저장된 경로를 내부 저장소로 설정
         return modelFile.absolutePath
     }
 

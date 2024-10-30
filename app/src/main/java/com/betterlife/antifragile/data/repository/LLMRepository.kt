@@ -3,6 +3,7 @@ package com.betterlife.antifragile.data.repository
 import android.content.Context
 import android.util.Log
 import com.betterlife.antifragile.config.LLMTask
+import com.betterlife.antifragile.config.TextEmbedder
 import com.betterlife.antifragile.data.model.common.LLMInferenceType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -10,9 +11,17 @@ import kotlin.system.measureTimeMillis
 
 class LLMRepository(context: Context) : BaseRepository() {
     private val llmTask= LLMTask.getInstance(context)
+    private val textEmbedder = TextEmbedder(context)
+
+    fun getEmbeddingResult(text: String): String? {
+        val extractEmbeddings = textEmbedder.extractEmbeddings(text)
+        textEmbedder.clearTextEmbedder()
+        return extractEmbeddings
+    }
 
     suspend fun getResponseFromLLMInference(
-        text: String, llmInferenceType: LLMInferenceType
+        text: String,
+        llmInferenceType: LLMInferenceType
     ): String? {
         return try {
             val result: String?
@@ -20,9 +29,13 @@ class LLMRepository(context: Context) : BaseRepository() {
                 result = withContext(Dispatchers.IO) {
                     when(llmInferenceType) {
                         LLMInferenceType.EMOTION -> {
-                            llmTask.generateResponse(getPromptWithEmotionInference(text))
+                            val promptOfEmotion = getPromptWithEmotionInference(text)
+                            llmTask.generateResponse(promptOfEmotion)
                         }
-                        else -> {
+                        LLMInferenceType.SUMMATION -> {
+                            val promptOfSummation = getPromptWithSummarizeInference(text)
+                            llmTask.generateResponse(getPromptWithChatTemplate(promptOfSummation))
+                        } else -> {
                             llmTask.generateResponse(getPromptWithChatTemplate(text))
                         }
                     }
@@ -36,6 +49,12 @@ class LLMRepository(context: Context) : BaseRepository() {
         } finally {
             Log.d("LLMRepository", "LLM Inference is done.")
         }
+    }
+
+    private fun getPromptWithSummarizeInference(text: String): String {
+        val prompt =  "Request: 다음 글을 요약해주세요: \n\n" +
+                text + "\n"
+        return getPromptWithChatTemplate(prompt)
     }
 
     private fun getPromptWithEmotionInference(text: String): String {

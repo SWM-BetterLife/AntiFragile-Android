@@ -9,7 +9,7 @@ import java.io.InputStream
 
 class ModelDownloader(private val context: Context) {
 
-    private val modelFileName = "gemma2b-cpu.bin"
+    private val modelFileName = "gemma2b.bin"
     private val modelFilePath = File(context.filesDir, "llm/$modelFileName")
 
     fun isModelAlreadyDownloaded(): Boolean {
