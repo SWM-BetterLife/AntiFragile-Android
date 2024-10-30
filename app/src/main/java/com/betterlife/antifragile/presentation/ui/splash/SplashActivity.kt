@@ -21,6 +21,7 @@ import com.betterlife.antifragile.presentation.ui.main.MainActivity
 import com.betterlife.antifragile.presentation.util.ModelDownloader
 import com.betterlife.antifragile.presentation.util.TokenManager
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @SuppressLint("CustomSplashScreen")
@@ -91,11 +92,12 @@ class SplashActivity : AppCompatActivity() {
         val modelDownloader = ModelDownloader(this)
 
         if (modelDownloader.isModelAlreadyDownloaded()) {
-            initializeLLMModel()  // 모델이 이미 있을 때 바로 초기화
             progressBar.visibility = View.GONE
-            Handler(Looper.getMainLooper()).postDelayed({
+            initializeLLMModel()
+            lifecycleScope.launch {
+                delay(2000) // 초기화 시간이 충분한지 확인
                 autoLoginIfNeeded()
-            }, 2000)
+            }
         } else {
             progressBar.visibility = View.VISIBLE
             splashViewModel.getLlmModelUrl()
@@ -115,8 +117,11 @@ class SplashActivity : AppCompatActivity() {
             },
             onSuccess = {
                 handler.post {
-                    initializeLLMModel()  // 모델이 이미 있을 때 바로 초기화
-                    autoLoginIfNeeded()
+                    initializeLLMModel() // 모델 다운로드 후 초기화
+                    lifecycleScope.launch {
+                        delay(2000) // 초기화 시간을 충분히 주기
+                        autoLoginIfNeeded()
+                    }
                 }
             },
             onFailure = {
