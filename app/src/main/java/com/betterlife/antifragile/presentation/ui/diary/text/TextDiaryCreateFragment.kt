@@ -176,7 +176,6 @@ class TextDiaryCreateFragment : BaseFragment<FragmentTextDiaryCreateBinding>(
             diaryDate = diaryDate,
             emotions = textDiaryDetail?.emotions ?: arrayListOf(),
             summation = "",
-            embedding = "",
             event = "",
             thought = "",
             action = "",
