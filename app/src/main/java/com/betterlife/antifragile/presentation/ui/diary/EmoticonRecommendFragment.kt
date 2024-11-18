@@ -200,7 +200,7 @@ class EmoticonRecommendFragment : BaseFragment<FragmentEmoticonRecommendBinding>
     ): DiaryAnalysisCreateRequest {
         return DiaryAnalysisCreateRequest(
             emotions = listOf(emoticon.emotion),
-            event = diaryAnalysisData.event,
+            event = diaryAnalysisData.summation,
             thought = diaryAnalysisData.thought,
             action = diaryAnalysisData.action,
             comment = diaryAnalysisData.comment,
